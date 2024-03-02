@@ -1,0 +1,6 @@
+@Qualifier.Api_HostAddress = http://localhost:5049
+
+GET {{Qualifier.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
