@@ -28,10 +28,28 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsB
                                           numeration = requirement.numeration,
                                           name = requirement.name,
                                           level = requirement.level,
+                                          parentId = requirement.parentId,
                                       }).ToListAsync();
 
+                var data = _mapper.Map<List<GetAllRequirementsByStandardIdDto>>(entities);
+
+                foreach (var item in data)
+                    item.numerationToShow = item.numeration.ToString();
+
+                foreach (var item in data)
+                    foreach (var item2 in data)
+                        if (item.parentId == item2.requirementId)
+                        {
+                            item.numerationToShow = item2.numeration + "." + item.numeration;
+                            foreach (var item3 in data)
+                                if (item2.parentId == item3.requirementId)
+                                    item.numerationToShow = item3.numeration + "." + item.numerationToShow; 
+                        }
+
+                data = data.OrderBy(x => x.numerationToShow).ToList();
+
                 BaseResponseDto<GetAllRequirementsByStandardIdDto> baseResponseDto = new BaseResponseDto<GetAllRequirementsByStandardIdDto>();
-                baseResponseDto.data = _mapper.Map<List<GetAllRequirementsByStandardIdDto>>(entities);
+                baseResponseDto.data = data;
                 return baseResponseDto;
             }
             catch (Exception)

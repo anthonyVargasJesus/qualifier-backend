@@ -14,7 +14,6 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.name).IsRequired();
             entityBuilder.Property(x => x.description).IsRequired();
             entityBuilder.Property(x => x.abbreviation).IsRequired();
-            entityBuilder.Property(x => x.value).IsRequired();
             entityBuilder.Property(x => x.color).IsRequired();
         }
     }

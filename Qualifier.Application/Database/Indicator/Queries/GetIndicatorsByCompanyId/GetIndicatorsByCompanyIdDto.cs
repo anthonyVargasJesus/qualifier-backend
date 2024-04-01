@@ -6,7 +6,8 @@ namespace Qualifier.Application.Database.Indicator.Queries.GetIndicatorsByCompan
         public string name { get; set; }
         public string description { get; set; }
         public string abbreviation { get; set; }
-        public decimal value { get; set; }
+        public decimal minimum { get; set; }
+        public decimal maximum { get; set; }
         public string color { get; set; }
 
     }

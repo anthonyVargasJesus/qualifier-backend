@@ -20,9 +20,9 @@ namespace Qualifier.Persistence.Configuration
             //.WithMany(x => x.Requirement)
             //.HasForeignKey(x => x.standardId);
 
-            //entityBuilder.HasOne(x => x.Requirement)
-            //.WithMany(x => x.Requirement)
-            //.HasForeignKey(x => x.parentId);
+            entityBuilder.HasOne(x => x.requirement)
+            .WithMany(x => x.requirements)
+            .HasForeignKey(x => x.parentId);
         }
     }
 }

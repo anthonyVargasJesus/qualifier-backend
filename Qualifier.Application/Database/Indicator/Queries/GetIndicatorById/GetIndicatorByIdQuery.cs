@@ -27,7 +27,8 @@ namespace Qualifier.Application.Database.Indicator.Queries.GetIndicatorById
                                         name = item.name,
                                         description = item.description,
                                         abbreviation = item.abbreviation,
-                                        value = item.value,
+                                        minimum = item.minimum,
+                                        maximum = item.maximum,
                                         color = item.color,
                                         companyId = item.companyId,
                                     }).FirstOrDefaultAsync();

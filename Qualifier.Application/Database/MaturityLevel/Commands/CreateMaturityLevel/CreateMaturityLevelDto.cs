@@ -10,6 +10,7 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.CreateMaturityLe
         public string? abbreviation { get; set; }
         public decimal? value { get; set; }
         public string? color { get; set; }
+        public int companyId { get; set; }
         public int? creationUserId { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {

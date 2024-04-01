@@ -6,7 +6,8 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsB
         public int numeration { get; set; }
         public string name { get; set; }
         public int level { get; set; }
-
+        public int parentId { get; set; }
+        public string numerationToShow { get; set; }
     }
 }
 

@@ -29,7 +29,8 @@ namespace Qualifier.Application.Database.Indicator.Queries.GetIndicatorsByCompan
                                           name = indicator.name,
                                           description = indicator.description,
                                           abbreviation = indicator.abbreviation,
-                                          value = indicator.value,
+                                          minimum = indicator.minimum,
+                                          maximum = indicator.maximum,
                                           color = indicator.color,
                                       })
                 .Skip(skip).Take(pageSize)

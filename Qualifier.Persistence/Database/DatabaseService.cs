@@ -26,7 +26,14 @@ namespace Qualifier.Persistence.Database
         public DbSet<ControlGroupEntity> ControlGroup { get; set; }
         public DbSet<ControlEntity> Control { get; set; }
         public DbSet<RequirementEntity> Requirement { get; set; }
+        public DbSet<ResponsibleEntity> Responsible { get; set; }
+        public DbSet<DocumentationEntity> Documentation { get; set; }
+        public DbSet<EvaluationEntity> Evaluation { get; set; }
+        public DbSet<RequirementEvaluationEntity> RequirementEvaluation { get; set; }
+        public DbSet<ReferenceDocumentationEntity> ReferenceDocumentation { get; set; }
+        public DbSet<ControlEvaluationEntity> ControlEvaluation { get; set; }
         
+
         public async Task<bool> SaveAsync()
         {
 
@@ -56,6 +63,13 @@ namespace Qualifier.Persistence.Database
             new ControlGroupConfiguration(modelBuilder.Entity<ControlGroupEntity>());
             new ControlConfiguration(modelBuilder.Entity<ControlEntity>());
             new RequirementConfiguration(modelBuilder.Entity<RequirementEntity>());
+            new ResponsibleConfiguration(modelBuilder.Entity<ResponsibleEntity>());
+            new DocumentationConfiguration(modelBuilder.Entity<DocumentationEntity>());
+            new EvaluationConfiguration(modelBuilder.Entity<EvaluationEntity>());
+            new RequirementEvaluationConfiguration(modelBuilder.Entity<RequirementEvaluationEntity>());
+            new ReferenceDocumentationConfiguration(modelBuilder.Entity<ReferenceDocumentationEntity>());
+            new ControlEvaluationConfiguration(modelBuilder.Entity<ControlEvaluationEntity>());
+
         }
 
     }

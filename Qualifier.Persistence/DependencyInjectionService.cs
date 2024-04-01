@@ -24,6 +24,12 @@ namespace Qualifier.Persistence
             services.AddScoped<IControlGroupRepository, ControlGroupRepository>();
             services.AddScoped<IControlRepository, ControlRepository>();
             services.AddScoped<IRequirementRepository, RequirementRepository>();
+            services.AddScoped<IResponsibleRepository, ResponsibleRepository>();
+            services.AddScoped<IDocumentationRepository, DocumentationRepository>();
+            services.AddScoped<IEvaluationRepository, EvaluationRepository>();
+            services.AddScoped<IRequirementEvaluationRepository, RequirementEvaluationRepository>();
+            services.AddScoped<IControlEvaluationRepository, ControlEvaluationRepository>();
+
             return services;
         }
     }

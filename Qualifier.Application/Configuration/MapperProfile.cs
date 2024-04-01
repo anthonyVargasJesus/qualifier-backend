@@ -31,6 +31,35 @@ using Qualifier.Application.Database.Requirement.Queries.GetRequirementById;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByStandardId;
 using Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsByStandardId;
+using Qualifier.Application.Database.Responsible.Commands.UpdateResponsible;
+using Qualifier.Application.Database.Responsible.Commands.CreateResponsible;
+using Qualifier.Application.Database.Responsible.Queries.GetResponsiblesByStandardId;
+using Qualifier.Application.Database.Responsible.Queries.GetResponsibleById;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationById;
+using Qualifier.Application.Database.Documentation.Commands.CreateDocumentation;
+using Qualifier.Application.Database.Documentation.Commands.UpdateDocumentation;
+using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
+using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
+using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
+using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
+using Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRequirementEvaluation;
+using Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRequirementEvaluation;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationsByRequirementId;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationById;
+using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
+using Qualifier.Application.Database.Responsible.Queries.GetAllResponsiblesByStandardId;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
+using Qualifier.Application.Database.Documentation.Queries.GetAllDocumentationsByStandardId;
+using Qualifier.Application.Database.ControlEvaluation.Commands.UpdateControlEvaluation;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationById;
+using Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
+using static Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation.CreateControlEvaluationDto;
+using static Qualifier.Application.Database.ControlEvaluation.Commands.UpdateControlEvaluation.UpdateControlEvaluationDto;
+using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByStandardId;
 
 
 namespace Qualifier.Application.Configuration
@@ -44,12 +73,16 @@ namespace Qualifier.Application.Configuration
             CreateMap<MaturityLevelEntity, CreateMaturityLevelDto>().ReverseMap();
             CreateMap<MaturityLevelEntity, UpdateMaturityLevelDto>().ReverseMap();
             CreateMap<MaturityLevelEntity, GetMaturityLevelsByCompanyIdDto>().ReverseMap();
+            CreateMap<MaturityLevelEntity, GetAllMaturityLevelsByCompanyIdDto>().ReverseMap();
+            CreateMap<MaturityLevelEntity, GetDashboardMaturityLevelDto>().ReverseMap();
+            CreateMap<MaturityLevelEntity, GetDashboardMaturityLevelInRequirementDto>().ReverseMap();
 
             //Indicator
             CreateMap<IndicatorEntity, CreateIndicatorDto>().ReverseMap();
             CreateMap<IndicatorEntity, UpdateIndicatorDto>().ReverseMap();
             CreateMap<IndicatorEntity, GetIndicatorByIdDto>().ReverseMap();
             CreateMap<IndicatorEntity, GetIndicatorsByCompanyIdDto>().ReverseMap();
+            CreateMap<IndicatorEntity, GetDashboardMaturityLevelInRequirementIndicatorDto>().ReverseMap();
 
             //Login
             CreateMap<LoginEntity, LoginUserLoginTryDto>().ReverseMap();
@@ -68,6 +101,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<StandardEntity, GetStandardByIdDto>().ReverseMap();
             CreateMap<StandardEntity, GetStandardsByCompanyIdDto>().ReverseMap();
             CreateMap<StandardEntity, GetAllStandardsByCompanyIdDto>().ReverseMap();
+            CreateMap<StandardEntity, GetEvaluationByIdDtoStandardDto>().ReverseMap();
 
             //ControlGroup
             CreateMap<ControlGroupEntity, CreateControlGroupDto>().ReverseMap();
@@ -90,6 +124,85 @@ namespace Qualifier.Application.Configuration
             CreateMap<RequirementEntity, GetRequirementsByStandardIdDto>().ReverseMap();
             CreateMap<RequirementEntity, GetRequirementByIdDto>().ReverseMap();
             CreateMap<RequirementEntity, GetAllRequirementsByStandardIdDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetDashboardRequirementDto>().ReverseMap();
+
+            //Responsible
+            CreateMap<ResponsibleEntity, UpdateResponsibleDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, CreateResponsibleDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetResponsiblesByStandardIdDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetResponsibleByIdDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetAllResponsiblesByStandardIdDto>().ReverseMap();
+
+            //Documentation
+            CreateMap<DocumentationEntity, GetDocumentationsByStandardIdDto>().ReverseMap();
+            CreateMap<DocumentationEntity, GetDocumentationByIdDto>().ReverseMap();
+            CreateMap<DocumentationEntity, CreateDocumentationDto>().ReverseMap();
+            CreateMap<DocumentationEntity, UpdateDocumentationDto>().ReverseMap();
+            CreateMap<DocumentationEntity, GetAllDocumentationsByStandardIdDto>().ReverseMap();
+
+            //Evaluation
+            CreateMap<EvaluationEntity, CreateEvaluationDto>().ReverseMap();
+            CreateMap<EvaluationEntity, UpdateEvaluationDto>().ReverseMap();
+            CreateMap<EvaluationEntity, GetEvaluationsByCompanyIdDto>().ReverseMap();
+            CreateMap<StandardEntity, GetEvaluationsByCompanyIdStandardDto>().ReverseMap();
+            CreateMap<EvaluationEntity, GetEvaluationByIdDto>().ReverseMap();
+
+            //RequirementEvaluation
+            CreateMap<RequirementEvaluationEntity, CreateRequirementEvaluationDto>().ReverseMap();
+            CreateMap<RequirementEvaluationEntity, UpdateRequirementEvaluationDto>().ReverseMap();
+
+            //CreateMap<RequirementEvaluationEntity, GetRequirementEvaluationsByRequirementIdEvaluationDto>().ReverseMap();
+            CreateMap<MaturityLevelEntity, GetRequirementEvaluationsByRequirementIdMaturityLevelDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetRequirementEvaluationsByRequirementIdResponsibleDto>().ReverseMap();
+            CreateMap<RequirementEvaluationEntity, GetRequirementEvaluationsByRequirementIdDto>().ReverseMap();
+            CreateMap<RequirementEvaluationEntity, GetRequirementEvaluationByIdDto>().ReverseMap();
+
+            CreateMap<MaturityLevelEntity, GetRequirementEvaluationsByProcessMaturityLevelDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetRequirementEvaluationsByProcessResponsibleDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetRequirementEvaluationsByProcessRequirementDto>().ReverseMap();
+            CreateMap<RequirementEvaluationEntity, GetRequirementEvaluationsByProcessDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetRequirementEvaluationsByProcessChildRequirementDto>().ReverseMap();
+
+            //ReferenceDocumentation
+            CreateMap<ReferenceDocumentationEntity, CreateRequirementEvaluationReferenceDocumentationDto>().ReverseMap();
+            CreateMap<ReferenceDocumentationEntity, UpdateRequirementEvaluationReferenceDocumentationDto>().ReverseMap();
+            CreateMap<ReferenceDocumentationEntity, CreateControlEvaluationReferenceDocumentationDto>().ReverseMap();
+            CreateMap<ReferenceDocumentationEntity, UpdateControlEvaluationReferenceDocumentationDto>().ReverseMap();
+
+
+            //ControlEvaluation
+            CreateMap<ControlEvaluationEntity, GetControlEvaluationByIdDto>().ReverseMap();
+            CreateMap<ControlEvaluationEntity, UpdateControlEvaluationDto>().ReverseMap();
+            CreateMap<ControlEvaluationEntity, CreateControlEvaluationDto>().ReverseMap();
+            CreateMap<ControlGroupEntity, GetControlEvaluationsByProcessControlGroupDto>().ReverseMap();
+            CreateMap<ControlEntity, GetControlEvaluationsByProcessControlDto>().ReverseMap();
+
+            CreateMap<MaturityLevelEntity, GetControlEvaluationsByProcessMaturityLevelDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetControlEvaluationsByProcessResponsibleDto>().ReverseMap();
+            CreateMap<ControlEvaluationEntity, GetControlEvaluationsByProcessDto>().ReverseMap();
+
+            //Dashboard
+            CreateMap<PieDashboardRequirement, GetPieDashboardRequirementDto>().ReverseMap();
+            CreateMap<BartVerticalDashboardRequirement, GetBartVerticalDashboardRequirementDto>().ReverseMap();
+            CreateMap<DashboardRequirementSerie, GetDashboardRequirementSerieDto>().ReverseMap();
+
+            CreateMap<ControlGroupEntity, GetControlDashboardControlGroupDto>().ReverseMap();
+            CreateMap<MaturityLevelEntity, GetControlDashboardMaturityLevelDto>().ReverseMap();
+            CreateMap<MaturityLevelEntity, GetDashboardMaturityLevelInControlDto>().ReverseMap();
+            CreateMap<IndicatorEntity, GetControlDashboardMaturityLevelInControlIndicatorDto>().ReverseMap();
+            CreateMap<PieControlDashboardControlGroup, GetPieControlDashboardControlGroupDto>().ReverseMap();
+
+            CreateMap<BartVerticalControlDashboard, GetBartVerticalControlDashboardDto>().ReverseMap();
+            CreateMap<DashboardControlGroupSerie, GetDashboardControlGroupSerieDto>().ReverseMap();
+
+
+            ////ExcelDashboard
+            //CreateMap<MaturityLevelEntity, GetExcelDashboardMaturityLevelDto>().ReverseMap();
+            //CreateMap<ResponsibleEntity, GetExcelDashboardResponsibleDto>().ReverseMap();
+            //CreateMap<RequirementEntity, GetExcelDashboardRequirementDto>().ReverseMap();
+            //CreateMap<RequirementEvaluationEntity, GetExcelDashboardDto>().ReverseMap();
+            //CreateMap<RequirementEntity, GetExcelDashboardChildRequirementDto>().ReverseMap();
+
         }
     }
 }

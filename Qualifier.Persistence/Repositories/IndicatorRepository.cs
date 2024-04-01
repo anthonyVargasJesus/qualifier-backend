@@ -21,7 +21,8 @@ namespace Qualifier.Persistence.Repositories
             entry.Property(x => x.name).IsModified = true;
             entry.Property(x => x.description).IsModified = true;
             entry.Property(x => x.abbreviation).IsModified = true;
-            entry.Property(x => x.value).IsModified = true;
+            entry.Property(x => x.minimum).IsModified = true;
+            entry.Property(x => x.maximum).IsModified = true;
             entry.Property(x => x.color).IsModified = true;
             entry.Property(x => x.updateDate).IsModified = true;
             entry.Property(x => x.updateUserId).IsModified = true;

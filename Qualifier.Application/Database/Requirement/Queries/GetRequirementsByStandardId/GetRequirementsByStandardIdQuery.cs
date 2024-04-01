@@ -34,6 +34,8 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
                                              }).ToListAsync();
 
                 const int FIRST_LEVEL = 1;
+                const int SECOND_LEVEL = 2;
+                const int THIRD_LEVEL = 3;
 
                 var entities = await (from requirement in _databaseService.Requirement
                                       where ((requirement.isDeleted == null || requirement.isDeleted == false)
@@ -49,16 +51,26 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
                                           parentId = requirement.parentId,
                                       }).OrderBy(x => x.numeration)
                                         .Skip(skip).Take(pageSize)
-                                        .ToListAsync();
-
-
-                foreach (var entity in entities)
-                {
-
-                }
+                                        .ToListAsync();     
 
                 BaseResponseDto<GetRequirementsByStandardIdDto> baseResponseDto = new BaseResponseDto<GetRequirementsByStandardIdDto>();
-                baseResponseDto.data = _mapper.Map<List<GetRequirementsByStandardIdDto>>(entities);
+
+                List<GetRequirementsByStandardIdDto> data = _mapper.Map<List<GetRequirementsByStandardIdDto>>(entities);
+
+                foreach (var requirement in data)
+                {
+                    if (hasChildren(allRequirements, requirement.requirementId, SECOND_LEVEL))
+                    {
+                        requirement.children = getChildren(allRequirements, requirement.requirementId, SECOND_LEVEL).OrderBy(x => x.numeration).ToList();
+
+                        foreach (var item in requirement.children)
+                            if (hasChildren(allRequirements, item.requirementId, THIRD_LEVEL))
+                                item.children = getChildren(allRequirements, item.requirementId, THIRD_LEVEL).OrderBy(x => x.numeration).ToList();  
+                    }
+                }
+
+                baseResponseDto.data = data;
+
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, standardId), pageSize);
                 return baseResponseDto;
             }
@@ -69,24 +81,15 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
             }
         }
 
-        bool hasChildren(List<RequirementEntity> allRequirements, int idRequirement)
+        bool hasChildren(List<RequirementEntity> allRequirements, int idRequirement, int level)
         {
-            return allRequirements.Count(x => x.parentId == idRequirement) > 0;
+            return allRequirements.Count(x => x.parentId == idRequirement && x.level == level) > 0;
         }
-
-        //int children(List<RequirementEntity> allRequirements, int idRequirement)
-        //{
-
-        //    if ((num > 0) || (num <= 10))
-        //        return (num * factorial(num - 1));
-        //}
-
-        //int factorial(int num)
-        //{
-
-        //    if ((num > 0) || (num <= 10))
-        //        return (num * factorial(num - 1));
-        //}
+        List<GetRequirementsByStandardIdDto> getChildren(List<RequirementEntity> allRequirements, int idRequirement, int level)
+        {
+            var entities = allRequirements.Where(x => x.parentId == idRequirement && x.level == level).ToList();
+            return _mapper.Map<List<GetRequirementsByStandardIdDto>>(entities);
+        }
 
         public async Task<int> getTotal(string search, int standardId)
         {

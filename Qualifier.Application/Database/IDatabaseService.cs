@@ -19,6 +19,12 @@ namespace Qualifier.Application.Database
         DbSet<ControlGroupEntity> ControlGroup { get; set; }
         DbSet<ControlEntity> Control { get; set; }
         DbSet<RequirementEntity> Requirement { get; set; }
+        DbSet<ResponsibleEntity> Responsible { get; set; }
+        DbSet<DocumentationEntity> Documentation { get; set; }
+        DbSet<EvaluationEntity> Evaluation { get; set; }
+        DbSet<RequirementEvaluationEntity> RequirementEvaluation { get; set; }
+        DbSet<ReferenceDocumentationEntity> ReferenceDocumentation { get; set; }
+        DbSet<ControlEvaluationEntity> ControlEvaluation { get; set; }
         Task<bool> SaveAsync();
     }
 }
