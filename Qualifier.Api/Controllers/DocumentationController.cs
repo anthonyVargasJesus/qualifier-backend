@@ -6,6 +6,7 @@ using Qualifier.Application.Database.Documentation.Commands.DeleteDocumentation;
 using Qualifier.Application.Database.Documentation.Commands.UpdateDocumentation;
 using Qualifier.Application.Database.Documentation.Queries.GetAllDocumentationsByStandardId;
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationById;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByCompanyId;
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByStandardId;
 using Qualifier.Application.Database.Responsible.Queries.GetAllResponsiblesByStandardId;
 using Qualifier.Common.Api;
@@ -22,6 +23,27 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> GetAll(int standardId, [FromServices] IGetAllDocumentationsByStandardIdQuery query)
         {
             var res = await query.Execute(standardId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
+
+        [HttpGet("ByCompany")]
+        public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetDocumentationsByCompanyIdQuery query)
+        {
+            if (search == null)
+                search = string.Empty;
+
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId;
+            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+
+            int value = 0;
+            if (success2)
+                value = companyId;
+
+            var res = await query.Execute(skip, pageSize, search, value);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

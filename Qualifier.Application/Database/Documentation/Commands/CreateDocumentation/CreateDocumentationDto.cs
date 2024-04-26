@@ -8,6 +8,7 @@ namespace Qualifier.Application.Database.Documentation.Commands.CreateDocumentat
         public string name { get; set; }
         public string description { get; set; }
         public string template { get; set; }
+        public int? documentTypeId { get; set; }
         public int? standardId { get; set; }
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }

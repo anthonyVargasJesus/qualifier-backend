@@ -25,6 +25,17 @@ namespace Qualifier.Application.Database
         DbSet<RequirementEvaluationEntity> RequirementEvaluation { get; set; }
         DbSet<ReferenceDocumentationEntity> ReferenceDocumentation { get; set; }
         DbSet<ControlEvaluationEntity> ControlEvaluation { get; set; }
+        DbSet<DocumentTypeEntity> DocumentType { get; set; }
+        DbSet<DefaultSectionEntity> DefaultSection { get; set; }
+        DbSet<ConfidentialityLevelEntity> ConfidentialityLevel { get; set; }
+        DbSet<VersionEntity> Version { get; set; }
+        DbSet<SupportForRequirementEntity> SupportForRequirement { get; set; }
+        DbSet<SupportForControlEntity> SupportForControl { get; set; }
+        DbSet<SectionEntity> Section { get; set; }
+        DbSet<PersonalEntity> Personal { get; set; }
+        DbSet<CreatorEntity> Creator { get; set; }
+        DbSet<ReviewerEntity> Reviewer { get; set; }
+        DbSet<ApproverEntity> Approver { get; set; }
         Task<bool> SaveAsync();
     }
 }

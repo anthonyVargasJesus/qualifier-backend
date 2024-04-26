@@ -32,7 +32,19 @@ namespace Qualifier.Persistence.Database
         public DbSet<RequirementEvaluationEntity> RequirementEvaluation { get; set; }
         public DbSet<ReferenceDocumentationEntity> ReferenceDocumentation { get; set; }
         public DbSet<ControlEvaluationEntity> ControlEvaluation { get; set; }
-        
+        public DbSet<DocumentTypeEntity> DocumentType { get; set; }
+        public DbSet<DefaultSectionEntity> DefaultSection { get; set; }
+        public DbSet<ConfidentialityLevelEntity> ConfidentialityLevel { get; set; }
+        public DbSet<VersionEntity> Version { get; set; }
+        public DbSet<SupportForRequirementEntity> SupportForRequirement { get; set; }
+        public DbSet<SupportForControlEntity> SupportForControl { get; set; }
+        public DbSet<SectionEntity> Section { get; set; }
+        public DbSet<PersonalEntity> Personal { get; set; }
+        public DbSet<CreatorEntity> Creator { get; set; }
+        public DbSet<ReviewerEntity> Reviewer { get; set; }
+        public DbSet<ApproverEntity> Approver { get; set; }
+
+
 
         public async Task<bool> SaveAsync()
         {
@@ -69,6 +81,18 @@ namespace Qualifier.Persistence.Database
             new RequirementEvaluationConfiguration(modelBuilder.Entity<RequirementEvaluationEntity>());
             new ReferenceDocumentationConfiguration(modelBuilder.Entity<ReferenceDocumentationEntity>());
             new ControlEvaluationConfiguration(modelBuilder.Entity<ControlEvaluationEntity>());
+            new DocumentTypeConfiguration(modelBuilder.Entity<DocumentTypeEntity>());
+            new DefaultSectionConfiguration(modelBuilder.Entity<DefaultSectionEntity>());
+            new ConfidentialityLevelConfiguration(modelBuilder.Entity<ConfidentialityLevelEntity>());
+            new VersionConfiguration(modelBuilder.Entity<VersionEntity>());
+            new SupportForRequirementConfiguration(modelBuilder.Entity<SupportForRequirementEntity>());
+            new SupportForControlConfiguration(modelBuilder.Entity<SupportForControlEntity>());
+            new SectionConfiguration(modelBuilder.Entity<SectionEntity>());
+            new PersonalConfiguration(modelBuilder.Entity<PersonalEntity>());
+            new CreatorConfiguration(modelBuilder.Entity<CreatorEntity>());
+            new ReviewerConfiguration(modelBuilder.Entity<ReviewerEntity>());
+            new ApproverConfiguration(modelBuilder.Entity<ApproverEntity>());
+
 
         }
 

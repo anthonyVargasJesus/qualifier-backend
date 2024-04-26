@@ -8,6 +8,7 @@ namespace Qualifier.Application.Database.Documentation.Commands.UpdateDocumentat
         public string name { get; set; }
         public string description { get; set; }
         public string template { get; set; }
+        public int? documentTypeId { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

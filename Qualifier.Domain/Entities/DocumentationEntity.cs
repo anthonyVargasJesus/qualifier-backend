@@ -10,7 +10,10 @@ namespace Qualifier.Domain.Entities
         public string template { get; set; }
         public int standardId { get; set; }
         public int companyId { get; set; }
-        public ICollection<ReferenceDocumentationEntity> referenceDocumentations { get; set; }
+        public int documentTypeId { get; set; }
+
+        public StandardEntity standard { get; set; }
+        public DocumentTypeEntity documentType { get; set; }
     }
 }
 

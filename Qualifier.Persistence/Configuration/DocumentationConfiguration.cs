@@ -18,6 +18,11 @@ namespace Qualifier.Persistence.Configuration
             //entityBuilder.HasOne(x => x.Requirement)
             //.WithMany(x => x.Documentation)
             //.HasForeignKey(x => x.requirementId);
+
+            //            entityBuilder.HasOne(x => x.userState)
+            //.WithMany(x => x.users)
+            //.HasForeignKey(x => x.userStateId);
+
         }
     }
 }

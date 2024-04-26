@@ -60,6 +60,56 @@ using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard;
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByStandardId;
+using Qualifier.Application.Database.DocumentType.Commands.CreateDocumentType;
+using Qualifier.Application.Database.DocumentType.Commands.UpdateDocumentType;
+using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypeById;
+using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypesByCompanyId;
+using Qualifier.Application.Database.DocumentType.Queries.GetAllDocumentTypesByCompanyId;
+using Qualifier.Application.Database.DefaultSection.Commands.CreateDefaultSection;
+using Qualifier.Application.Database.DefaultSection.Commands.UpdateDefaultSection;
+using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionById;
+using Qualifier.Application.Database.DefaultSection.Queries.GetAllDefaultSectionsByDocumentTypeId;
+using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionsByDocumentTypeId;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByCompanyId;
+using Qualifier.Application.Database.ConfidentialityLevel.Commands.CreateConfidentialityLevel;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelById;
+using Qualifier.Application.Database.ConfidentialityLevel.Commands.UpdateConfidentialityLevel;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetAllConfidentialityLevelsByCompanyId;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelsByCompanyId;
+using Qualifier.Application.Database.Version.Commands.CreateVersion;
+using Qualifier.Application.Database.Version.Queries.GetVersionById;
+using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
+using Qualifier.Application.Database.Version.Commands.UpdateVersion;
+using Qualifier.Application.Database.SupportForRequirement.Commands.CreateSupportForRequirement;
+using Qualifier.Application.Database.SupportForRequirement.Commands.UpdateSupportForRequirement;
+using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementById;
+using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementsByDocumentationId;
+using Qualifier.Application.Database.SupportForControl.Commands.CreateSupportForControl;
+using Qualifier.Application.Database.SupportForControl.Commands.UpdateSupportForControl;
+using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlsByDocumentationId;
+using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlById;
+using Qualifier.Application.Database.Control.Queries.GetAllControlsByStandardId;
+using Qualifier.Application.Database.Section.Commands.CreateSection;
+using Qualifier.Application.Database.Section.Commands.UpdateSection;
+using Qualifier.Application.Database.Section.Queries.GetSectionById;
+using Qualifier.Application.Database.Section.Queries.GetAllSectionsByVersionId;
+using Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId;
+using Qualifier.Application.Database.Personal.Commands.CreatePersonal;
+using Qualifier.Application.Database.Personal.Commands.UpdatePersonal;
+using Qualifier.Application.Database.Personal.Queries.GetPersonalById;
+using Qualifier.Application.Database.Personal.Queries.GetAllPersonalsByCompanyId;
+using Qualifier.Application.Database.Personal.Queries.GetPersonalsByCompanyId;
+using Qualifier.Application.Database.Creator.Commands.CreateCreator;
+using Qualifier.Application.Database.Creator.Commands.UpdateCreator;
+using Qualifier.Application.Database.Creator.Queries.GetAllCreatorsByVersionId;
+using Qualifier.Application.Database.Creator.Queries.GetCreatorById;
+using Qualifier.Application.Database.Reviewer.Commands.CreateReviewer;
+using Qualifier.Application.Database.Reviewer.Commands.UpdateReviewer;
+using Qualifier.Application.Database.Reviewer.Queries.GetReviewerById;
+using Qualifier.Application.Database.Reviewer.Queries.GetAllReviewersByVersionId;
+using Qualifier.Application.Database.Approver.Commands.CreateApprover;
+using Qualifier.Application.Database.Approver.Queries.GetApproverById;
+using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
 
 
 namespace Qualifier.Application.Configuration
@@ -202,6 +252,94 @@ namespace Qualifier.Application.Configuration
             //CreateMap<RequirementEntity, GetExcelDashboardRequirementDto>().ReverseMap();
             //CreateMap<RequirementEvaluationEntity, GetExcelDashboardDto>().ReverseMap();
             //CreateMap<RequirementEntity, GetExcelDashboardChildRequirementDto>().ReverseMap();
+
+            //DocumentType
+            CreateMap<DocumentTypeEntity, CreateDocumentTypeDto>().ReverseMap();
+            CreateMap<DocumentTypeEntity, UpdateDocumentTypeDto>().ReverseMap();
+            CreateMap<DocumentTypeEntity, GetDocumentTypeByIdDto>().ReverseMap();
+            CreateMap<DocumentTypeEntity, GetDocumentTypesByCompanyIdDto>().ReverseMap();
+            CreateMap<DocumentTypeEntity, GetAllDocumentTypesByCompanyIdDto>().ReverseMap();
+
+            //DefaultSection
+            CreateMap<DefaultSectionEntity, CreateDefaultSectionDto>().ReverseMap();
+            CreateMap<DefaultSectionEntity, UpdateDefaultSectionDto>().ReverseMap();
+            CreateMap<DefaultSectionEntity, GetDefaultSectionByIdDto>().ReverseMap();
+            CreateMap<DefaultSectionEntity, GetAllDefaultSectionsByDocumentTypeIdDto>().ReverseMap();
+            CreateMap<DefaultSectionEntity, GetDefaultSectionsByDocumentTypeIdDto>().ReverseMap();
+
+            //Documentation
+            CreateMap<DocumentationEntity, GetDocumentationsByCompanyIdDto>().ReverseMap();
+            CreateMap<DocumentTypeEntity, GetDocumentationsByCompanyIdDocumentTypeDto>().ReverseMap();
+            CreateMap<StandardEntity, GetDocumentationsByCompanyIdStandardDto>().ReverseMap();
+
+            //ConfidentialityLevel
+            CreateMap<ConfidentialityLevelEntity, CreateConfidentialityLevelDto>().ReverseMap();
+            CreateMap<ConfidentialityLevelEntity, UpdateConfidentialityLevelDto>().ReverseMap();
+            CreateMap<ConfidentialityLevelEntity, GetConfidentialityLevelByIdDto>().ReverseMap();
+            CreateMap<ConfidentialityLevelEntity, GetAllConfidentialityLevelsByCompanyIdDto>().ReverseMap();
+            CreateMap<ConfidentialityLevelEntity, GetConfidentialityLevelsByCompanyIdDto>().ReverseMap();
+
+            //Version
+            CreateMap<VersionEntity, CreateVersionDto>().ReverseMap();
+            CreateMap<VersionEntity, UpdateVersionDto>().ReverseMap();
+            CreateMap<VersionEntity, GetVersionByIdDto>().ReverseMap();
+            CreateMap<VersionEntity, GetVersionsByDocumentationIdDto>().ReverseMap();
+            CreateMap<ConfidentialityLevelEntity, GetVersionsByDocumentationIdConfidentialityLevelDto>().ReverseMap();
+
+            //SupportForRequirement
+            CreateMap<SupportForRequirementEntity, CreateSupportForRequirementDto>().ReverseMap();
+            CreateMap<SupportForRequirementEntity, UpdateSupportForRequirementDto>().ReverseMap();
+            CreateMap<SupportForRequirementEntity, GetSupportForRequirementByIdDto>().ReverseMap();
+            CreateMap<SupportForRequirementEntity, GetSupportForRequirementsByDocumentationIdDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetSupportForRequirementsByDocumentationIdRequirementDto>().ReverseMap();
+
+            //SupportForControl
+            CreateMap<SupportForControlEntity, CreateSupportForControlDto>().ReverseMap();
+            CreateMap<SupportForControlEntity, UpdateSupportForControlDto>().ReverseMap();
+            CreateMap<SupportForControlEntity, GetSupportForControlByIdDto>().ReverseMap();
+            CreateMap<SupportForControlEntity, GetSupportForControlsByDocumentationIdDto>().ReverseMap();
+            CreateMap<ControlEntity, GetSupportForControlsByDocumentationIdControlDto>().ReverseMap();
+
+            //Control
+            CreateMap<ControlEntity, GetAllControlsByStandardIdDto>().ReverseMap();
+
+            //Section
+            CreateMap<SectionEntity, CreateSectionDto>().ReverseMap();
+            CreateMap<SectionEntity, UpdateSectionDto>().ReverseMap();
+            CreateMap<SectionEntity, GetSectionByIdDto>().ReverseMap();
+            CreateMap<SectionEntity, GetAllSectionsByVersionIdDto>().ReverseMap();
+            CreateMap<SectionEntity, GetSectionsByVersionIdDto>().ReverseMap();
+
+            //Personal
+            CreateMap<PersonalEntity, CreatePersonalDto>().ReverseMap();
+            CreateMap<PersonalEntity, UpdatePersonalDto>().ReverseMap();
+            CreateMap<PersonalEntity, GetPersonalByIdDto>().ReverseMap();
+            CreateMap<PersonalEntity, GetAllPersonalsByCompanyIdDto>().ReverseMap();
+            CreateMap<PersonalEntity, GetPersonalsByCompanyIdDto>().ReverseMap();
+
+            //Creator
+            CreateMap<CreatorEntity, CreateCreatorDto>().ReverseMap();
+            CreateMap<CreatorEntity, UpdateCreatorDto>().ReverseMap();
+            CreateMap<CreatorEntity, GetAllCreatorsByVersionIdDto>().ReverseMap();
+            CreateMap<CreatorEntity, GetAllCreatorsByVersionIdDto>().ReverseMap();
+            CreateMap<PersonalEntity, GetAllCreatorsByVersionIdPersonalDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetAllCreatorsByVersionIdResponsibleDto>().ReverseMap();
+            CreateMap<CreatorEntity, GetCreatorByIdDto>().ReverseMap();
+
+            //Reviewer
+            CreateMap<ReviewerEntity, CreateReviewerDto>().ReverseMap();
+            CreateMap<ReviewerEntity, UpdateReviewerDto>().ReverseMap();
+            CreateMap<ReviewerEntity, GetReviewerByIdDto>().ReverseMap();
+            CreateMap<ReviewerEntity, GetAllReviewersByVersionIdDto>().ReverseMap();
+            CreateMap<PersonalEntity, GetAllReviewersByVersionIdPersonalDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetAllReviewersByVersionIdResponsibleDto>().ReverseMap();
+
+            //Approver
+            CreateMap<ApproverEntity, CreateApproverDto>().ReverseMap();
+            CreateMap<ApproverEntity, GetApproverByIdDto>().ReverseMap();
+            CreateMap<ApproverEntity, GetAllApproversByVersionIdDto>().ReverseMap();
+            CreateMap<PersonalEntity, GetAllApproversByVersionIdPersonalDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetAllApproversByVersionIdResponsibleDto>().ReverseMap();
 
         }
     }

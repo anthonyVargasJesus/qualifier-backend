@@ -33,6 +33,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByComp
                                           standardId = evaluation.standardId,
                                           standard = new StandardEntity { standardId = evaluation.standardId, name = standard.name },
                                       })
+                                      .OrderBy(x => x.startDate)
                                         .Skip(skip).Take(pageSize)
                                         .ToListAsync();
 

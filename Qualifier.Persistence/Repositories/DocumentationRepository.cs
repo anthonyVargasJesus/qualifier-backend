@@ -20,6 +20,7 @@ namespace Qualifier.Persistence.Repositories
             entry.Property(x => x.name).IsModified = true;
             entry.Property(x => x.description).IsModified = true;
             entry.Property(x => x.template).IsModified = true;
+            entry.Property(x => x.documentTypeId).IsModified = true;
             entry.Property(x => x.updateDate).IsModified = true;
             entry.Property(x => x.updateUserId).IsModified = true;
             await _context.SaveChangesAsync();

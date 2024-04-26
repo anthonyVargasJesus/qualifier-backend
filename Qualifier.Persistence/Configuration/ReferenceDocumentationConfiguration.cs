@@ -14,9 +14,9 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.name).IsRequired();
             entityBuilder.Property(x => x.documentationId).IsRequired();
 
-            entityBuilder.HasOne(x => x.documentation)
-            .WithMany(x => x.referenceDocumentations)
-            .HasForeignKey(x => x.documentationId);
+            //entityBuilder.HasOne(x => x.documentation)
+            //.WithMany(x => x.referenceDocumentations)
+            //.HasForeignKey(x => x.documentationId);
 
             //entityBuilder.HasOne(x => x.requirementEvaluation)
             //.WithMany(x => x.)

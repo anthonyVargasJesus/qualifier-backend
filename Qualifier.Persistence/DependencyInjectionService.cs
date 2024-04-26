@@ -29,6 +29,18 @@ namespace Qualifier.Persistence
             services.AddScoped<IEvaluationRepository, EvaluationRepository>();
             services.AddScoped<IRequirementEvaluationRepository, RequirementEvaluationRepository>();
             services.AddScoped<IControlEvaluationRepository, ControlEvaluationRepository>();
+            services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+            services.AddScoped<IDefaultSectionRepository, DefaultSectionRepository>();
+            services.AddScoped<IConfidentialityLevelRepository, ConfidentialityLevelRepository>();
+            services.AddScoped<IVersionRepository, VersionRepository>();
+            services.AddScoped<ISupportForRequirementRepository, SupportForRequirementRepository>();
+            services.AddScoped<ISupportForControlRepository, SupportForControlRepository>();
+            services.AddScoped<ISectionRepository, SectionRepository>();
+            services.AddScoped<IPersonalRepository, PersonalRepository>();
+            services.AddScoped<ICreatorRepository, CreatorRepository>();
+            services.AddScoped<IReviewerRepository, ReviewerRepository>();
+            services.AddScoped<IApproverRepository, ApproverRepository>();
+
 
             return services;
         }

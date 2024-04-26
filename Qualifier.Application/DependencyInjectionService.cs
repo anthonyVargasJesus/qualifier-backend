@@ -2,9 +2,16 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Qualifier.Application.Configuration;
+using Qualifier.Application.Database.ConfidentialityLevel.Commands.CreateConfidentialityLevel;
+using Qualifier.Application.Database.ConfidentialityLevel.Commands.DeleteConfidentialityLevel;
+using Qualifier.Application.Database.ConfidentialityLevel.Commands.UpdateConfidentialityLevel;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetAllConfidentialityLevelsByCompanyId;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelById;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelsByCompanyId;
 using Qualifier.Application.Database.Control.Commands.CreateControl;
 using Qualifier.Application.Database.Control.Commands.DeleteControl;
 using Qualifier.Application.Database.Control.Commands.UpdateControl;
+using Qualifier.Application.Database.Control.Queries.GetAllControlsByStandardId;
 using Qualifier.Application.Database.Control.Queries.GetControlById;
 using Qualifier.Application.Database.Control.Queries.GetControlsByControlGroupId;
 using Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation;
@@ -20,12 +27,30 @@ using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByS
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupById;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByCompanyId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
+using Qualifier.Application.Database.Creator.Commands.CreateCreator;
+using Qualifier.Application.Database.Creator.Commands.DeleteCreator;
+using Qualifier.Application.Database.Creator.Commands.UpdateCreator;
+using Qualifier.Application.Database.Creator.Queries.GetCreatorById;
+using Qualifier.Application.Database.Creator.Queries.GetAllCreatorsByVersionId;
+using Qualifier.Application.Database.DefaultSection.Commands.CreateDefaultSection;
+using Qualifier.Application.Database.DefaultSection.Commands.DeleteDefaultSection;
+using Qualifier.Application.Database.DefaultSection.Commands.UpdateDefaultSection;
+using Qualifier.Application.Database.DefaultSection.Queries.GetAllDefaultSectionsByDocumentTypeId;
+using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionById;
+using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionsByDocumentTypeId;
 using Qualifier.Application.Database.Documentation.Commands.CreateDocumentation;
 using Qualifier.Application.Database.Documentation.Commands.DeleteDocumentation;
 using Qualifier.Application.Database.Documentation.Commands.UpdateDocumentation;
 using Qualifier.Application.Database.Documentation.Queries.GetAllDocumentationsByStandardId;
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationById;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByCompanyId;
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByStandardId;
+using Qualifier.Application.Database.DocumentType.Commands.CreateDocumentType;
+using Qualifier.Application.Database.DocumentType.Commands.DeleteDocumentType;
+using Qualifier.Application.Database.DocumentType.Commands.UpdateDocumentType;
+using Qualifier.Application.Database.DocumentType.Queries.GetAllDocumentTypesByCompanyId;
+using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypeById;
+using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypesByCompanyId;
 using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
@@ -45,6 +70,12 @@ using Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLevel;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelById;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelsByCompanyId;
+using Qualifier.Application.Database.Personal.Commands.CreatePersonal;
+using Qualifier.Application.Database.Personal.Commands.DeletePersonal;
+using Qualifier.Application.Database.Personal.Commands.UpdatePersonal;
+using Qualifier.Application.Database.Personal.Queries.GetAllPersonalsByCompanyId;
+using Qualifier.Application.Database.Personal.Queries.GetPersonalById;
+using Qualifier.Application.Database.Personal.Queries.GetPersonalsByCompanyId;
 using Qualifier.Application.Database.Requirement.Commands.CreateRequirement;
 using Qualifier.Application.Database.Requirement.Commands.DeleteRequirement;
 using Qualifier.Application.Database.Requirement.Commands.UpdateRequirement;
@@ -63,14 +94,46 @@ using Qualifier.Application.Database.Responsible.Commands.UpdateResponsible;
 using Qualifier.Application.Database.Responsible.Queries.GetAllResponsiblesByStandardId;
 using Qualifier.Application.Database.Responsible.Queries.GetResponsibleById;
 using Qualifier.Application.Database.Responsible.Queries.GetResponsiblesByStandardId;
+using Qualifier.Application.Database.Reviewer.Commands.CreateReviewer;
+using Qualifier.Application.Database.Reviewer.Commands.DeleteReviewer;
+using Qualifier.Application.Database.Reviewer.Commands.UpdateReviewer;
+using Qualifier.Application.Database.Reviewer.Queries.GetAllReviewersByVersionId;
+using Qualifier.Application.Database.Reviewer.Queries.GetReviewerById;
+using Qualifier.Application.Database.Section.Commands.CreateSection;
+using Qualifier.Application.Database.Section.Commands.DeleteSection;
+using Qualifier.Application.Database.Section.Commands.UpdateSection;
+using Qualifier.Application.Database.Section.Queries.GetAllSectionsByVersionId;
+using Qualifier.Application.Database.Section.Queries.GetSectionById;
+using Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId;
 using Qualifier.Application.Database.Standard.Commands.CreateStandard;
 using Qualifier.Application.Database.Standard.Commands.DeleteStandard;
 using Qualifier.Application.Database.Standard.Commands.UpdateStandard;
 using Qualifier.Application.Database.Standard.Queries.GetAllStandardsByCompanyId;
 using Qualifier.Application.Database.Standard.Queries.GetStandardById;
 using Qualifier.Application.Database.Standard.Queries.GetStandardsByCompanyId;
+using Qualifier.Application.Database.SupportForControl.Commands.CreateSupportForControl;
+using Qualifier.Application.Database.SupportForControl.Commands.DeleteSupportForControl;
+using Qualifier.Application.Database.SupportForControl.Commands.UpdateSupportForControl;
+using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlById;
+using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlsByDocumentationId;
+using Qualifier.Application.Database.SupportForRequirement.Commands.CreateSupportForRequirement;
+using Qualifier.Application.Database.SupportForRequirement.Commands.DeleteSupportForRequirement;
+using Qualifier.Application.Database.SupportForRequirement.Commands.UpdateSupportForRequirement;
+using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementById;
+using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementsByDocumentationId;
 using Qualifier.Application.Database.User.Commands.Login;
 using Qualifier.Application.Database.User.Queries.GetMenus;
+using Qualifier.Application.Database.Version.Commands.CreateVersion;
+using Qualifier.Application.Database.Version.Commands.DeleteVersion;
+using Qualifier.Application.Database.Version.Commands.UpdateVersion;
+using Qualifier.Application.Database.Version.Queries.GetVersionById;
+using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
+using Qualifier.Application.Database.Approver.Commands.CreateApprover;
+using Qualifier.Application.Database.Approver.Commands.UpdateApprover;
+using Qualifier.Application.Database.Approver.Commands.DeleteApprover;
+using Qualifier.Application.Database.Approver.Queries.GetApproverById;
+using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
+using Qualifier.Application.Database.Version.Commands.CreateWordDocumento;
 
 
 namespace Qualifier.Application
@@ -181,7 +244,94 @@ namespace Qualifier.Application
             //dashboard
             services.AddTransient<IGetExcelDashboardQuery, GetExcelDashboardQuery>();
 
+            //DocumentType
+            services.AddTransient<ICreateDocumentTypeCommand, CreateDocumentTypeCommand>();
+            services.AddTransient<IUpdateDocumentTypeCommand, UpdateDocumentTypeCommand>();
+            services.AddTransient<IDeleteDocumentTypeCommand, DeleteDocumentTypeCommand>();
+            services.AddTransient<IGetDocumentTypeByIdQuery, GetDocumentTypeByIdQuery>();
+            services.AddTransient<IGetDocumentTypesByCompanyIdQuery, GetDocumentTypesByCompanyIdQuery>();
+            services.AddTransient<IGetAllDocumentTypesByCompanyIdQuery, GetAllDocumentTypesByCompanyIdQuery>();
+            
+            //DefaultSection
+            services.AddTransient<ICreateDefaultSectionCommand, CreateDefaultSectionCommand>();
+            services.AddTransient<IUpdateDefaultSectionCommand, UpdateDefaultSectionCommand>();
+            services.AddTransient<IDeleteDefaultSectionCommand, DeleteDefaultSectionCommand>();
+            services.AddTransient<IGetDefaultSectionByIdQuery, GetDefaultSectionByIdQuery>();
+            services.AddTransient<IGetAllDefaultSectionsByDocumentTypeIdQuery, GetAllDefaultSectionsByDocumentTypeIdQuery>();
+            services.AddTransient<IGetDefaultSectionsByDocumentTypeIdQuery, GetDefaultSectionsByDocumentTypeIdQuery>();
+            services.AddTransient<IGetDocumentationsByCompanyIdQuery, GetDocumentationsByCompanyIdQuery>();
+
+            //ConfidentialityLevel
+            services.AddTransient<ICreateConfidentialityLevelCommand, CreateConfidentialityLevelCommand>();
+            services.AddTransient<IUpdateConfidentialityLevelCommand, UpdateConfidentialityLevelCommand>();
+            services.AddTransient<IDeleteConfidentialityLevelCommand, DeleteConfidentialityLevelCommand>();
+            services.AddTransient<IGetConfidentialityLevelByIdQuery, GetConfidentialityLevelByIdQuery>();
+            services.AddTransient<IGetAllConfidentialityLevelsByCompanyIdQuery, GetAllConfidentialityLevelsByCompanyIdQuery>();
+            services.AddTransient<IGetConfidentialityLevelsByCompanyIdQuery, GetConfidentialityLevelsByCompanyIdQuery>();
+
+            //Version
+            services.AddTransient<ICreateVersionCommand, CreateVersionCommand>();
+            services.AddTransient<IUpdateVersionCommand, UpdateVersionCommand>();
+            services.AddTransient<IDeleteVersionCommand, DeleteVersionCommand>();
+            services.AddTransient<IGetVersionByIdQuery, GetVersionByIdQuery>();
+            services.AddTransient<IGetVersionsByDocumentationIdQuery, GetVersionsByDocumentationIdQuery>();
+
+            //SupportForRequirement
+            services.AddTransient<ICreateSupportForRequirementCommand, CreateSupportForRequirementCommand>();
+            services.AddTransient<IUpdateSupportForRequirementCommand, UpdateSupportForRequirementCommand>();
+            services.AddTransient<IGetSupportForRequirementByIdQuery, GetSupportForRequirementByIdQuery>();
+            services.AddTransient<IGetSupportForRequirementsByDocumentationIdQuery, GetSupportForRequirementsByDocumentationIdQuery>();
+            services.AddTransient<IDeleteSupportForRequirementCommand, DeleteSupportForRequirementCommand>();
+
+            //SupportForControl
+            services.AddTransient<ICreateSupportForControlCommand, CreateSupportForControlCommand>();
+            services.AddTransient<IUpdateSupportForControlCommand, UpdateSupportForControlCommand>();
+            services.AddTransient<IDeleteSupportForControlCommand, DeleteSupportForControlCommand>();
+            services.AddTransient<IGetSupportForControlByIdQuery, GetSupportForControlByIdQuery>();
+            services.AddTransient<IGetSupportForControlsByDocumentationIdQuery, GetSupportForControlsByDocumentationIdQuery>();
+
+            services.AddTransient<IGetAllControlsByStandardIdQuery, GetAllControlsByStandardIdQuery>();
+                   
+            //Section
+            services.AddTransient<ICreateSectionCommand, CreateSectionCommand>();
+            services.AddTransient<IUpdateSectionCommand, UpdateSectionCommand>();
+            services.AddTransient<IDeleteSectionCommand, DeleteSectionCommand>();
+            services.AddTransient<IGetSectionByIdQuery, GetSectionByIdQuery>();
+            services.AddTransient<IGetAllSectionsByVersionIdQuery, GetAllSectionsByVersionIdQuery>();
+            services.AddTransient<IGetSectionsByVersionIdQuery, GetSectionsByVersionIdQuery>();
+
+            //Personal
+            services.AddTransient<ICreatePersonalCommand, CreatePersonalCommand>();
+            services.AddTransient<IUpdatePersonalCommand, UpdatePersonalCommand>();
+            services.AddTransient<IDeletePersonalCommand, DeletePersonalCommand>();
+            services.AddTransient<IGetPersonalByIdQuery, GetPersonalByIdQuery>();
+            services.AddTransient<IGetAllPersonalsByCompanyIdQuery, GetAllPersonalsByCompanyIdQuery>();
+            services.AddTransient<IGetPersonalsByCompanyIdQuery, GetPersonalsByCompanyIdQuery>();
+
+            //Creator
+            services.AddTransient<ICreateCreatorCommand, CreateCreatorCommand>();
+            services.AddTransient<IUpdateCreatorCommand, UpdateCreatorCommand>();
+            services.AddTransient<IDeleteCreatorCommand, DeleteCreatorCommand>();
+            services.AddTransient<IGetAllCreatorsByVersionIdQuery, GetAllCreatorsByVersionIdQuery>();
+            services.AddTransient<IGetCreatorByIdQuery, GetCreatorByIdQuery>();
+
+            //Reviewer
+            services.AddTransient<ICreateReviewerCommand, CreateReviewerCommand>();
+            services.AddTransient<IUpdateReviewerCommand, UpdateReviewerCommand>();
+            services.AddTransient<IDeleteReviewerCommand, DeleteReviewerCommand>();
+            services.AddTransient<IGetReviewerByIdQuery, GetReviewerByIdQuery>();
+            services.AddTransient<IGetAllReviewersByVersionIdQuery, GetAllReviewersByVersionIdQuery>();
+
+            //Approver
+            services.AddTransient<ICreateApproverCommand, CreateApproverCommand>();
+            services.AddTransient<IUpdateApproverCommand, UpdateApproverCommand>();
+            services.AddTransient<IDeleteApproverCommand, DeleteApproverCommand>();
+            services.AddTransient<IGetApproverByIdQuery, GetApproverByIdQuery>();
+            services.AddTransient<IGetAllApproversByVersionIdQuery, GetAllApproversByVersionIdQuery>();
+            services.AddTransient<ICreateWordDocumentCommand, CreateWordDocumentCommand>();
+
             return services;
         }
+
     }
 }

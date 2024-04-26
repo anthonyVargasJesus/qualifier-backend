@@ -28,6 +28,7 @@ namespace Qualifier.Application.Database.Documentation.Queries.GetDocumentationB
                                         description = item.description,
                                         template = item.template,
                                         standardId = item.standardId,
+                                        documentTypeId = item.documentTypeId,
                                     }).FirstOrDefaultAsync();
 
                 return _mapper.Map<GetDocumentationByIdDto>(entity);

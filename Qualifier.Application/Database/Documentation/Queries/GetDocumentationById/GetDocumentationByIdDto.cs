@@ -7,7 +7,7 @@ namespace Qualifier.Application.Database.Documentation.Queries.GetDocumentationB
         public string description { get; set; }
         public string template { get; set; }
         public int standardId { get; set; }
-
+        public int documentTypeId { get; set; }
     }
 }
 

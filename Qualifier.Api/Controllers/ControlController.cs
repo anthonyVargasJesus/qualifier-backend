@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.Control.Commands.CreateControl;
 using Qualifier.Application.Database.Control.Commands.DeleteControl;
 using Qualifier.Application.Database.Control.Commands.UpdateControl;
+using Qualifier.Application.Database.Control.Queries.GetAllControlsByStandardId;
 using Qualifier.Application.Database.Control.Queries.GetControlById;
 using Qualifier.Application.Database.Control.Queries.GetControlsByControlGroupId;
+using Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsByStandardId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 
@@ -14,6 +16,18 @@ namespace Qualifier.Api.Controllers
     [ApiController]
     public class ControlController : ControllerBase
     {
+
+        [HttpGet("All")]
+        public async Task<IActionResult> GetAll(int standardId, [FromServices] IGetAllControlsByStandardIdQuery query)
+        {
+
+            var res = await query.Execute(standardId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
+
         [HttpGet()]
         public async Task<IActionResult> Get(int skip, int pageSize, string? search, int controlGroupId, [FromServices] IGetControlsByControlGroupIdQuery query)
         {

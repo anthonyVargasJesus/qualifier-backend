@@ -30,6 +30,7 @@ namespace Qualifier.Application.Database.Control.Queries.GetControlsByControlGro
                                           name = control.name,
                                           description = control.description,
                                       })
+                .OrderBy(x => x.number)
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();
 

@@ -43,8 +43,10 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
 
                 DateTime segundo = inicio.AddDays(50);
 
+                DateTime tercero = inicio.AddDays(75);
+
                 Console.WriteLine(primero);
-                Console.WriteLine(segundo);
+                Console.WriteLine(tercero);
 
 
 
