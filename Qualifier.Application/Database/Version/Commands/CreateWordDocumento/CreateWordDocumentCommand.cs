@@ -192,13 +192,13 @@ namespace Qualifier.Application.Database.Version.Commands.CreateWordDocumento
             //createTableText(outerTable, 2, 1, version.date.ToShortDateString(), 11, false, ParagraphAlignment.LEFT, "ffffff");
 
             // Establecer el borde para todas las celdas de la tabla
-            foreach (XWPFTableRow row in outerTable.Rows)
-            {
-                foreach (XWPFTableCell cell in row.GetTableCells())
-                {
-                    SetCellBorder(cell, "00FF00"); // Bordes verdes
-                }
-            }
+            //foreach (XWPFTableRow row in outerTable.Rows)
+            //{
+            //    foreach (XWPFTableCell cell in row.GetTableCells())
+            //    {
+            //        SetCellBorder(cell, "00FF00"); // Bordes verdes
+            //    }
+            //}
 
             //XWPFTableCell col1 = outerTable(0);
             //row1.MergeCells(1, 2);

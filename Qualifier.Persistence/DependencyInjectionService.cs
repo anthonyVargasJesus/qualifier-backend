@@ -40,7 +40,17 @@ namespace Qualifier.Persistence
             services.AddScoped<ICreatorRepository, CreatorRepository>();
             services.AddScoped<IReviewerRepository, ReviewerRepository>();
             services.AddScoped<IApproverRepository, ApproverRepository>();
-
+            services.AddScoped<IMacroprocessRepository, MacroprocessRepository>();
+            services.AddScoped<ISubprocessRepository, SubprocessRepository>();
+            services.AddScoped<IActiveTypeRepository, ActiveTypeRepository>();
+            services.AddScoped<IOwnerRepository, OwnerRepository>();
+            services.AddScoped<ICustodianRepository, CustodianRepository>();
+            services.AddScoped<IUsageClassificationRepository, UsageClassificationRepository>();
+            services.AddScoped<ISupportTypeRepository, SupportTypeRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IImpactValuationRepository, ImpactValuationRepository>();
+            services.AddScoped<IActivesInventoryRepository, ActivesInventoryRepository>();
+            services.AddScoped<IValuationInActiveRepository, ValuationInActiveRepository>();
 
             return services;
         }

@@ -36,6 +36,17 @@ namespace Qualifier.Application.Database
         DbSet<CreatorEntity> Creator { get; set; }
         DbSet<ReviewerEntity> Reviewer { get; set; }
         DbSet<ApproverEntity> Approver { get; set; }
+        DbSet<MacroprocessEntity> Macroprocess { get; set; }
+        DbSet<SubprocessEntity> Subprocess { get; set; }
+        DbSet<ActiveTypeEntity> ActiveType { get; set; }
+        DbSet<OwnerEntity> Owner { get; set; }
+        DbSet<CustodianEntity> Custodian { get; set; }
+        DbSet<UsageClassificationEntity> UsageClassification { get; set; }
+        DbSet<SupportTypeEntity> SupportType { get; set; }
+        DbSet<LocationEntity> Location { get; set; }
+        DbSet<ImpactValuationEntity> ImpactValuation { get; set; }
+        DbSet<ActivesInventoryEntity> ActivesInventory { get; set; }
+        DbSet<ValuationInActiveEntity> ValuationInActive { get; set; }
         Task<bool> SaveAsync();
     }
 }

@@ -28,7 +28,7 @@ namespace Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId
                                                  sectionId = section.sectionId,
                                                  numeration = section.numeration,
                                                  name = section.name,
-                                                 description = section.description,
+                                                 description =  (section.description == null) ? "" : section.description,
                                                  level = section.level,
                                                  parentId = section.parentId,
                                              }).ToListAsync();
@@ -46,7 +46,7 @@ namespace Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId
                                           sectionId = section.sectionId,
                                           numeration = section.numeration,
                                           name = section.name,
-                                          description = section.description,
+                                          description = (section.description == null) ? "" : section.description,
                                           level = section.level,
                                           parentId = section.parentId,
                                       })

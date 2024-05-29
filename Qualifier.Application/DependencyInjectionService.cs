@@ -134,6 +134,72 @@ using Qualifier.Application.Database.Approver.Commands.DeleteApprover;
 using Qualifier.Application.Database.Approver.Queries.GetApproverById;
 using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
 using Qualifier.Application.Database.Version.Commands.CreateWordDocumento;
+using Qualifier.Application.Database.Macroprocess.Commands.CreateMacroprocess;
+using Qualifier.Application.Database.Macroprocess.Commands.UpdateMacroprocess;
+using Qualifier.Application.Database.Macroprocess.Commands.DeleteMacroprocess;
+using Qualifier.Application.Database.Macroprocess.Queries.GetMacroprocessById;
+using Qualifier.Application.Database.Macroprocess.Queries.GetAllMacroprocesssByCompanyId;
+using Qualifier.Application.Database.Macroprocess.Queries.GetMacroprocesssByCompanyId;
+using Qualifier.Application.Database.Subprocess.Commands.CreateSubprocess;
+using Qualifier.Application.Database.Subprocess.Commands.UpdateSubprocess;
+using Qualifier.Application.Database.Subprocess.Commands.DeleteSubprocess;
+using Qualifier.Application.Database.Subprocess.Queries.GetSubprocesssByCompanyId;
+using Qualifier.Application.Database.Subprocess.Queries.GetAllSubprocesssByCompanyId;
+using Qualifier.Application.Database.Subprocess.Queries.GetSubprocessById;
+using Qualifier.Application.Database.ActiveType.Commands.CreateActiveType;
+using Qualifier.Application.Database.ActiveType.Commands.UpdateActiveType;
+using Qualifier.Application.Database.ActiveType.Commands.DeleteActiveType;
+using Qualifier.Application.Database.ActiveType.Queries.GetActiveTypeById;
+using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompanyId;
+using Qualifier.Application.Database.ActiveType.Queries.GetActiveTypesByCompanyId;
+using Qualifier.Application.Database.Owner.Commands.CreateOwner;
+using Qualifier.Application.Database.Owner.Commands.UpdateOwner;
+using Qualifier.Application.Database.Owner.Queries.GetOwnerById;
+using Qualifier.Application.Database.Owner.Queries.GetAllOwnersByCompanyId;
+using Qualifier.Application.Database.Owner.Queries.GetOwnersByCompanyId;
+using Qualifier.Application.Database.Owner.Commands.DeleteOwner;
+using Qualifier.Application.Database.Custodian.Commands.CreateCustodian;
+using Qualifier.Application.Database.Custodian.Commands.UpdateCustodian;
+using Qualifier.Application.Database.Custodian.Commands.DeleteCustodian;
+using Qualifier.Application.Database.Custodian.Queries.GetCustodianById;
+using Qualifier.Application.Database.Custodian.Queries.GetAllCustodiansByCompanyId;
+using Qualifier.Application.Database.Custodian.Queries.GetCustodiansByCompanyId;
+using Qualifier.Application.Database.UsageClassification.Commands.DeleteUsageClassification;
+using Qualifier.Application.Database.UsageClassification.Commands.CreateUsageClassification;
+using Qualifier.Application.Database.UsageClassification.Commands.UpdateUsageClassification;
+using Qualifier.Application.Database.UsageClassification.Queries.GetUsageClassificationById;
+using Qualifier.Application.Database.UsageClassification.Queries.GetAllUsageClassificationsByCompanyId;
+using Qualifier.Application.Database.UsageClassification.Queries.GetUsageClassificationsByCompanyId;
+using Qualifier.Application.Database.SupportType.Commands.CreateSupportType;
+using Qualifier.Application.Database.SupportType.Commands.DeleteSupportType;
+using Qualifier.Application.Database.SupportType.Commands.UpdateSupportType;
+using Qualifier.Application.Database.SupportType.Queries.GetSupportTypeById;
+using Qualifier.Application.Database.SupportType.Queries.GetAllSupportTypesByCompanyId;
+using Qualifier.Application.Database.SupportType.Queries.GetSupportTypesByCompanyId;
+using Qualifier.Application.Database.Location.Commands.CreateLocation;
+using Qualifier.Application.Database.Location.Commands.DeleteLocation;
+using Qualifier.Application.Database.Location.Commands.UpdateLocation;
+using Qualifier.Application.Database.Location.Queries.GetAllLocationsByCompanyId;
+using Qualifier.Application.Database.Location.Queries.GetLocationById;
+using Qualifier.Application.Database.Location.Queries.GetLocationsByCompanyId;
+using Qualifier.Application.Database.ImpactValuation.Commands.CreateImpactValuation;
+using Qualifier.Application.Database.ImpactValuation.Commands.DeleteImpactValuation;
+using Qualifier.Application.Database.ImpactValuation.Commands.UpdateImpactValuation;
+using Qualifier.Application.Database.ImpactValuation.Queries.GetAllImpactValuationsByCompanyId;
+using Qualifier.Application.Database.ImpactValuation.Queries.GetImpactValuationById;
+using Qualifier.Application.Database.ImpactValuation.Queries.GetImpactValuationsByCompanyId;
+using Qualifier.Application.Database.ActivesInventory.Commands.CreateActivesInventory;
+using Qualifier.Application.Database.ActivesInventory.Commands.DeleteActivesInventory;
+using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInventory;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoryById;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
+using Qualifier.Application.Database.ValuationInActive.Commands.CreateValuationInActive;
+using Qualifier.Application.Database.ValuationInActive.Commands.UpdateValuationInActive;
+using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActivesByActivesInventoryId;
+using Qualifier.Application.Database.ValuationInActive.Commands.DeleteValuationInActive;
+using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActiveById;
+using Qualifier.Application.Database.ValuationInActive.Queries.GetAllValuationInActivesByCompanyId;
+
 
 
 namespace Qualifier.Application
@@ -329,6 +395,93 @@ namespace Qualifier.Application
             services.AddTransient<IGetApproverByIdQuery, GetApproverByIdQuery>();
             services.AddTransient<IGetAllApproversByVersionIdQuery, GetAllApproversByVersionIdQuery>();
             services.AddTransient<ICreateWordDocumentCommand, CreateWordDocumentCommand>();
+
+            //Macroprocess
+            services.AddTransient<ICreateMacroprocessCommand, CreateMacroprocessCommand>();
+            services.AddTransient<IUpdateMacroprocessCommand, UpdateMacroprocessCommand>();
+            services.AddTransient<IDeleteMacroprocessCommand, DeleteMacroprocessCommand>();
+            services.AddTransient<IGetMacroprocessByIdQuery, GetMacroprocessByIdQuery>();
+            services.AddTransient<IGetAllMacroprocesssByCompanyIdQuery, GetAllMacroprocesssByCompanyIdQuery>();
+            services.AddTransient<IGetMacroprocesssByCompanyIdQuery, GetMacroprocesssByCompanyIdQuery>();
+
+            //Subprocess
+            services.AddTransient<ICreateSubprocessCommand, CreateSubprocessCommand>();
+            services.AddTransient<IUpdateSubprocessCommand, UpdateSubprocessCommand>();
+            services.AddTransient<IDeleteSubprocessCommand, DeleteSubprocessCommand>();
+            services.AddTransient<IGetSubprocesssByCompanyIdQuery, GetSubprocesssByCompanyIdQuery>();
+            services.AddTransient<IGetAllSubprocesssByCompanyIdQuery, GetAllSubprocesssByCompanyIdQuery>();
+            services.AddTransient<IGetSubprocessByIdQuery, GetSubprocessByIdQuery>();
+
+            //ActiveType
+            services.AddTransient<ICreateActiveTypeCommand, CreateActiveTypeCommand>();
+            services.AddTransient<IUpdateActiveTypeCommand, UpdateActiveTypeCommand>();
+            services.AddTransient<IDeleteActiveTypeCommand, DeleteActiveTypeCommand>();
+            services.AddTransient<IGetActiveTypeByIdQuery, GetActiveTypeByIdQuery>();
+            services.AddTransient<IGetAllActiveTypesByCompanyIdQuery, GetAllActiveTypesByCompanyIdQuery>();
+            services.AddTransient<IGetActiveTypesByCompanyIdQuery, GetActiveTypesByCompanyIdQuery>();
+
+            //Owner
+            services.AddTransient<ICreateOwnerCommand, CreateOwnerCommand>();
+            services.AddTransient<IUpdateOwnerCommand, UpdateOwnerCommand>();
+            services.AddTransient<IGetOwnerByIdQuery, GetOwnerByIdQuery>();
+            services.AddTransient<IDeleteOwnerCommand, DeleteOwnerCommand>();
+            services.AddTransient<IGetAllOwnersByCompanyIdQuery, GetAllOwnersByCompanyIdQuery>();
+            services.AddTransient<IGetOwnersByCompanyIdQuery, GetOwnersByCompanyIdQuery>();
+
+            //Custodian
+            services.AddTransient<ICreateCustodianCommand, CreateCustodianCommand>();
+            services.AddTransient<IUpdateCustodianCommand, UpdateCustodianCommand>();
+            services.AddTransient<IDeleteCustodianCommand, DeleteCustodianCommand>();
+            services.AddTransient<IGetCustodianByIdQuery, GetCustodianByIdQuery>();
+            services.AddTransient<IGetAllCustodiansByCompanyIdQuery, GetAllCustodiansByCompanyIdQuery>();
+            services.AddTransient<IGetCustodiansByCompanyIdQuery, GetCustodiansByCompanyIdQuery>();
+
+            //UsageClassification
+            services.AddTransient<ICreateUsageClassificationCommand, CreateUsageClassificationCommand>();
+            services.AddTransient<IDeleteUsageClassificationCommand, DeleteUsageClassificationCommand>();
+            services.AddTransient<IUpdateUsageClassificationCommand, UpdateUsageClassificationCommand>();
+            services.AddTransient<IGetUsageClassificationByIdQuery, GetUsageClassificationByIdQuery>();
+            services.AddTransient<IGetAllUsageClassificationsByCompanyIdQuery, GetAllUsageClassificationsByCompanyIdQuery>();
+            services.AddTransient<IGetUsageClassificationsByCompanyIdQuery, GetUsageClassificationsByCompanyIdQuery>();
+
+            //SupportType
+            services.AddTransient<ICreateSupportTypeCommand, CreateSupportTypeCommand>();
+            services.AddTransient<IUpdateSupportTypeCommand, UpdateSupportTypeCommand>();
+            services.AddTransient<IDeleteSupportTypeCommand, DeleteSupportTypeCommand>();
+            services.AddTransient<IGetSupportTypeByIdQuery, GetSupportTypeByIdQuery>();
+            services.AddTransient<IGetAllSupportTypesByCompanyIdQuery, GetAllSupportTypesByCompanyIdQuery>();
+            services.AddTransient<IGetSupportTypesByCompanyIdQuery, GetSupportTypesByCompanyIdQuery>();
+
+            //Location
+            services.AddTransient<ICreateLocationCommand, CreateLocationCommand>();
+            services.AddTransient<IUpdateLocationCommand, UpdateLocationCommand>();
+            services.AddTransient<IDeleteLocationCommand, DeleteLocationCommand>();
+            services.AddTransient<IGetLocationByIdQuery, GetLocationByIdQuery>();
+            services.AddTransient<IGetAllLocationsByCompanyIdQuery, GetAllLocationsByCompanyIdQuery>();
+            services.AddTransient<IGetLocationsByCompanyIdQuery, GetLocationsByCompanyIdQuery>();
+
+            //ImpactValuation
+            services.AddTransient<ICreateImpactValuationCommand, CreateImpactValuationCommand>();
+            services.AddTransient<IUpdateImpactValuationCommand, UpdateImpactValuationCommand>();
+            services.AddTransient<IDeleteImpactValuationCommand, DeleteImpactValuationCommand>();
+            services.AddTransient<IGetImpactValuationByIdQuery, GetImpactValuationByIdQuery>();
+            services.AddTransient<IGetAllImpactValuationsByCompanyIdQuery, GetAllImpactValuationsByCompanyIdQuery>();
+            services.AddTransient<IGetImpactValuationsByCompanyIdQuery, GetImpactValuationsByCompanyIdQuery>();
+
+            //ActivesInventory
+            services.AddTransient<ICreateActivesInventoryCommand, CreateActivesInventoryCommand>();
+            services.AddTransient<IUpdateActivesInventoryCommand, UpdateActivesInventoryCommand>();
+            services.AddTransient<IDeleteActivesInventoryCommand, DeleteActivesInventoryCommand>();
+            services.AddTransient<IGetActivesInventoryByIdQuery, GetActivesInventoryByIdQuery>();
+            services.AddTransient<IGetActivesInventoriesByCompanyIdQuery, GetActivesInventoriesByCompanyIdQuery>();
+
+            //ValuationInActive
+            services.AddTransient<ICreateValuationInActiveCommand, CreateValuationInActiveCommand>();
+            services.AddTransient<IUpdateValuationInActiveCommand, UpdateValuationInActiveCommand>();
+            services.AddTransient<IDeleteValuationInActiveCommand, DeleteValuationInActiveCommand>();
+            services.AddTransient<IGetValuationInActiveByIdQuery, GetValuationInActiveByIdQuery>();
+            services.AddTransient<IGetAllValuationInActivesByCompanyIdQuery, GetAllValuationInActivesByCompanyIdQuery>();
+            services.AddTransient<IGetValuationInActivesByActivesInventoryIdQuery, GetValuationInActivesByActivesInventoryIdQuery>();
 
             return services;
         }

@@ -43,9 +43,18 @@ namespace Qualifier.Persistence.Database
         public DbSet<CreatorEntity> Creator { get; set; }
         public DbSet<ReviewerEntity> Reviewer { get; set; }
         public DbSet<ApproverEntity> Approver { get; set; }
-
-
-
+        public DbSet<MacroprocessEntity> Macroprocess { get; set; }
+        public DbSet<SubprocessEntity> Subprocess { get; set; }
+        public DbSet<ActiveTypeEntity> ActiveType { get; set; }
+        public DbSet<OwnerEntity> Owner { get; set; }
+        public DbSet<CustodianEntity> Custodian { get; set; }
+        public DbSet<UsageClassificationEntity> UsageClassification { get; set; }
+        public DbSet<SupportTypeEntity> SupportType { get; set; }
+        public DbSet<LocationEntity> Location { get; set; }
+        public DbSet<ImpactValuationEntity> ImpactValuation { get; set; }
+        public DbSet<ActivesInventoryEntity> ActivesInventory { get; set; }
+        public DbSet<ValuationInActiveEntity> ValuationInActive { get; set; }
+  
         public async Task<bool> SaveAsync()
         {
 
@@ -62,7 +71,6 @@ namespace Qualifier.Persistence.Database
         {
             new MaturityLevelConfiguration(modelBuilder.Entity<MaturityLevelEntity>());
             new IndicatorConfiguration(modelBuilder.Entity<IndicatorEntity>());
-
             new RoleConfiguration(modelBuilder.Entity<RoleEntity>());
             new RoleInUserConfiguration(modelBuilder.Entity<RoleInUserEntity>());
             new MenuConfiguration(modelBuilder.Entity<MenuEntity>());
@@ -92,8 +100,17 @@ namespace Qualifier.Persistence.Database
             new CreatorConfiguration(modelBuilder.Entity<CreatorEntity>());
             new ReviewerConfiguration(modelBuilder.Entity<ReviewerEntity>());
             new ApproverConfiguration(modelBuilder.Entity<ApproverEntity>());
-
-
+            new MacroprocessConfiguration(modelBuilder.Entity<MacroprocessEntity>());
+            new SubprocessConfiguration(modelBuilder.Entity<SubprocessEntity>());
+            new ActiveTypeConfiguration(modelBuilder.Entity<ActiveTypeEntity>());
+            new OwnerConfiguration(modelBuilder.Entity<OwnerEntity>());
+            new CustodianConfiguration(modelBuilder.Entity<CustodianEntity>());
+            new UsageClassificationConfiguration(modelBuilder.Entity<UsageClassificationEntity>());
+            new SupportTypeConfiguration(modelBuilder.Entity<SupportTypeEntity>());
+            new LocationConfiguration(modelBuilder.Entity<LocationEntity>());
+            new ImpactValuationConfiguration(modelBuilder.Entity<ImpactValuationEntity>());
+            new ActivesInventoryConfiguration(modelBuilder.Entity<ActivesInventoryEntity>());
+            new ValuationInActiveConfiguration(modelBuilder.Entity<ValuationInActiveEntity>());
         }
 
     }

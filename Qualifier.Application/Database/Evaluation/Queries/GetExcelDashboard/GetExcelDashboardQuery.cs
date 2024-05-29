@@ -36,9 +36,9 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
             try
             {
 
-                DateTime inicio = new DateTime(2024, 02, 13);
+                DateTime inicio = new DateTime(2024, 04, 30);
 
-                DateTime primero = inicio.AddDays(20);
+                DateTime primero = inicio.AddDays(25);
 
 
                 DateTime segundo = inicio.AddDays(50);

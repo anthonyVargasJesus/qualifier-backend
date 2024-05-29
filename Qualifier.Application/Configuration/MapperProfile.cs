@@ -1,115 +1,168 @@
 ﻿using AutoMapper;
-using Qualifier.Domain.Entities;
-using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelById;
-using Qualifier.Application.Database.MaturityLevel.Commands.CreateMaturityLevel;
-using Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLevel;
-using Qualifier.Application.Database.Indicator.Commands.CreateIndicator;
-using Qualifier.Application.Database.Indicator.Commands.UpdateIndicator;
-using Qualifier.Application.Database.Indicator.Queries.GetIndicatorById;
-using Qualifier.Application.Database.Indicator.Queries.GetIndicatorsByCompanyId;
-using Qualifier.Application.Database.User.Commands.Login;
-using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelsByCompanyId;
-using Qualifier.Application.Database.User.Queries.GetMenus;
-using Qualifier.Application.Database.Standard.Commands.CreateStandard;
-using Qualifier.Application.Database.Standard.Commands.UpdateStandard;
-using Qualifier.Application.Database.Standard.Queries.GetStandardById;
-using Qualifier.Application.Database.Standard.Queries.GetStandardsByCompanyId;
-using Qualifier.Application.Database.Standard.Queries.GetAllStandardsByCompanyId;
+using Qualifier.Application.Database.ActivesInventory.Commands.CreateActivesInventory;
+using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInventory;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoryById;
+using Qualifier.Application.Database.ActiveType.Commands.CreateActiveType;
+using Qualifier.Application.Database.ActiveType.Commands.UpdateActiveType;
+using Qualifier.Application.Database.ActiveType.Queries.GetActiveTypeById;
+using Qualifier.Application.Database.ActiveType.Queries.GetActiveTypesByCompanyId;
+using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompanyId;
+using Qualifier.Application.Database.Approver.Commands.CreateApprover;
+using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
+using Qualifier.Application.Database.Approver.Queries.GetApproverById;
+using Qualifier.Application.Database.ConfidentialityLevel.Commands.CreateConfidentialityLevel;
+using Qualifier.Application.Database.ConfidentialityLevel.Commands.UpdateConfidentialityLevel;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetAllConfidentialityLevelsByCompanyId;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelById;
+using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelsByCompanyId;
+using Qualifier.Application.Database.Control.Commands.CreateControl;
+using Qualifier.Application.Database.Control.Commands.UpdateControl;
+using Qualifier.Application.Database.Control.Queries.GetAllControlsByStandardId;
+using Qualifier.Application.Database.Control.Queries.GetControlById;
+using Qualifier.Application.Database.Control.Queries.GetControlsByControlGroupId;
+using Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation;
+using Qualifier.Application.Database.ControlEvaluation.Commands.UpdateControlEvaluation;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationById;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
 using Qualifier.Application.Database.ControlGroup.Commands.CreateControlGroup;
 using Qualifier.Application.Database.ControlGroup.Commands.UpdateControlGroup;
 using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByCompanyId;
-using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByCompanyId;
-using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupById;
-using Qualifier.Application.Database.Control.Commands.UpdateControl;
-using Qualifier.Application.Database.Control.Commands.CreateControl;
-using Qualifier.Application.Database.Control.Queries.GetControlsByControlGroupId;
-using Qualifier.Application.Database.Control.Queries.GetControlById;
-using Qualifier.Application.Database.Requirement.Commands.CreateRequirement;
-using Qualifier.Application.Database.Requirement.Commands.UpdateRequirement;
-using Qualifier.Application.Database.Requirement.Queries.GetRequirementsByStandardId;
-using Qualifier.Application.Database.Requirement.Queries.GetRequirementById;
-using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByStandardId;
-using Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsByStandardId;
-using Qualifier.Application.Database.Responsible.Commands.UpdateResponsible;
-using Qualifier.Application.Database.Responsible.Commands.CreateResponsible;
-using Qualifier.Application.Database.Responsible.Queries.GetResponsiblesByStandardId;
-using Qualifier.Application.Database.Responsible.Queries.GetResponsibleById;
-using Qualifier.Application.Database.Documentation.Queries.GetDocumentationById;
-using Qualifier.Application.Database.Documentation.Commands.CreateDocumentation;
-using Qualifier.Application.Database.Documentation.Commands.UpdateDocumentation;
-using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
-using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
-using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
-using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
-using Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRequirementEvaluation;
-using Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRequirementEvaluation;
-using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationsByRequirementId;
-using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationById;
-using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
-using Qualifier.Application.Database.Responsible.Queries.GetAllResponsiblesByStandardId;
-using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
-using Qualifier.Application.Database.Documentation.Queries.GetAllDocumentationsByStandardId;
-using Qualifier.Application.Database.ControlEvaluation.Commands.UpdateControlEvaluation;
-using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationById;
-using Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation;
-using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
-using static Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation.CreateControlEvaluationDto;
-using static Qualifier.Application.Database.ControlEvaluation.Commands.UpdateControlEvaluation.UpdateControlEvaluationDto;
-using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
-using Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard;
-using Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard;
-using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByStandardId;
-using Qualifier.Application.Database.DocumentType.Commands.CreateDocumentType;
-using Qualifier.Application.Database.DocumentType.Commands.UpdateDocumentType;
-using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypeById;
-using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypesByCompanyId;
-using Qualifier.Application.Database.DocumentType.Queries.GetAllDocumentTypesByCompanyId;
-using Qualifier.Application.Database.DefaultSection.Commands.CreateDefaultSection;
-using Qualifier.Application.Database.DefaultSection.Commands.UpdateDefaultSection;
-using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionById;
-using Qualifier.Application.Database.DefaultSection.Queries.GetAllDefaultSectionsByDocumentTypeId;
-using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionsByDocumentTypeId;
-using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByCompanyId;
-using Qualifier.Application.Database.ConfidentialityLevel.Commands.CreateConfidentialityLevel;
-using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelById;
-using Qualifier.Application.Database.ConfidentialityLevel.Commands.UpdateConfidentialityLevel;
-using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetAllConfidentialityLevelsByCompanyId;
-using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetConfidentialityLevelsByCompanyId;
-using Qualifier.Application.Database.Version.Commands.CreateVersion;
-using Qualifier.Application.Database.Version.Queries.GetVersionById;
-using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
-using Qualifier.Application.Database.Version.Commands.UpdateVersion;
-using Qualifier.Application.Database.SupportForRequirement.Commands.CreateSupportForRequirement;
-using Qualifier.Application.Database.SupportForRequirement.Commands.UpdateSupportForRequirement;
-using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementById;
-using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementsByDocumentationId;
-using Qualifier.Application.Database.SupportForControl.Commands.CreateSupportForControl;
-using Qualifier.Application.Database.SupportForControl.Commands.UpdateSupportForControl;
-using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlsByDocumentationId;
-using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlById;
-using Qualifier.Application.Database.Control.Queries.GetAllControlsByStandardId;
-using Qualifier.Application.Database.Section.Commands.CreateSection;
-using Qualifier.Application.Database.Section.Commands.UpdateSection;
-using Qualifier.Application.Database.Section.Queries.GetSectionById;
-using Qualifier.Application.Database.Section.Queries.GetAllSectionsByVersionId;
-using Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId;
-using Qualifier.Application.Database.Personal.Commands.CreatePersonal;
-using Qualifier.Application.Database.Personal.Commands.UpdatePersonal;
-using Qualifier.Application.Database.Personal.Queries.GetPersonalById;
-using Qualifier.Application.Database.Personal.Queries.GetAllPersonalsByCompanyId;
-using Qualifier.Application.Database.Personal.Queries.GetPersonalsByCompanyId;
+using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupById;
+using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByCompanyId;
+using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
 using Qualifier.Application.Database.Creator.Commands.CreateCreator;
 using Qualifier.Application.Database.Creator.Commands.UpdateCreator;
 using Qualifier.Application.Database.Creator.Queries.GetAllCreatorsByVersionId;
 using Qualifier.Application.Database.Creator.Queries.GetCreatorById;
+using Qualifier.Application.Database.Custodian.Commands.CreateCustodian;
+using Qualifier.Application.Database.Custodian.Commands.UpdateCustodian;
+using Qualifier.Application.Database.Custodian.Queries.GetAllCustodiansByCompanyId;
+using Qualifier.Application.Database.Custodian.Queries.GetCustodianById;
+using Qualifier.Application.Database.Custodian.Queries.GetCustodiansByCompanyId;
+using Qualifier.Application.Database.DefaultSection.Commands.CreateDefaultSection;
+using Qualifier.Application.Database.DefaultSection.Commands.UpdateDefaultSection;
+using Qualifier.Application.Database.DefaultSection.Queries.GetAllDefaultSectionsByDocumentTypeId;
+using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionById;
+using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionsByDocumentTypeId;
+using Qualifier.Application.Database.Documentation.Commands.CreateDocumentation;
+using Qualifier.Application.Database.Documentation.Commands.UpdateDocumentation;
+using Qualifier.Application.Database.Documentation.Queries.GetAllDocumentationsByStandardId;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationById;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByCompanyId;
+using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByStandardId;
+using Qualifier.Application.Database.DocumentType.Commands.CreateDocumentType;
+using Qualifier.Application.Database.DocumentType.Commands.UpdateDocumentType;
+using Qualifier.Application.Database.DocumentType.Queries.GetAllDocumentTypesByCompanyId;
+using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypeById;
+using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypesByCompanyId;
+using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
+using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
+using Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
+using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
+using Qualifier.Application.Database.ImpactValuation.Commands.CreateImpactValuation;
+using Qualifier.Application.Database.ImpactValuation.Commands.UpdateImpactValuation;
+using Qualifier.Application.Database.ImpactValuation.Queries.GetAllImpactValuationsByCompanyId;
+using Qualifier.Application.Database.ImpactValuation.Queries.GetImpactValuationById;
+using Qualifier.Application.Database.ImpactValuation.Queries.GetImpactValuationsByCompanyId;
+using Qualifier.Application.Database.Indicator.Commands.CreateIndicator;
+using Qualifier.Application.Database.Indicator.Commands.UpdateIndicator;
+using Qualifier.Application.Database.Indicator.Queries.GetIndicatorById;
+using Qualifier.Application.Database.Indicator.Queries.GetIndicatorsByCompanyId;
+using Qualifier.Application.Database.Location.Commands.CreateLocation;
+using Qualifier.Application.Database.Location.Commands.UpdateLocation;
+using Qualifier.Application.Database.Location.Queries.GetAllLocationsByCompanyId;
+using Qualifier.Application.Database.Location.Queries.GetLocationById;
+using Qualifier.Application.Database.Location.Queries.GetLocationsByCompanyId;
+using Qualifier.Application.Database.Macroprocess.Commands.CreateMacroprocess;
+using Qualifier.Application.Database.Macroprocess.Commands.UpdateMacroprocess;
+using Qualifier.Application.Database.Macroprocess.Queries.GetAllMacroprocesssByCompanyId;
+using Qualifier.Application.Database.Macroprocess.Queries.GetMacroprocessById;
+using Qualifier.Application.Database.Macroprocess.Queries.GetMacroprocesssByCompanyId;
+using Qualifier.Application.Database.MaturityLevel.Commands.CreateMaturityLevel;
+using Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLevel;
+using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
+using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelById;
+using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelsByCompanyId;
+using Qualifier.Application.Database.Owner.Commands.CreateOwner;
+using Qualifier.Application.Database.Owner.Commands.UpdateOwner;
+using Qualifier.Application.Database.Owner.Queries.GetAllOwnersByCompanyId;
+using Qualifier.Application.Database.Owner.Queries.GetOwnerById;
+using Qualifier.Application.Database.Owner.Queries.GetOwnersByCompanyId;
+using Qualifier.Application.Database.Personal.Commands.CreatePersonal;
+using Qualifier.Application.Database.Personal.Commands.UpdatePersonal;
+using Qualifier.Application.Database.Personal.Queries.GetAllPersonalsByCompanyId;
+using Qualifier.Application.Database.Personal.Queries.GetPersonalById;
+using Qualifier.Application.Database.Personal.Queries.GetPersonalsByCompanyId;
+using Qualifier.Application.Database.Requirement.Commands.CreateRequirement;
+using Qualifier.Application.Database.Requirement.Commands.UpdateRequirement;
+using Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsByStandardId;
+using Qualifier.Application.Database.Requirement.Queries.GetRequirementById;
+using Qualifier.Application.Database.Requirement.Queries.GetRequirementsByStandardId;
+using Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRequirementEvaluation;
+using Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRequirementEvaluation;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationById;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationsByRequirementId;
+using Qualifier.Application.Database.Responsible.Commands.CreateResponsible;
+using Qualifier.Application.Database.Responsible.Commands.UpdateResponsible;
+using Qualifier.Application.Database.Responsible.Queries.GetAllResponsiblesByStandardId;
+using Qualifier.Application.Database.Responsible.Queries.GetResponsibleById;
+using Qualifier.Application.Database.Responsible.Queries.GetResponsiblesByStandardId;
 using Qualifier.Application.Database.Reviewer.Commands.CreateReviewer;
 using Qualifier.Application.Database.Reviewer.Commands.UpdateReviewer;
-using Qualifier.Application.Database.Reviewer.Queries.GetReviewerById;
 using Qualifier.Application.Database.Reviewer.Queries.GetAllReviewersByVersionId;
-using Qualifier.Application.Database.Approver.Commands.CreateApprover;
-using Qualifier.Application.Database.Approver.Queries.GetApproverById;
-using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
+using Qualifier.Application.Database.Reviewer.Queries.GetReviewerById;
+using Qualifier.Application.Database.Section.Commands.CreateSection;
+using Qualifier.Application.Database.Section.Commands.UpdateSection;
+using Qualifier.Application.Database.Section.Queries.GetAllSectionsByVersionId;
+using Qualifier.Application.Database.Section.Queries.GetSectionById;
+using Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId;
+using Qualifier.Application.Database.Standard.Commands.CreateStandard;
+using Qualifier.Application.Database.Standard.Commands.UpdateStandard;
+using Qualifier.Application.Database.Standard.Queries.GetAllStandardsByCompanyId;
+using Qualifier.Application.Database.Standard.Queries.GetStandardById;
+using Qualifier.Application.Database.Standard.Queries.GetStandardsByCompanyId;
+using Qualifier.Application.Database.Subprocess.Commands.CreateSubprocess;
+using Qualifier.Application.Database.Subprocess.Commands.UpdateSubprocess;
+using Qualifier.Application.Database.Subprocess.Queries.GetAllSubprocesssByCompanyId;
+using Qualifier.Application.Database.Subprocess.Queries.GetSubprocessById;
+using Qualifier.Application.Database.Subprocess.Queries.GetSubprocesssByCompanyId;
+using Qualifier.Application.Database.SupportForControl.Commands.CreateSupportForControl;
+using Qualifier.Application.Database.SupportForControl.Commands.UpdateSupportForControl;
+using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlById;
+using Qualifier.Application.Database.SupportForControl.Queries.GetSupportForControlsByDocumentationId;
+using Qualifier.Application.Database.SupportForRequirement.Commands.CreateSupportForRequirement;
+using Qualifier.Application.Database.SupportForRequirement.Commands.UpdateSupportForRequirement;
+using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementById;
+using Qualifier.Application.Database.SupportForRequirement.Queries.GetSupportForRequirementsByDocumentationId;
+using Qualifier.Application.Database.SupportType.Commands.CreateSupportType;
+using Qualifier.Application.Database.SupportType.Commands.UpdateSupportType;
+using Qualifier.Application.Database.SupportType.Queries.GetAllSupportTypesByCompanyId;
+using Qualifier.Application.Database.SupportType.Queries.GetSupportTypeById;
+using Qualifier.Application.Database.SupportType.Queries.GetSupportTypesByCompanyId;
+using Qualifier.Application.Database.UsageClassification.Commands.CreateUsageClassification;
+using Qualifier.Application.Database.UsageClassification.Commands.UpdateUsageClassification;
+using Qualifier.Application.Database.UsageClassification.Queries.GetAllUsageClassificationsByCompanyId;
+using Qualifier.Application.Database.UsageClassification.Queries.GetUsageClassificationById;
+using Qualifier.Application.Database.UsageClassification.Queries.GetUsageClassificationsByCompanyId;
+using Qualifier.Application.Database.User.Commands.Login;
+using Qualifier.Application.Database.User.Queries.GetMenus;
+using Qualifier.Application.Database.ValuationInActive.Commands.CreateValuationInActive;
+using Qualifier.Application.Database.ValuationInActive.Commands.UpdateValuationInActive;
+using Qualifier.Application.Database.ValuationInActive.Queries.GetAllValuationInActivesByCompanyId;
+using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActiveById;
+using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActivesByActivesInventoryId;
+using Qualifier.Application.Database.Version.Commands.CreateVersion;
+using Qualifier.Application.Database.Version.Commands.UpdateVersion;
+using Qualifier.Application.Database.Version.Queries.GetVersionById;
+using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
+using Qualifier.Domain.Entities;
+using static Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation.CreateControlEvaluationDto;
+using static Qualifier.Application.Database.ControlEvaluation.Commands.UpdateControlEvaluation.UpdateControlEvaluationDto;
 
 
 namespace Qualifier.Application.Configuration
@@ -136,7 +189,7 @@ namespace Qualifier.Application.Configuration
 
             //Login
             CreateMap<LoginEntity, LoginUserLoginTryDto>().ReverseMap();
-          
+
             CreateMap<LoginEntity, LoginUserLoginDto>().ReverseMap();
             CreateMap<UserStateEntity, LoginUserUserStateDto>().ReverseMap();
             CreateMap<RoleEntity, LoginUserRoleDto>().ReverseMap();
@@ -340,6 +393,97 @@ namespace Qualifier.Application.Configuration
             CreateMap<ApproverEntity, GetAllApproversByVersionIdDto>().ReverseMap();
             CreateMap<PersonalEntity, GetAllApproversByVersionIdPersonalDto>().ReverseMap();
             CreateMap<ResponsibleEntity, GetAllApproversByVersionIdResponsibleDto>().ReverseMap();
+
+            //Macroprocess
+            CreateMap<MacroprocessEntity, CreateMacroprocessDto>().ReverseMap();
+            CreateMap<MacroprocessEntity, UpdateMacroprocessDto>().ReverseMap();
+            CreateMap<MacroprocessEntity, GetMacroprocessByIdDto>().ReverseMap();
+            CreateMap<MacroprocessEntity, GetAllMacroprocesssByCompanyIdDto>().ReverseMap();
+            CreateMap<MacroprocessEntity, GetMacroprocesssByCompanyIdDto>().ReverseMap();
+
+            //Subprocess
+            CreateMap<SubprocessEntity, CreateSubprocessDto>().ReverseMap();
+            CreateMap<SubprocessEntity, UpdateSubprocessDto>().ReverseMap();
+            CreateMap<SubprocessEntity, GetSubprocesssByCompanyIdDto>().ReverseMap();
+            CreateMap<MacroprocessEntity, GetSubprocesssByCompanyIdMacroprocessDto>().ReverseMap();
+            CreateMap<SubprocessEntity, GetAllSubprocesssByCompanyIdDto>().ReverseMap();
+            CreateMap<MacroprocessEntity, GetAllSubprocesssByCompanyIdMacroprocessDto>().ReverseMap();
+            CreateMap<SubprocessEntity, GetSubprocessByIdDto>().ReverseMap();
+
+            //ActiveType
+            CreateMap<ActiveTypeEntity, CreateActiveTypeDto>().ReverseMap();
+            CreateMap<ActiveTypeEntity, UpdateActiveTypeDto>().ReverseMap();
+            CreateMap<ActiveTypeEntity, GetActiveTypeByIdDto>().ReverseMap();
+            CreateMap<ActiveTypeEntity, GetAllActiveTypesByCompanyIdDto>().ReverseMap();
+            CreateMap<ActiveTypeEntity, GetActiveTypesByCompanyIdDto>().ReverseMap();
+
+            //Owner
+            CreateMap<OwnerEntity, CreateOwnerDto>().ReverseMap();
+            CreateMap<OwnerEntity, UpdateOwnerDto>().ReverseMap();
+            CreateMap<OwnerEntity, GetOwnerByIdDto>().ReverseMap();
+            CreateMap<OwnerEntity, GetAllOwnersByCompanyIdDto>().ReverseMap();
+            CreateMap<OwnerEntity, GetOwnersByCompanyIdDto>().ReverseMap();
+
+            //Custodian
+            CreateMap<CustodianEntity, CreateCustodianDto>().ReverseMap();
+            CreateMap<CustodianEntity, UpdateCustodianDto>().ReverseMap();
+            CreateMap<CustodianEntity, GetCustodianByIdDto>().ReverseMap();
+            CreateMap<CustodianEntity, GetAllCustodiansByCompanyIdDto>().ReverseMap();
+            CreateMap<CustodianEntity, GetCustodiansByCompanyIdDto>().ReverseMap();
+
+            //UsageClassification
+            CreateMap<UsageClassificationEntity, CreateUsageClassificationDto>().ReverseMap();
+            CreateMap<UsageClassificationEntity, UpdateUsageClassificationDto>().ReverseMap();
+            CreateMap<UsageClassificationEntity, GetAllUsageClassificationsByCompanyIdDto>().ReverseMap();
+            CreateMap<UsageClassificationEntity, GetUsageClassificationByIdDto>().ReverseMap();
+            CreateMap<UsageClassificationEntity, GetUsageClassificationsByCompanyIdDto>().ReverseMap();
+
+            //SupportType
+            CreateMap<SupportTypeEntity, CreateSupportTypeDto>().ReverseMap();
+            CreateMap<SupportTypeEntity, UpdateSupportTypeDto>().ReverseMap();
+            CreateMap<SupportTypeEntity, GetSupportTypeByIdDto>().ReverseMap();
+            CreateMap<SupportTypeEntity, GetAllSupportTypesByCompanyIdDto>().ReverseMap();
+            CreateMap<SupportTypeEntity, GetSupportTypesByCompanyIdDto>().ReverseMap();
+
+            //Location
+            CreateMap<LocationEntity, CreateLocationDto>().ReverseMap();
+            CreateMap<LocationEntity, UpdateLocationDto>().ReverseMap();
+            CreateMap<LocationEntity, GetLocationByIdDto>().ReverseMap();
+            CreateMap<LocationEntity, GetAllLocationsByCompanyIdDto>().ReverseMap();
+            CreateMap<LocationEntity, GetLocationsByCompanyIdDto>().ReverseMap();
+
+            //ImpactValuation
+            CreateMap<ImpactValuationEntity, CreateImpactValuationDto>().ReverseMap();
+            CreateMap<ImpactValuationEntity, UpdateImpactValuationDto>().ReverseMap();
+            CreateMap<ImpactValuationEntity, GetImpactValuationByIdDto>().ReverseMap();
+            CreateMap<ImpactValuationEntity, GetAllImpactValuationsByCompanyIdDto>().ReverseMap();
+            CreateMap<ImpactValuationEntity, GetImpactValuationsByCompanyIdDto>().ReverseMap();
+
+            //ActivesInventory
+            CreateMap<ActivesInventoryEntity, CreateActivesInventoryDto>().ReverseMap();
+            CreateMap<ActivesInventoryEntity, UpdateActivesInventoryDto>().ReverseMap();
+            CreateMap<ActivesInventoryEntity, GetActivesInventoryByIdDto>().ReverseMap();
+
+            CreateMap<ActivesInventoryEntity, GetActivesInventoriesByCompanyIdDto>().ReverseMap();
+            CreateMap<ActiveTypeEntity, GetActivesInventoriesByCompanyIdActiveTypeDto>().ReverseMap();
+            CreateMap<CustodianEntity, GetActivesInventoriesByCompanyIdCustodianDto>().ReverseMap();
+            CreateMap<LocationEntity, GetActivesInventoriesByCompanyIdLocationDto>().ReverseMap();
+            CreateMap<MacroprocessEntity, GetActivesInventoriesByCompanyIdMacroprocessDto>().ReverseMap();
+            CreateMap<OwnerEntity, GetActivesInventoriesByCompanyIdOwnerDto>().ReverseMap();
+            CreateMap<SubprocessEntity, GetActivesInventoriesByCompanyIdSubprocessDto>().ReverseMap();
+            CreateMap<SupportTypeEntity, GetActivesInventoriesByCompanyIdSupportTypeDto>().ReverseMap();
+            CreateMap<UsageClassificationEntity, GetActivesInventoriesByCompanyIdUsageClassificationDto>().ReverseMap();
+
+            //ValuationInActive
+            CreateMap<ValuationInActiveEntity, CreateValuationInActiveDto>().ReverseMap();
+            CreateMap<ValuationInActiveEntity, UpdateValuationInActiveDto>().ReverseMap();
+            CreateMap<ValuationInActiveEntity, GetValuationInActiveByIdDto>().ReverseMap();
+            CreateMap<ValuationInActiveEntity, GetAllValuationInActivesByCompanyIdDto>().ReverseMap();
+            CreateMap<ImpactValuationEntity, GetAllValuationInActivesByCompanyIdImpactValuationDto>().ReverseMap();
+
+            CreateMap<ValuationInActiveEntity, GetValuationInActivesByActivesInventoryIdDto>().ReverseMap();
+            CreateMap<ImpactValuationEntity, GetValuationInActivesByActivesInventoryIdImpactValuationDto>().ReverseMap();
+
 
         }
     }
