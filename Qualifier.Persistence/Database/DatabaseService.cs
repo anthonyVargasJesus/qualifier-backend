@@ -54,7 +54,8 @@ namespace Qualifier.Persistence.Database
         public DbSet<ImpactValuationEntity> ImpactValuation { get; set; }
         public DbSet<ActivesInventoryEntity> ActivesInventory { get; set; }
         public DbSet<ValuationInActiveEntity> ValuationInActive { get; set; }
-  
+        public DbSet<OptionInMenuEntity> OptionInMenu { get; set; }
+        
         public async Task<bool> SaveAsync()
         {
 
@@ -111,6 +112,7 @@ namespace Qualifier.Persistence.Database
             new ImpactValuationConfiguration(modelBuilder.Entity<ImpactValuationEntity>());
             new ActivesInventoryConfiguration(modelBuilder.Entity<ActivesInventoryEntity>());
             new ValuationInActiveConfiguration(modelBuilder.Entity<ValuationInActiveEntity>());
+            new OptionInMenuConfiguration(modelBuilder.Entity<OptionInMenuEntity>());
         }
 
     }

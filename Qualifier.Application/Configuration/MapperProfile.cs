@@ -87,6 +87,27 @@ using Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLevel;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelById;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelsByCompanyId;
+using Qualifier.Application.Database.Menu.Commands.CreateMenu;
+using Qualifier.Application.Database.Menu.Commands.UpdateMenu;
+using Qualifier.Application.Database.Menu.Queries.GetAllMenusByCompanyId;
+using Qualifier.Application.Database.Menu.Queries.GetAllMenusByRoleId;
+using Qualifier.Application.Database.Menu.Queries.GetMenuById;
+using Qualifier.Application.Database.Menu.Queries.GetMenusByCompanyId;
+using Qualifier.Application.Database.MenuInRole.Commands.CreateMenuInRole;
+using Qualifier.Application.Database.MenuInRole.Commands.UpdateMenuInRole;
+using Qualifier.Application.Database.MenuInRole.Queries.GetAllMenuInRolesByRoleId;
+using Qualifier.Application.Database.MenuInRole.Queries.GetMenuInRoleById;
+using Qualifier.Application.Database.MenuInRole.Queries.GetMenuInRolesByRoleId;
+using Qualifier.Application.Database.Option.Commands.CreateOption;
+using Qualifier.Application.Database.Option.Commands.UpdateOption;
+using Qualifier.Application.Database.Option.Queries.GetAllOptionsByCompanyId;
+using Qualifier.Application.Database.Option.Queries.GetOptionById;
+using Qualifier.Application.Database.Option.Queries.GetOptionsByCompanyId;
+using Qualifier.Application.Database.OptionInMenu.Commands.CreateOptionInMenu;
+using Qualifier.Application.Database.OptionInMenu.Commands.UpdateOptionInMenu;
+using Qualifier.Application.Database.OptionInMenu.Queries.GetOptionInMenuById;
+using Qualifier.Application.Database.OptionInMenu.Queries.GetOptionInMenusByMenuId;
+using Qualifier.Application.Database.OptionInMenuInRole.Commands.CreateOptionInMenuInRole;
 using Qualifier.Application.Database.Owner.Commands.CreateOwner;
 using Qualifier.Application.Database.Owner.Commands.UpdateOwner;
 using Qualifier.Application.Database.Owner.Queries.GetAllOwnersByCompanyId;
@@ -116,6 +137,16 @@ using Qualifier.Application.Database.Reviewer.Commands.CreateReviewer;
 using Qualifier.Application.Database.Reviewer.Commands.UpdateReviewer;
 using Qualifier.Application.Database.Reviewer.Queries.GetAllReviewersByVersionId;
 using Qualifier.Application.Database.Reviewer.Queries.GetReviewerById;
+using Qualifier.Application.Database.Role.Commands.CreateRole;
+using Qualifier.Application.Database.Role.Commands.UpdateRole;
+using Qualifier.Application.Database.Role.Queries.GetAllRolesByCompanyId;
+using Qualifier.Application.Database.Role.Queries.GetRoleById;
+using Qualifier.Application.Database.Role.Queries.GetRolesByCompanyId;
+using Qualifier.Application.Database.RoleInUser.Commands.CreateRoleInUser;
+using Qualifier.Application.Database.RoleInUser.Commands.UpdateRoleInUser;
+using Qualifier.Application.Database.RoleInUser.Queries.GetAllRoleInUsersByUserId;
+using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUserById;
+using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUsersByUserId;
 using Qualifier.Application.Database.Section.Commands.CreateSection;
 using Qualifier.Application.Database.Section.Commands.UpdateSection;
 using Qualifier.Application.Database.Section.Queries.GetAllSectionsByVersionId;
@@ -149,8 +180,18 @@ using Qualifier.Application.Database.UsageClassification.Commands.UpdateUsageCla
 using Qualifier.Application.Database.UsageClassification.Queries.GetAllUsageClassificationsByCompanyId;
 using Qualifier.Application.Database.UsageClassification.Queries.GetUsageClassificationById;
 using Qualifier.Application.Database.UsageClassification.Queries.GetUsageClassificationsByCompanyId;
+using Qualifier.Application.Database.User.Commands.CreateUser;
 using Qualifier.Application.Database.User.Commands.Login;
+using Qualifier.Application.Database.User.Commands.UpdateUser;
+using Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId;
 using Qualifier.Application.Database.User.Queries.GetMenus;
+using Qualifier.Application.Database.User.Queries.GetUserById;
+using Qualifier.Application.Database.User.Queries.GetUsersByCompanyId;
+using Qualifier.Application.Database.UserState.Commands.CreateUserState;
+using Qualifier.Application.Database.UserState.Commands.UpdateUserState;
+using Qualifier.Application.Database.UserState.Queries.GetAllUserStatesByCompanyId;
+using Qualifier.Application.Database.UserState.Queries.GetUserStateById;
+using Qualifier.Application.Database.UserState.Queries.GetUserStatesByCompanyId;
 using Qualifier.Application.Database.ValuationInActive.Commands.CreateValuationInActive;
 using Qualifier.Application.Database.ValuationInActive.Commands.UpdateValuationInActive;
 using Qualifier.Application.Database.ValuationInActive.Queries.GetAllValuationInActivesByCompanyId;
@@ -480,11 +521,76 @@ namespace Qualifier.Application.Configuration
             CreateMap<ValuationInActiveEntity, GetValuationInActiveByIdDto>().ReverseMap();
             CreateMap<ValuationInActiveEntity, GetAllValuationInActivesByCompanyIdDto>().ReverseMap();
             CreateMap<ImpactValuationEntity, GetAllValuationInActivesByCompanyIdImpactValuationDto>().ReverseMap();
-
             CreateMap<ValuationInActiveEntity, GetValuationInActivesByActivesInventoryIdDto>().ReverseMap();
             CreateMap<ImpactValuationEntity, GetValuationInActivesByActivesInventoryIdImpactValuationDto>().ReverseMap();
 
+            //Option
+            CreateMap<OptionEntity, CreateOptionDto>().ReverseMap();
+            CreateMap<OptionEntity, UpdateOptionDto>().ReverseMap();
+            CreateMap<OptionEntity, GetOptionByIdDto>().ReverseMap();
+            CreateMap<OptionEntity, GetAllOptionsByCompanyIdDto>().ReverseMap();
+            CreateMap<OptionEntity, GetOptionsByCompanyIdDto>().ReverseMap();
 
+            //Menu
+            CreateMap<MenuEntity, CreateMenuDto>().ReverseMap();
+            CreateMap<MenuEntity, UpdateMenuDto>().ReverseMap();
+            CreateMap<MenuEntity, GetMenuByIdDto>().ReverseMap();
+            CreateMap<MenuEntity, GetAllMenusByCompanyIdDto>().ReverseMap();
+            CreateMap<MenuEntity, GetMenusByCompanyIdDto>().ReverseMap();
+
+            CreateMap<MenuEntity, GetAllMenusByRoleIdDto>().ReverseMap();
+            CreateMap<OptionEntity, GetAllMenusOptionByRoleIdDto>().ReverseMap();
+
+            //Role
+            CreateMap<RoleEntity, CreateRoleDto>().ReverseMap();
+            CreateMap<RoleEntity, UpdateRoleDto>().ReverseMap();
+            CreateMap<RoleEntity, GetRoleByIdDto>().ReverseMap();
+            CreateMap<RoleEntity, GetAllRolesByCompanyIdDto>().ReverseMap();
+            CreateMap<RoleEntity, GetRolesByCompanyIdDto>().ReverseMap();
+            CreateMap<RoleEntity, GetUserByIdRoleDto>().ReverseMap();
+
+            //MenuInRole
+            CreateMap<MenuInRoleEntity, CreateMenuInRoleDto>().ReverseMap();
+            CreateMap<MenuInRoleEntity, UpdateMenuInRoleDto>().ReverseMap();
+            CreateMap<MenuInRoleEntity, GetMenuInRoleByIdDto>().ReverseMap();
+            CreateMap<MenuInRoleEntity, GetAllMenuInRolesByRoleIdDto>().ReverseMap();
+            CreateMap<MenuEntity, GetAllMenuInRolesByRoleIdMenuDto>().ReverseMap();
+            CreateMap<MenuInRoleEntity, GetMenuInRolesByRoleIdDto>().ReverseMap();
+            CreateMap<MenuEntity, GetMenuInRolesByRoleIdMenuDto>().ReverseMap();
+
+            //OptionInMenu
+            CreateMap<OptionInMenuEntity, CreateOptionInMenuDto>().ReverseMap();
+            CreateMap<OptionInMenuEntity, UpdateOptionInMenuDto>().ReverseMap();
+            CreateMap<OptionInMenuEntity, GetOptionInMenuByIdDto>().ReverseMap();
+            CreateMap<OptionInMenuEntity, GetOptionInMenusByMenuIdDto>().ReverseMap();
+            CreateMap<OptionEntity, GetOptionInMenusByMenuIdOptionDto>().ReverseMap();
+
+            //OptionInMenuInRole
+            CreateMap<OptionInMenuInRoleEntity, CreateOptionInMenuInRoleDto>().ReverseMap();
+
+            //UserState
+            CreateMap<UserStateEntity, CreateUserStateDto>().ReverseMap();
+            CreateMap<UserStateEntity, UpdateUserStateDto>().ReverseMap();
+            CreateMap<UserStateEntity, GetUserStateByIdDto>().ReverseMap();
+            CreateMap<UserStateEntity, GetAllUserStatesByCompanyIdDto>().ReverseMap();
+            CreateMap<UserStateEntity, GetUserStatesByCompanyIdDto>().ReverseMap();
+            CreateMap<UserStateEntity, GetUserByIdUserStateDto>().ReverseMap();
+
+            //User
+            CreateMap<UserEntity, CreateUserDto>().ReverseMap();
+            CreateMap<UserEntity, UpdateUserDto>().ReverseMap();
+            CreateMap<UserEntity, GetUserByIdDto>().ReverseMap();
+            CreateMap<UserEntity, GetAllUsersByCompanyIdDto>().ReverseMap();
+            CreateMap<UserEntity, GetUsersByCompanyIdDto>().ReverseMap();
+
+            //RoleInUser
+            CreateMap<RoleInUserEntity, CreateRoleInUserDto>().ReverseMap();
+            CreateMap<RoleInUserEntity, UpdateRoleInUserDto>().ReverseMap();
+            CreateMap<RoleInUserEntity, GetRoleInUserByIdDto>().ReverseMap();
+            CreateMap<RoleInUserEntity, GetAllRoleInUsersByUserIdDto>().ReverseMap();
+            CreateMap<RoleEntity, GetAllRoleInUsersByUserIdRoleDto>().ReverseMap();
+            CreateMap<RoleInUserEntity, GetRoleInUsersByUserIdDto>().ReverseMap();
+            CreateMap<RoleEntity, GetRoleInUsersByUserIdRoleDto>().ReverseMap();
         }
     }
 }

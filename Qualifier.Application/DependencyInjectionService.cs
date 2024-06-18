@@ -199,6 +199,56 @@ using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInAct
 using Qualifier.Application.Database.ValuationInActive.Commands.DeleteValuationInActive;
 using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActiveById;
 using Qualifier.Application.Database.ValuationInActive.Queries.GetAllValuationInActivesByCompanyId;
+using Qualifier.Application.Database.Option.Commands.CreateOption;
+using Qualifier.Application.Database.Option.Commands.UpdateOption;
+using Qualifier.Application.Database.Option.Queries.GetOptionById;
+using Qualifier.Application.Database.Option.Queries.GetAllOptionsByCompanyId;
+using Qualifier.Application.Database.Option.Queries.GetOptionsByCompanyId;
+using Qualifier.Application.Database.Option.Commands.DeleteOption;
+using Qualifier.Application.Database.Menu.Commands.CreateMenu;
+using Qualifier.Application.Database.Menu.Commands.DeleteMenu;
+using Qualifier.Application.Database.Menu.Commands.UpdateMenu;
+using Qualifier.Application.Database.Menu.Queries.GetAllMenusByCompanyId;
+using Qualifier.Application.Database.Menu.Queries.GetMenuById;
+using Qualifier.Application.Database.Menu.Queries.GetMenusByCompanyId;
+using Qualifier.Application.Database.Role.Commands.CreateRole;
+using Qualifier.Application.Database.Role.Commands.DeleteRole;
+using Qualifier.Application.Database.Role.Commands.UpdateRole;
+using Qualifier.Application.Database.Role.Queries.GetAllRolesByCompanyId;
+using Qualifier.Application.Database.Role.Queries.GetRoleById;
+using Qualifier.Application.Database.Role.Queries.GetRolesByCompanyId;
+using Qualifier.Application.Database.MenuInRole.Commands.CreateMenuInRole;
+using Qualifier.Application.Database.MenuInRole.Commands.DeleteMenuInRole;
+using Qualifier.Application.Database.MenuInRole.Commands.UpdateMenuInRole;
+using Qualifier.Application.Database.MenuInRole.Queries.GetMenuInRoleById;
+using Qualifier.Application.Database.MenuInRole.Queries.GetAllMenuInRolesByRoleId;
+using Qualifier.Application.Database.MenuInRole.Queries.GetMenuInRolesByRoleId;
+using Qualifier.Application.Database.OptionInMenu.Commands.CreateOptionInMenu;
+using Qualifier.Application.Database.OptionInMenu.Commands.DeleteOptionInMenu;
+using Qualifier.Application.Database.OptionInMenu.Commands.UpdateOptionInMenu;
+using Qualifier.Application.Database.OptionInMenu.Queries.GetOptionInMenuById;
+using Qualifier.Application.Database.OptionInMenu.Queries.GetOptionInMenusByMenuId;
+using Qualifier.Application.Database.Menu.Queries.GetAllMenusByRoleId;
+using Qualifier.Application.Database.OptionInMenuInRole.Commands.CreateOptionInMenuInRole;
+using Qualifier.Application.Database.OptionInMenuInRole.Commands.DeleteOptionInMenuInRole;
+using Qualifier.Application.Database.UserState.Commands.CreateUserState;
+using Qualifier.Application.Database.UserState.Commands.UpdateUserState;
+using Qualifier.Application.Database.UserState.Queries.GetUserStateById;
+using Qualifier.Application.Database.UserState.Queries.GetAllUserStatesByCompanyId;
+using Qualifier.Application.Database.UserState.Queries.GetUserStatesByCompanyId;
+using Qualifier.Application.Database.UserState.Commands.DeleteUserState;
+using Qualifier.Application.Database.User.Commands.CreateUser;
+using Qualifier.Application.Database.User.Commands.UpdateUser;
+using Qualifier.Application.Database.User.Commands.DeleteUser;
+using Qualifier.Application.Database.User.Queries.GetUserById;
+using Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId;
+using Qualifier.Application.Database.User.Queries.GetUsersByCompanyId;
+using Qualifier.Application.Database.RoleInUser.Commands.CreateRoleInUser;
+using Qualifier.Application.Database.RoleInUser.Commands.UpdateRoleInUser;
+using Qualifier.Application.Database.RoleInUser.Commands.DeleteRoleInUser;
+using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUserById;
+using Qualifier.Application.Database.RoleInUser.Queries.GetAllRoleInUsersByUserId;
+using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUsersByUserId;
 
 
 
@@ -482,6 +532,75 @@ namespace Qualifier.Application
             services.AddTransient<IGetValuationInActiveByIdQuery, GetValuationInActiveByIdQuery>();
             services.AddTransient<IGetAllValuationInActivesByCompanyIdQuery, GetAllValuationInActivesByCompanyIdQuery>();
             services.AddTransient<IGetValuationInActivesByActivesInventoryIdQuery, GetValuationInActivesByActivesInventoryIdQuery>();
+
+            //Option
+            services.AddTransient<ICreateOptionCommand, CreateOptionCommand>();
+            services.AddTransient<IUpdateOptionCommand, UpdateOptionCommand>();
+            services.AddTransient<IDeleteOptionCommand, DeleteOptionCommand>();
+            services.AddTransient<IGetOptionByIdQuery, GetOptionByIdQuery>();
+            services.AddTransient<IGetAllOptionsByCompanyIdQuery, GetAllOptionsByCompanyIdQuery>();
+            services.AddTransient<IGetOptionsByCompanyIdQuery, GetOptionsByCompanyIdQuery>();
+
+            //Menu
+            services.AddTransient<ICreateMenuCommand, CreateMenuCommand>();
+            services.AddTransient<IUpdateMenuCommand, UpdateMenuCommand>();
+            services.AddTransient<IDeleteMenuCommand, DeleteMenuCommand>();
+            services.AddTransient<IGetMenuByIdQuery, GetMenuByIdQuery>();
+            services.AddTransient<IGetAllMenusByCompanyIdQuery, GetAllMenusByCompanyIdQuery>();
+            services.AddTransient<IGetMenusByCompanyIdQuery, GetMenusByCompanyIdQuery>();
+
+            //Role
+            services.AddTransient<ICreateRoleCommand, CreateRoleCommand>();
+            services.AddTransient<IUpdateRoleCommand, UpdateRoleCommand>();
+            services.AddTransient<IDeleteRoleCommand, DeleteRoleCommand>();
+            services.AddTransient<IGetRoleByIdQuery, GetRoleByIdQuery>();
+            services.AddTransient<IGetAllRolesByCompanyIdQuery, GetAllRolesByCompanyIdQuery>();
+            services.AddTransient<IGetRolesByCompanyIdQuery, GetRolesByCompanyIdQuery>();
+
+            //MenuInRole
+            services.AddTransient<ICreateMenuInRoleCommand, CreateMenuInRoleCommand>();
+            services.AddTransient<IUpdateMenuInRoleCommand, UpdateMenuInRoleCommand>();
+            services.AddTransient<IDeleteMenuInRoleCommand, DeleteMenuInRoleCommand>();
+            services.AddTransient<IGetMenuInRoleByIdQuery, GetMenuInRoleByIdQuery>();
+            services.AddTransient<IGetAllMenuInRolesByRoleIdQuery, GetAllMenuInRolesByRoleIdQuery>();
+
+            //OptionInMenu
+            services.AddTransient<ICreateOptionInMenuCommand, CreateOptionInMenuCommand>();
+            services.AddTransient<IUpdateOptionInMenuCommand, UpdateOptionInMenuCommand>();
+            services.AddTransient<IDeleteOptionInMenuCommand, DeleteOptionInMenuCommand>();
+            services.AddTransient<IGetOptionInMenuByIdQuery, GetOptionInMenuByIdQuery>();
+            services.AddTransient<IGetOptionInMenusByMenuIdQuery, GetOptionInMenusByMenuIdQuery>();
+            services.AddTransient<IGetMenuInRolesByRoleIdQuery, GetMenuInRolesByRoleIdQuery>();
+
+            services.AddTransient<IGetAllMenusByRoleIdQuery, GetAllMenusByRoleIdQuery>();
+            
+            //OptionInMenuInRole
+            services.AddTransient<ICreateOptionInMenuInRoleCommand, CreateOptionInMenuInRoleCommand>();
+            services.AddTransient<IDeleteOptionInMenuInRoleCommand, DeleteOptionInMenuInRoleCommand>();
+
+            //UserState
+            services.AddTransient<ICreateUserStateCommand, CreateUserStateCommand>();
+            services.AddTransient<IUpdateUserStateCommand, UpdateUserStateCommand>();
+            services.AddTransient<IDeleteUserStateCommand, DeleteUserStateCommand>();
+            services.AddTransient<IGetUserStateByIdQuery, GetUserStateByIdQuery>();
+            services.AddTransient<IGetAllUserStatesByCompanyIdQuery, GetAllUserStatesByCompanyIdQuery>();
+            services.AddTransient<IGetUserStatesByCompanyIdQuery, GetUserStatesByCompanyIdQuery>();
+
+            //User
+            services.AddTransient<ICreateUserCommand, CreateUserCommand>();
+            services.AddTransient<IUpdateUserCommand, UpdateUserCommand>();
+            services.AddTransient<IDeleteUserCommand, DeleteUserCommand>();
+            services.AddTransient<IGetUserByIdQuery, GetUserByIdQuery>();
+            services.AddTransient<IGetAllUsersByCompanyIdQuery, GetAllUsersByCompanyIdQuery>();
+            services.AddTransient<IGetUsersByCompanyIdQuery, GetUsersByCompanyIdQuery>();
+
+            //RoleInUser
+            services.AddTransient<ICreateRoleInUserCommand, CreateRoleInUserCommand>();
+            services.AddTransient<IUpdateRoleInUserCommand, UpdateRoleInUserCommand>();
+            services.AddTransient<IDeleteRoleInUserCommand, DeleteRoleInUserCommand>();
+            services.AddTransient<IGetRoleInUserByIdQuery, GetRoleInUserByIdQuery>();
+            services.AddTransient<IGetAllRoleInUsersByUserIdQuery, GetAllRoleInUsersByUserIdQuery>();
+            services.AddTransient<IGetRoleInUsersByUserIdQuery, GetRoleInUsersByUserIdQuery>();
 
             return services;
         }

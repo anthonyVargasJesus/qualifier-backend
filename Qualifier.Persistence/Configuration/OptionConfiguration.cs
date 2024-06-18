@@ -11,9 +11,9 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.ToTable("Option");
             entityBuilder.HasKey(x => x.optionId);
             entityBuilder.Property(x => x.optionId).IsRequired();
-            entityBuilder.Property(x => x.isMobile).IsRequired();
+            entityBuilder.Property(x => x.name).IsRequired();
+            entityBuilder.Property(x => x.url).IsRequired();
         }
     }
 }
-
 

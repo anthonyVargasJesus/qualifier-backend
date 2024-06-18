@@ -9,5 +9,6 @@ namespace Qualifier.Domain.Entities
         public UserEntity user { get; set; }
         public int roleId { get; set; }
         public int userId { get; set; }
+        public int companyId { get; set; }
     }
 }

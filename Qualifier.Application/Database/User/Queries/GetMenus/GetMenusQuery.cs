@@ -29,7 +29,6 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                                {
                                    roleId = role.roleId,
                                    name = role.name,
-                                   canEditPlans = role.canEditPlans,
                                    code = role.code
                                }).ToListAsync();
 

@@ -7,6 +7,7 @@ namespace Qualifier.Domain.Entities
         public int userStateId { get; set; }
         public string name { get; set; }
         public int value { get; set; }
+        public int companyId { get; set; }
         public ICollection<UserEntity> users { get; set; }
     }
 }

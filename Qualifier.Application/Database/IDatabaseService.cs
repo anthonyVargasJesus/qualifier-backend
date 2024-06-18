@@ -47,6 +47,7 @@ namespace Qualifier.Application.Database
         DbSet<ImpactValuationEntity> ImpactValuation { get; set; }
         DbSet<ActivesInventoryEntity> ActivesInventory { get; set; }
         DbSet<ValuationInActiveEntity> ValuationInActive { get; set; }
+        DbSet<OptionInMenuEntity> OptionInMenu { get; set; }
         Task<bool> SaveAsync();
     }
 }

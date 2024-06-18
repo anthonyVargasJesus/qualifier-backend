@@ -7,9 +7,8 @@ namespace Qualifier.Domain.Entities
 		public int roleId { get; set; }
 		public string? code { get; set; }
 		public string? name { get; set; }
-		public bool canEditPlans { get; set; }
-
-		public List<MenuEntity>? menus { get; set; }
+        public int companyId { get; set; }
+        public List<MenuEntity>? menus { get; set; }
         public ICollection<RoleInUserEntity> roleInUsers { get; set; }
         public ICollection<MenuInRoleEntity> menuInRoles { get; set; }
     }

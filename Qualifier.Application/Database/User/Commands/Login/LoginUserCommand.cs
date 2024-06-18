@@ -62,7 +62,6 @@ namespace Qualifier.Application.Database.User.Commands.Login
                                {
                                    roleId = role.roleId,
                                    name = role.name,
-                                   canEditPlans = role.canEditPlans,
                                    code = role.code
                                }).ToList();
 
@@ -78,8 +77,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
             }
             catch (Exception ex)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+                return BaseApplication.getExceptionErrorResponse();
             }
         }
 

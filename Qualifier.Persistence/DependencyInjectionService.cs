@@ -51,6 +51,16 @@ namespace Qualifier.Persistence
             services.AddScoped<IImpactValuationRepository, ImpactValuationRepository>();
             services.AddScoped<IActivesInventoryRepository, ActivesInventoryRepository>();
             services.AddScoped<IValuationInActiveRepository, ValuationInActiveRepository>();
+            services.AddScoped<IOptionRepository, OptionRepository>();
+            services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IMenuInRoleRepository, MenuInRoleRepository>();
+            services.AddScoped<IOptionInMenuRepository, OptionInMenuRepository>();
+            services.AddScoped<IOptionInMenuInRoleRepository, OptionInMenuInRoleRepository>();
+            services.AddScoped<IUserStateRepository, UserStateRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleInUserRepository, RoleInUserRepository>();
+
 
             return services;
         }

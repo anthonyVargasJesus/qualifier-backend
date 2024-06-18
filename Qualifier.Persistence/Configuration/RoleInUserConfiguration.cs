@@ -14,13 +14,13 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.roleId).IsRequired();
             entityBuilder.Property(x => x.userId).IsRequired();
 
-            entityBuilder.HasOne(x => x.role)
-            .WithMany(x => x.roleInUsers)
-            .HasForeignKey(x => x.roleId);
+            //entityBuilder.HasOne(x => x.role)
+            //.WithMany(x => x.roleInUsers)
+            //.HasForeignKey(x => x.roleId);
 
-            entityBuilder.HasOne(x => x.user)
-            .WithMany(x => x.roleInUsers)
-            .HasForeignKey(x => x.userId);
+            //entityBuilder.HasOne(x => x.user)
+            //.WithMany(x => x.roleInUsers)
+            //.HasForeignKey(x => x.userId);
         }
     }
 }

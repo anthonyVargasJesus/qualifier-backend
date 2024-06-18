@@ -14,6 +14,7 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.name).IsRequired();
             entityBuilder.Property(x => x.email).IsRequired();
             entityBuilder.Property(x => x.userStateId).IsRequired();
+            entityBuilder.Property(x => x.documentNumber).IsRequired();
 
             entityBuilder.HasOne(x => x.userState)
             .WithMany(x => x.users)

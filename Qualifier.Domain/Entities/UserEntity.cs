@@ -1,4 +1,5 @@
 using Qualifier.Common.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Qualifier.Domain.Entities
 {
@@ -15,8 +16,12 @@ namespace Qualifier.Domain.Entities
         public int userStateId { get; set; }
         public string? image { get; set; }
         public string? userName { get; set; }
+        public string? documentNumber { get; set; }
         public UserStateEntity userState { get; set; }
+        [NotMapped]
         public ICollection<RoleInUserEntity> roleInUsers { get; set; }
+        [NotMapped]
+        public ICollection<RoleEntity> roles { get; set; }
         public int companyId { get; set; }
 
     }
