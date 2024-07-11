@@ -1168,7 +1168,6 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
 
         }
 
-
         private static void CreateControlColumnChart(ISheet sheet, IDrawing drawing, IClientAnchor anchor, List<MaturityLevelEntity> maturityLevels, List<ControlGroupEntity> groups)
         {
             XSSFChart chart = (XSSFChart)drawing.CreateChart(anchor);
@@ -1232,7 +1231,6 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
             //barChart.grouping.val = ST_BarGrouping.clustered;
 
         }
-
 
 
     }

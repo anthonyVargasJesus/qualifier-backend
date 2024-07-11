@@ -249,6 +249,47 @@ using Qualifier.Application.Database.RoleInUser.Commands.DeleteRoleInUser;
 using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUserById;
 using Qualifier.Application.Database.RoleInUser.Queries.GetAllRoleInUsersByUserId;
 using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUsersByUserId;
+using Qualifier.Application.Database.MenaceType.Commands.CreateMenaceType;
+using Qualifier.Application.Database.MenaceType.Commands.UpdateMenaceType;
+using Qualifier.Application.Database.MenaceType.Commands.DeleteMenaceType;
+using Qualifier.Application.Database.MenaceType.Queries.GetMenaceTypeById;
+using Qualifier.Application.Database.MenaceType.Queries.GetAllMenaceTypesByCompanyId;
+using Qualifier.Application.Database.MenaceType.Queries.GetMenaceTypesByCompanyId;
+using Qualifier.Application.Database.Menace.Commands.CreateMenace;
+using Qualifier.Application.Database.Menace.Commands.UpdateMenace;
+using Qualifier.Application.Database.Menace.Commands.DeleteMenace;
+using Qualifier.Application.Database.Menace.Queries.GetMenaceById;
+using Qualifier.Application.Database.Menace.Queries.GetAllMenacesByCompanyId;
+using Qualifier.Application.Database.Menace.Queries.GetMenacesByCompanyId;
+using Qualifier.Application.Database.VulnerabilityType.Commands.CreateVulnerabilityType;
+using Qualifier.Application.Database.VulnerabilityType.Commands.UpdateVulnerabilityType;
+using Qualifier.Application.Database.VulnerabilityType.Commands.DeleteVulnerabilityType;
+using Qualifier.Application.Database.VulnerabilityType.Queries.GetVulnerabilityTypeById;
+using Qualifier.Application.Database.VulnerabilityType.Queries.GetAllVulnerabilityTypesByCompanyId;
+using Qualifier.Application.Database.VulnerabilityType.Queries.GetVulnerabilityTypesByCompanyId;
+using Qualifier.Application.Database.Vulnerability.Commands.CreateVulnerability;
+using Qualifier.Application.Database.Vulnerability.Commands.UpdateVulnerability;
+using Qualifier.Application.Database.Vulnerability.Commands.DeleteVulnerability;
+using Qualifier.Application.Database.Vulnerability.Queries.GetVulnerabilityById;
+using Qualifier.Application.Database.Vulnerability.Queries.GetAllVulnerabilitiesByCompanyId;
+using Qualifier.Application.Database.Vulnerability.Queries.GetVulnerabilitiesByCompanyId;
+using Qualifier.Application.Database.ControlType.Commands.CreateControlType;
+using Qualifier.Application.Database.ControlType.Commands.DeleteControlType;
+using Qualifier.Application.Database.ControlType.Commands.UpdateControlType;
+using Qualifier.Application.Database.ControlType.Queries.GetAllControlTypesByCompanyId;
+using Qualifier.Application.Database.ControlType.Queries.GetControlTypeById;
+using Qualifier.Application.Database.ControlType.Queries.GetControlTypesByCompanyId;
+using Qualifier.Application.Database.RiskLevel.Commands.CreateRiskLevel;
+using Qualifier.Application.Database.RiskLevel.Commands.DeleteRiskLevel;
+using Qualifier.Application.Database.RiskLevel.Commands.UpdateRiskLevel;
+using Qualifier.Application.Database.RiskLevel.Queries.GetAllRiskLevelsByCompanyId;
+using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelById;
+using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelsByCompanyId;
+using Qualifier.Application.Database.Risk.Commands.CreateRisk;
+using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
+using Qualifier.Application.Database.Risk.Commands.DeleteRisk;
+using Qualifier.Application.Database.Risk.Queries.GetRiskById;
+using Qualifier.Application.Database.Risk.Queries.GetRisksByCompanyId;
 
 
 
@@ -601,6 +642,61 @@ namespace Qualifier.Application
             services.AddTransient<IGetRoleInUserByIdQuery, GetRoleInUserByIdQuery>();
             services.AddTransient<IGetAllRoleInUsersByUserIdQuery, GetAllRoleInUsersByUserIdQuery>();
             services.AddTransient<IGetRoleInUsersByUserIdQuery, GetRoleInUsersByUserIdQuery>();
+
+            //MenaceType
+            services.AddTransient<ICreateMenaceTypeCommand, CreateMenaceTypeCommand>();
+            services.AddTransient<IUpdateMenaceTypeCommand, UpdateMenaceTypeCommand>();
+            services.AddTransient<IDeleteMenaceTypeCommand, DeleteMenaceTypeCommand>();
+            services.AddTransient<IGetMenaceTypeByIdQuery, GetMenaceTypeByIdQuery>();
+            services.AddTransient<IGetAllMenaceTypesByCompanyIdQuery, GetAllMenaceTypesByCompanyIdQuery>();
+            services.AddTransient<IGetMenaceTypesByCompanyIdQuery, GetMenaceTypesByCompanyIdQuery>();
+
+            //Menace
+            services.AddTransient<ICreateMenaceCommand, CreateMenaceCommand>();
+            services.AddTransient<IUpdateMenaceCommand, UpdateMenaceCommand>();
+            services.AddTransient<IDeleteMenaceCommand, DeleteMenaceCommand>();
+            services.AddTransient<IGetMenaceByIdQuery, GetMenaceByIdQuery>();
+            services.AddTransient<IGetAllMenacesByCompanyIdQuery, GetAllMenacesByCompanyIdQuery>();
+            services.AddTransient<IGetMenacesByCompanyIdQuery, GetMenacesByCompanyIdQuery>();
+
+            //VulnerabilityType
+            services.AddTransient<ICreateVulnerabilityTypeCommand, CreateVulnerabilityTypeCommand>();
+            services.AddTransient<IUpdateVulnerabilityTypeCommand, UpdateVulnerabilityTypeCommand>();
+            services.AddTransient<IDeleteVulnerabilityTypeCommand, DeleteVulnerabilityTypeCommand>();
+            services.AddTransient<IGetVulnerabilityTypeByIdQuery, GetVulnerabilityTypeByIdQuery>();
+            services.AddTransient<IGetAllVulnerabilityTypesByCompanyIdQuery, GetAllVulnerabilityTypesByCompanyIdQuery>();
+            services.AddTransient<IGetVulnerabilityTypesByCompanyIdQuery, GetVulnerabilityTypesByCompanyIdQuery>();
+
+            //Vulnerability
+            services.AddTransient<ICreateVulnerabilityCommand, CreateVulnerabilityCommand>();
+            services.AddTransient<IUpdateVulnerabilityCommand, UpdateVulnerabilityCommand>();
+            services.AddTransient<IDeleteVulnerabilityCommand, DeleteVulnerabilityCommand>();
+            services.AddTransient<IGetVulnerabilityByIdQuery, GetVulnerabilityByIdQuery>();
+            services.AddTransient<IGetAllVulnerabilitiesByCompanyIdQuery, GetAllVulnerabilitiesByCompanyIdQuery>();
+            services.AddTransient<IGetVulnerabilitiesByCompanyIdQuery, GetVulnerabilitiesByCompanyIdQuery>();
+
+            //ControlType
+            services.AddTransient<ICreateControlTypeCommand, CreateControlTypeCommand>();
+            services.AddTransient<IUpdateControlTypeCommand, UpdateControlTypeCommand>();
+            services.AddTransient<IDeleteControlTypeCommand, DeleteControlTypeCommand>();
+            services.AddTransient<IGetControlTypeByIdQuery, GetControlTypeByIdQuery>();
+            services.AddTransient<IGetAllControlTypesByCompanyIdQuery, GetAllControlTypesByCompanyIdQuery>();
+            services.AddTransient<IGetControlTypesByCompanyIdQuery, GetControlTypesByCompanyIdQuery>();
+
+            //RiskLevel
+            services.AddTransient<ICreateRiskLevelCommand, CreateRiskLevelCommand>();
+            services.AddTransient<IUpdateRiskLevelCommand, UpdateRiskLevelCommand>();
+            services.AddTransient<IDeleteRiskLevelCommand, DeleteRiskLevelCommand>();
+            services.AddTransient<IGetRiskLevelByIdQuery, GetRiskLevelByIdQuery>();
+            services.AddTransient<IGetAllRiskLevelsByCompanyIdQuery, GetAllRiskLevelsByCompanyIdQuery>();
+            services.AddTransient<IGetRiskLevelsByCompanyIdQuery, GetRiskLevelsByCompanyIdQuery>();
+
+            //Risk
+            services.AddTransient<ICreateRiskCommand, CreateRiskCommand>();
+            services.AddTransient<IUpdateRiskCommand, UpdateRiskCommand>();
+            services.AddTransient<IDeleteRiskCommand, DeleteRiskCommand>();
+            services.AddTransient<IGetRiskByIdQuery, GetRiskByIdQuery>();
+            services.AddTransient<IGetRisksByCompanyIdQuery, GetRisksByCompanyIdQuery>();
 
             return services;
         }

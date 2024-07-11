@@ -1,7 +1,9 @@
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
+using Qualifier.Domain.Interfaces;
 
 namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.CreateOptionInMenuInRole
 
@@ -31,6 +33,30 @@ namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.CreateOptio
                 entity.creationUserId = model.creationUserId;
                 await _databaseService.OptionInMenuInRole.AddAsync(entity);
                 await _databaseService.SaveAsync();
+
+                List<MenuInRoleEntity> menuInRoles =   (from menuInRole in _databaseService.MenuInRole
+                                                               join menu in _databaseService.Menu on menuInRole.menu equals menu
+                                                               where menuInRole.roleId == model.roleId && (menuInRole.isDeleted == null || menuInRole.isDeleted == false)
+                                                               select new MenuInRoleEntity()
+                                                               {
+                                                                   menuInRoleId = menuInRole.menuInRoleId,
+                                                                   menu = new MenuEntity { menuId = menu.menuId, name = menu.name },
+                                                                   order = menuInRole.order,
+                                                               })
+                         .OrderBy(b => b.menuInRoleId)
+                         .ToList();
+
+                if (menuInRoles.Where(e => e.menu.menuId == model.menuId).Count() == 0)
+                {
+                    MenuInRoleEntity menuInRole = new MenuInRoleEntity();
+                    entity.creationDate = DateTime.UtcNow;
+                    entity.creationUserId = model.creationUserId;
+                    menuInRole.menuId = model.menuId;
+                    menuInRole.roleId = model.roleId;
+                    await _databaseService.MenuInRole.AddAsync(menuInRole);
+                    await _databaseService.SaveAsync();
+                }
+
                 return model;
             }
             catch (Exception ex)

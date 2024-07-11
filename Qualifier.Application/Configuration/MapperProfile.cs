@@ -32,6 +32,11 @@ using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByS
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupById;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByCompanyId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
+using Qualifier.Application.Database.ControlType.Commands.CreateControlType;
+using Qualifier.Application.Database.ControlType.Commands.UpdateControlType;
+using Qualifier.Application.Database.ControlType.Queries.GetAllControlTypesByCompanyId;
+using Qualifier.Application.Database.ControlType.Queries.GetControlTypeById;
+using Qualifier.Application.Database.ControlType.Queries.GetControlTypesByCompanyId;
 using Qualifier.Application.Database.Creator.Commands.CreateCreator;
 using Qualifier.Application.Database.Creator.Commands.UpdateCreator;
 using Qualifier.Application.Database.Creator.Queries.GetAllCreatorsByVersionId;
@@ -87,6 +92,16 @@ using Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLevel;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelById;
 using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelsByCompanyId;
+using Qualifier.Application.Database.Menace.Commands.CreateMenace;
+using Qualifier.Application.Database.Menace.Commands.UpdateMenace;
+using Qualifier.Application.Database.Menace.Queries.GetAllMenacesByCompanyId;
+using Qualifier.Application.Database.Menace.Queries.GetMenaceById;
+using Qualifier.Application.Database.Menace.Queries.GetMenacesByCompanyId;
+using Qualifier.Application.Database.MenaceType.Commands.CreateMenaceType;
+using Qualifier.Application.Database.MenaceType.Commands.UpdateMenaceType;
+using Qualifier.Application.Database.MenaceType.Queries.GetAllMenaceTypesByCompanyId;
+using Qualifier.Application.Database.MenaceType.Queries.GetMenaceTypeById;
+using Qualifier.Application.Database.MenaceType.Queries.GetMenaceTypesByCompanyId;
 using Qualifier.Application.Database.Menu.Commands.CreateMenu;
 using Qualifier.Application.Database.Menu.Commands.UpdateMenu;
 using Qualifier.Application.Database.Menu.Queries.GetAllMenusByCompanyId;
@@ -137,6 +152,15 @@ using Qualifier.Application.Database.Reviewer.Commands.CreateReviewer;
 using Qualifier.Application.Database.Reviewer.Commands.UpdateReviewer;
 using Qualifier.Application.Database.Reviewer.Queries.GetAllReviewersByVersionId;
 using Qualifier.Application.Database.Reviewer.Queries.GetReviewerById;
+using Qualifier.Application.Database.Risk.Commands.CreateRisk;
+using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
+using Qualifier.Application.Database.Risk.Queries.GetRiskById;
+using Qualifier.Application.Database.Risk.Queries.GetRisksByCompanyId;
+using Qualifier.Application.Database.RiskLevel.Commands.CreateRiskLevel;
+using Qualifier.Application.Database.RiskLevel.Commands.UpdateRiskLevel;
+using Qualifier.Application.Database.RiskLevel.Queries.GetAllRiskLevelsByCompanyId;
+using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelById;
+using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelsByCompanyId;
 using Qualifier.Application.Database.Role.Commands.CreateRole;
 using Qualifier.Application.Database.Role.Commands.UpdateRole;
 using Qualifier.Application.Database.Role.Queries.GetAllRolesByCompanyId;
@@ -201,6 +225,16 @@ using Qualifier.Application.Database.Version.Commands.CreateVersion;
 using Qualifier.Application.Database.Version.Commands.UpdateVersion;
 using Qualifier.Application.Database.Version.Queries.GetVersionById;
 using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
+using Qualifier.Application.Database.Vulnerability.Commands.CreateVulnerability;
+using Qualifier.Application.Database.Vulnerability.Commands.UpdateVulnerability;
+using Qualifier.Application.Database.Vulnerability.Queries.GetAllVulnerabilitiesByCompanyId;
+using Qualifier.Application.Database.Vulnerability.Queries.GetVulnerabilitiesByCompanyId;
+using Qualifier.Application.Database.Vulnerability.Queries.GetVulnerabilityById;
+using Qualifier.Application.Database.VulnerabilityType.Commands.CreateVulnerabilityType;
+using Qualifier.Application.Database.VulnerabilityType.Commands.UpdateVulnerabilityType;
+using Qualifier.Application.Database.VulnerabilityType.Queries.GetAllVulnerabilityTypesByCompanyId;
+using Qualifier.Application.Database.VulnerabilityType.Queries.GetVulnerabilityTypeById;
+using Qualifier.Application.Database.VulnerabilityType.Queries.GetVulnerabilityTypesByCompanyId;
 using Qualifier.Domain.Entities;
 using static Qualifier.Application.Database.ControlEvaluation.Commands.CreateControlEvaluation.CreateControlEvaluationDto;
 using static Qualifier.Application.Database.ControlEvaluation.Commands.UpdateControlEvaluation.UpdateControlEvaluationDto;
@@ -591,9 +625,69 @@ namespace Qualifier.Application.Configuration
             CreateMap<RoleEntity, GetAllRoleInUsersByUserIdRoleDto>().ReverseMap();
             CreateMap<RoleInUserEntity, GetRoleInUsersByUserIdDto>().ReverseMap();
             CreateMap<RoleEntity, GetRoleInUsersByUserIdRoleDto>().ReverseMap();
+
+            //MenaceType
+            CreateMap<MenaceTypeEntity, CreateMenaceTypeDto>().ReverseMap();
+            CreateMap<MenaceTypeEntity, UpdateMenaceTypeDto>().ReverseMap();
+            CreateMap<MenaceTypeEntity, GetMenaceTypeByIdDto>().ReverseMap();
+            CreateMap<MenaceTypeEntity, GetAllMenaceTypesByCompanyIdDto>().ReverseMap();
+            CreateMap<MenaceTypeEntity, GetMenaceTypesByCompanyIdDto>().ReverseMap();
+
+            //Menace
+            CreateMap<MenaceEntity, CreateMenaceDto>().ReverseMap();
+            CreateMap<MenaceEntity, UpdateMenaceDto>().ReverseMap();
+            CreateMap<MenaceEntity, GetMenaceByIdDto>().ReverseMap();
+            CreateMap<MenaceEntity, GetAllMenacesByCompanyIdDto>().ReverseMap();
+            CreateMap<MenaceTypeEntity, GetAllMenacesByCompanyIdMenaceTypeDto>().ReverseMap();
+            CreateMap<MenaceEntity, GetMenacesByCompanyIdDto>().ReverseMap();
+            CreateMap<MenaceTypeEntity, GetMenacesByCompanyIdMenaceTypeDto>().ReverseMap();
+
+            //VulnerabilityType
+            CreateMap<VulnerabilityTypeEntity, CreateVulnerabilityTypeDto>().ReverseMap();
+            CreateMap<VulnerabilityTypeEntity, UpdateVulnerabilityTypeDto>().ReverseMap();
+            CreateMap<VulnerabilityTypeEntity, GetVulnerabilityTypeByIdDto>().ReverseMap();
+            CreateMap<VulnerabilityTypeEntity, GetAllVulnerabilityTypesByCompanyIdDto>().ReverseMap();
+            CreateMap<VulnerabilityTypeEntity, GetVulnerabilityTypesByCompanyIdDto>().ReverseMap();
+
+            //Vulnerability
+            CreateMap<VulnerabilityEntity, CreateVulnerabilityDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, UpdateVulnerabilityDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, GetVulnerabilityByIdDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, GetAllVulnerabilitiesByCompanyIdDto>().ReverseMap();
+            CreateMap<VulnerabilityTypeEntity, GetAllVulnerabilitiesByCompanyIdVulnerabilityTypeDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, GetVulnerabilitiesByCompanyIdDto>().ReverseMap();
+            CreateMap<VulnerabilityTypeEntity, GetVulnerabilitiesByCompanyIdVulnerabilityTypeDto>().ReverseMap();
+
+            //ControlType
+            CreateMap<ControlTypeEntity, CreateControlTypeDto>().ReverseMap();
+            CreateMap<ControlTypeEntity, UpdateControlTypeDto>().ReverseMap();
+            CreateMap<ControlTypeEntity, GetControlTypeByIdDto>().ReverseMap();
+            CreateMap<ControlTypeEntity, GetAllControlTypesByCompanyIdDto>().ReverseMap();
+            CreateMap<ControlTypeEntity, GetControlTypesByCompanyIdDto>().ReverseMap();
+
+            //RiskLevel
+            CreateMap<RiskLevelEntity, CreateRiskLevelDto>().ReverseMap();
+            CreateMap<RiskLevelEntity, UpdateRiskLevelDto>().ReverseMap();
+            CreateMap<RiskLevelEntity, GetRiskLevelByIdDto>().ReverseMap();
+            CreateMap<RiskLevelEntity, GetAllRiskLevelsByCompanyIdDto>().ReverseMap();
+            CreateMap<RiskLevelEntity, GetRiskLevelsByCompanyIdDto>().ReverseMap();
+
+            //Risk
+            CreateMap<RiskEntity, CreateRiskDto>().ReverseMap();
+            CreateMap<RiskEntity, UpdateRiskDto>().ReverseMap();
+            CreateMap<RiskEntity, GetRiskByIdDto>().ReverseMap();
+            CreateMap<RiskEntity, GetRisksByCompanyIdDto>().ReverseMap();
+            CreateMap<ControlEntity, GetRisksByCompanyIdControlDto>().ReverseMap();
+            CreateMap<ControlTypeEntity, GetRisksByCompanyIdControlTypeDto>().ReverseMap();
+            CreateMap<MenaceEntity, GetRisksByCompanyIdMenaceDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetRisksByCompanyIdResponsibleDto>().ReverseMap();
+            CreateMap<RiskLevelEntity, GetRisksByCompanyIdRiskLevelDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, GetRisksByCompanyIdVulnerabilityDto>().ReverseMap();
+
         }
     }
 }
+
 
 
 

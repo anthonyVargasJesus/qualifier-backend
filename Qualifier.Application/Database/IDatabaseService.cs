@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Qualifier.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Qualifier.Application.Database
 {
@@ -48,6 +49,13 @@ namespace Qualifier.Application.Database
         DbSet<ActivesInventoryEntity> ActivesInventory { get; set; }
         DbSet<ValuationInActiveEntity> ValuationInActive { get; set; }
         DbSet<OptionInMenuEntity> OptionInMenu { get; set; }
+        DbSet<MenaceTypeEntity> MenaceType { get; set; }
+        DbSet<MenaceEntity> Menace { get; set; }
+        DbSet<VulnerabilityTypeEntity> VulnerabilityType { get; set; }
+        DbSet<VulnerabilityEntity> Vulnerability { get; set; }
+        DbSet<ControlTypeEntity> ControlType { get; set; }
+        DbSet<RiskLevelEntity> RiskLevel { get; set; }
+        public DbSet<RiskEntity> Risk { get; set; }
         Task<bool> SaveAsync();
     }
 }

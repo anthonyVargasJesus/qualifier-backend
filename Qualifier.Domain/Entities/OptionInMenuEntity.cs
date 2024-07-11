@@ -9,6 +9,7 @@ namespace Qualifier.Domain.Entities
         public int optionId { get; set; }
         public int order { get; set; }
         public int? companyId { get; set; }
+
         public MenuEntity menu { get; set; }
         public OptionEntity option { get; set; }
     }

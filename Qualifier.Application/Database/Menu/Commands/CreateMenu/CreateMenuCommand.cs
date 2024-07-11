@@ -33,9 +33,10 @@ namespace Qualifier.Application.Database.Menu.Commands.CreateMenu
                 await _databaseService.SaveAsync();
                 return model;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -13,7 +13,7 @@ namespace Qualifier.Api
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Servicios del Módulo Registro de relación de MM",
+                    Title = "Servicios del Módulo Registro de relación de MM no sorteado versión final",
                     Description = "Administración de APIs"
                 });
 

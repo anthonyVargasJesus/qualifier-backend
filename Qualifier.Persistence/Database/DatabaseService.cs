@@ -55,7 +55,14 @@ namespace Qualifier.Persistence.Database
         public DbSet<ActivesInventoryEntity> ActivesInventory { get; set; }
         public DbSet<ValuationInActiveEntity> ValuationInActive { get; set; }
         public DbSet<OptionInMenuEntity> OptionInMenu { get; set; }
-        
+        public DbSet<MenaceTypeEntity> MenaceType { get; set; }
+        public DbSet<MenaceEntity> Menace { get; set; }
+        public DbSet<VulnerabilityTypeEntity> VulnerabilityType { get; set; }
+        public DbSet<VulnerabilityEntity> Vulnerability { get; set; }
+        public DbSet<ControlTypeEntity> ControlType { get; set; }
+        public DbSet<RiskLevelEntity> RiskLevel { get; set; }
+        public DbSet<RiskEntity> Risk { get; set; }
+
         public async Task<bool> SaveAsync()
         {
 
@@ -113,6 +120,13 @@ namespace Qualifier.Persistence.Database
             new ActivesInventoryConfiguration(modelBuilder.Entity<ActivesInventoryEntity>());
             new ValuationInActiveConfiguration(modelBuilder.Entity<ValuationInActiveEntity>());
             new OptionInMenuConfiguration(modelBuilder.Entity<OptionInMenuEntity>());
+            new MenaceTypeConfiguration(modelBuilder.Entity<MenaceTypeEntity>());
+            new MenaceConfiguration(modelBuilder.Entity<MenaceEntity>());
+            new VulnerabilityTypeConfiguration(modelBuilder.Entity<VulnerabilityTypeEntity>());
+            new VulnerabilityConfiguration(modelBuilder.Entity<VulnerabilityEntity>());
+            new ControlTypeConfiguration(modelBuilder.Entity<ControlTypeEntity>());
+            new RiskLevelConfiguration(modelBuilder.Entity<RiskLevelEntity>());
+            new RiskConfiguration(modelBuilder.Entity<RiskEntity>());
         }
 
     }

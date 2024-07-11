@@ -60,7 +60,13 @@ namespace Qualifier.Persistence
             services.AddScoped<IUserStateRepository, UserStateRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleInUserRepository, RoleInUserRepository>();
-
+            services.AddScoped<IMenaceTypeRepository, MenaceTypeRepository>();
+            services.AddScoped<IMenaceRepository, MenaceRepository>();
+            services.AddScoped<IVulnerabilityTypeRepository, VulnerabilityTypeRepository>();
+            services.AddScoped<IVulnerabilityRepository, VulnerabilityRepository>();
+            services.AddScoped<IControlTypeRepository, ControlTypeRepository>();
+            services.AddScoped<IRiskLevelRepository, RiskLevelRepository>();
+            services.AddScoped<IRiskRepository, RiskRepository>();
 
             return services;
         }
