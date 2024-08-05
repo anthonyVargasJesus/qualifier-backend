@@ -2,6 +2,7 @@ using AutoMapper;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
+using Qualifier.Domain.Interfaces;
 
 namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRequirementEvaluation
 
@@ -11,11 +12,13 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
 
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
+        private readonly IEvaluationRepository _evaluationRepository;
 
-        public CreateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper)
+        public CreateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IEvaluationRepository evaluationRepository)
         {
             _databaseService = databaseService;
             _mapper = mapper;
+            _evaluationRepository = evaluationRepository;
         }
         public async Task<Object> Execute(CreateRequirementEvaluationDto model)
         {
@@ -44,6 +47,10 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
                         await _databaseService.ReferenceDocumentation.AddAsync(entity2);
                         await _databaseService.SaveAsync();
                     }
+
+                const int EDITION_EVALUATION_STATE_ID = 2;
+                await _evaluationRepository.UpdateState(entity.evaluationId, EDITION_EVALUATION_STATE_ID);
+
                 return model;
             }
             catch (Exception )

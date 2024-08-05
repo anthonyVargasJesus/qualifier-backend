@@ -17,6 +17,7 @@ namespace Qualifier.Persistence.Repositories
             entity.roleId = id;
             entity.updateDate = DateTime.UtcNow;
             var entry = _context.Attach(entity);
+            entry.Property(x => x.code).IsModified = true;
             entry.Property(x => x.name).IsModified = true;
             entry.Property(x => x.updateDate).IsModified = true;
             entry.Property(x => x.updateUserId).IsModified = true;

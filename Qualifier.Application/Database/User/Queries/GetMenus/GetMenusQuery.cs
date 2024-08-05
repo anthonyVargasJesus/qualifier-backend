@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelsByCompanyId;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Domain.Entities;
 
@@ -23,18 +22,35 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                 LoginEntity login = new LoginEntity();
 
                 login.roles = await (from roleInUser in _databaseService.RoleInUser
-                               join role in _databaseService.Role on roleInUser.role equals role
-                               where roleInUser.userId == userId && (roleInUser.isDeleted == null || roleInUser.isDeleted == false)
-                               select new RoleEntity
-                               {
-                                   roleId = role.roleId,
-                                   name = role.name,
-                                   code = role.code
-                               }).ToListAsync();
+                                     join role in _databaseService.Role on roleInUser.role equals role
+                                     where roleInUser.userId == userId && (roleInUser.isDeleted == null || roleInUser.isDeleted == false)
+                                     select new RoleEntity
+                                     {
+                                         roleId = role.roleId,
+                                         name = role.name,
+                                         code = role.code
+                                     }).ToListAsync();
 
-                asignMenus(login.roles);
+
+                var user = await (from item in _databaseService.User
+                                  join standard in _databaseService.Standard on item.standard equals standard
+                                  where ((item.isDeleted == null || item.isDeleted == false) && item.userId == userId)
+                                  select new UserEntity()
+                                  {
+                                      standardId = item.standardId,
+                                      standard = new StandardEntity
+                                      {
+                                          name = standard.name,
+                                      },
+                                  }).FirstOrDefaultAsync();
+
+                var standardName = "";
+                if (user != null)
+                    if (user.standard != null)
+                        standardName = user.standard.name;
+
+                asignMenus(login.roles, user.standardId, standardName);
                 login.setMenus(login.roles);
-
 
                 if (login.menus != null)
                     login.menus = login.menus.OrderBy(x => x.order).ToList();
@@ -50,8 +66,10 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
             }
         }
 
-        private void asignMenus(List<RoleEntity> roles)
+        private void asignMenus(List<RoleEntity> roles, int standardId, string standardName)
         {
+            const string CURRENT_STANDARD_MENU = "CURRENT_STANDARD";
+
             foreach (RoleEntity role in roles)
             {
                 role.menus = (from menuInRole in _databaseService.MenuInRole
@@ -65,23 +83,60 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                                   order = menuInRole.order,
                               }).ToList();
 
-                asignOptions(role.menus, role.roleId);
+          
+
+                asignOptions(role.menus, role.roleId, standardId, standardName);
+                foreach (var menu in role.menus)
+                    if (menu.name == CURRENT_STANDARD_MENU)
+                    {
+                        menu.name = standardName;
+                    }
             }
         }
 
-        private void asignOptions(List<MenuEntity> menus, int roleId)
+        private void asignOptions(List<MenuEntity> menus, int roleId, int standardId, string standardName)
         {
+            const string CURRENT_STANDARD_MENU = "CURRENT_STANDARD";
+            const string CURRENT_STANDARD_ROUTE = "edit-standard";
+
             foreach (MenuEntity menu in menus)
-                menu.options = (from optionInMenuInRole in _databaseService.OptionInMenuInRole
-                                join option in _databaseService.Option on optionInMenuInRole.option equals option
-                                where optionInMenuInRole.menuId == menu.menuId && optionInMenuInRole.roleId == roleId && (optionInMenuInRole.isDeleted == null || optionInMenuInRole.isDeleted == false)
-                                select new OptionEntity
-                                {
-                                    optionId = option.optionId,
-                                    name = option.name,
-                                    url = option.url
-                                }).ToList();
+            {
+                var options = (from optionInMenuInRole in _databaseService.OptionInMenuInRole
+                               join option in _databaseService.Option on optionInMenuInRole.option equals option
+                               where optionInMenuInRole.menuId == menu.menuId && optionInMenuInRole.roleId == roleId && (optionInMenuInRole.isDeleted == null || optionInMenuInRole.isDeleted == false)
+                               select new OptionEntity
+                               {
+                                   optionId = option.optionId,
+                                   name = option.name,
+                                   url = option.url
+                               }).ToList();
+
+
+                foreach (var option in options)
+                    if (option.url == CURRENT_STANDARD_ROUTE)
+                    {
+                        option.url = option.url + "/" + standardId + "/1";
+                        option.name = standardName;
+                    }
+
+                if (menu.name == CURRENT_STANDARD_MENU)
+                {
+                    foreach (var option in options)
+                    {
+                        option.url = option.url + "/" + standardId;
+                        //option.name = standardName;
+                    }
+                          
+                        
+                }
+
+                    menu.options = options;
+
+            }
+
+
         }
+
 
 
     }

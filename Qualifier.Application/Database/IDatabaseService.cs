@@ -55,7 +55,9 @@ namespace Qualifier.Application.Database
         DbSet<VulnerabilityEntity> Vulnerability { get; set; }
         DbSet<ControlTypeEntity> ControlType { get; set; }
         DbSet<RiskLevelEntity> RiskLevel { get; set; }
-        public DbSet<RiskEntity> Risk { get; set; }
+        DbSet<RiskEntity> Risk { get; set; }
+        DbSet<CompanyEntity> Company { get; set; }
+        DbSet<EvaluationStateEntity> EvaluationState { get; set; }
         Task<bool> SaveAsync();
     }
 }

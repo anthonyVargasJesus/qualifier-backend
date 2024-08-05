@@ -24,6 +24,7 @@ namespace Qualifier.Persistence.Repositories
             entry.Property(x => x.email).IsModified = true;
             entry.Property(x => x.phone).IsModified = true;
             entry.Property(x => x.userStateId).IsModified = true;
+            entry.Property(x => x.standardId).IsModified = true;
             entry.Property(x => x.documentNumber).IsModified = true;
             entry.Property(x => x.updateDate).IsModified = true;
             entry.Property(x => x.updateUserId).IsModified = true;

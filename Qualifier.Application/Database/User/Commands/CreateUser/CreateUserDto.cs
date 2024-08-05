@@ -16,7 +16,7 @@ namespace Qualifier.Application.Database.User.Commands.CreateUser
         public string documentNumber { get; set; }
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }
-
+        public int? standardId { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {
             if (name == null)

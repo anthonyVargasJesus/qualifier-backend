@@ -10,6 +10,7 @@ namespace Qualifier.Application.Database.User.Queries.GetUserById
         public string email { get; set; }
         public string phone { get; set; }
         public int userStateId { get; set; }
+        public int standardId { get; set; }
         public string image { get; set; }
         public string documentNumber { get; set; }
         public GetUserByIdUserStateDto userState { get; set; }

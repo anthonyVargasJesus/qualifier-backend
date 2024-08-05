@@ -290,6 +290,10 @@ using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
 using Qualifier.Application.Database.Risk.Commands.DeleteRisk;
 using Qualifier.Application.Database.Risk.Queries.GetRiskById;
 using Qualifier.Application.Database.Risk.Queries.GetRisksByCompanyId;
+using Qualifier.Application.Database.Company.Queries.GetCompanyById;
+using Qualifier.Application.Database.Company.Commands.UpdateCompany;
+using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
+using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 
 
 
@@ -382,6 +386,8 @@ namespace Qualifier.Application
             services.AddTransient<IGetEvaluationByIdQuery, GetEvaluationByIdQuery>();
             services.AddTransient<IGetDashboardQuery, GetDashboardQuery>();
             services.AddTransient<IGetControlsDashboardQuery, GetControlsDashboardQuery>();
+            services.AddTransient<IGetAllEvaluationsByCompanyIdQuery, GetAllEvaluationsByCompanyIdQuery>();
+            services.AddTransient<IGetCurrentEvaluationQuery, GetCurrentEvaluationQuery>();
 
             //RequirementEvaluation
             services.AddTransient<ICreateRequirementEvaluationCommand, CreateRequirementEvaluationCommand>();
@@ -697,6 +703,10 @@ namespace Qualifier.Application
             services.AddTransient<IDeleteRiskCommand, DeleteRiskCommand>();
             services.AddTransient<IGetRiskByIdQuery, GetRiskByIdQuery>();
             services.AddTransient<IGetRisksByCompanyIdQuery, GetRisksByCompanyIdQuery>();
+
+            //Company
+            services.AddTransient<IGetCompanyByIdQuery, GetCompanyByIdQuery>();
+            services.AddTransient<IUpdateCompanyCommand, UpdateCompanyCommand>();
 
             return services;
         }

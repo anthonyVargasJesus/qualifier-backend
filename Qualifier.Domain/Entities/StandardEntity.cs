@@ -13,6 +13,7 @@ namespace Qualifier.Domain.Entities
         public StandardEntity standard { get; set; }
         public ICollection<EvaluationEntity> evaluations { get; set; }
         public ICollection<StandardEntity> standards { get; set; }
+        public ICollection<UserEntity> users { get; set; }
 
         [NotMapped]
         public List<RequirementEntity> requirements { get; set; }

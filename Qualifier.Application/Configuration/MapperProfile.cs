@@ -11,6 +11,8 @@ using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompa
 using Qualifier.Application.Database.Approver.Commands.CreateApprover;
 using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
 using Qualifier.Application.Database.Approver.Queries.GetApproverById;
+using Qualifier.Application.Database.Company.Commands.UpdateCompany;
+using Qualifier.Application.Database.Company.Queries.GetCompanyById;
 using Qualifier.Application.Database.ConfidentialityLevel.Commands.CreateConfidentialityLevel;
 using Qualifier.Application.Database.ConfidentialityLevel.Commands.UpdateConfidentialityLevel;
 using Qualifier.Application.Database.ConfidentialityLevel.Queries.GetAllConfidentialityLevelsByCompanyId;
@@ -64,7 +66,9 @@ using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypeById;
 using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypesByCompanyId;
 using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
+using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
 using Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
@@ -322,8 +326,10 @@ namespace Qualifier.Application.Configuration
             CreateMap<EvaluationEntity, CreateEvaluationDto>().ReverseMap();
             CreateMap<EvaluationEntity, UpdateEvaluationDto>().ReverseMap();
             CreateMap<EvaluationEntity, GetEvaluationsByCompanyIdDto>().ReverseMap();
-            CreateMap<StandardEntity, GetEvaluationsByCompanyIdStandardDto>().ReverseMap();
+            CreateMap<EvaluationStateEntity, GetEvaluationsByCompanyIdEvaluationStateDto>().ReverseMap();
             CreateMap<EvaluationEntity, GetEvaluationByIdDto>().ReverseMap();
+            CreateMap<EvaluationEntity, GetAllEvaluationsByCompanyIdDto>().ReverseMap();
+            CreateMap<EvaluationEntity, GetCurrentEvaluationDto>().ReverseMap();
 
             //RequirementEvaluation
             CreateMap<RequirementEvaluationEntity, CreateRequirementEvaluationDto>().ReverseMap();
@@ -683,7 +689,13 @@ namespace Qualifier.Application.Configuration
             CreateMap<ResponsibleEntity, GetRisksByCompanyIdResponsibleDto>().ReverseMap();
             CreateMap<RiskLevelEntity, GetRisksByCompanyIdRiskLevelDto>().ReverseMap();
             CreateMap<VulnerabilityEntity, GetRisksByCompanyIdVulnerabilityDto>().ReverseMap();
+            
+            //Company
+            CreateMap<CompanyEntity, GetCompanyByIdDto>().ReverseMap();
+            CreateMap<CompanyEntity, UpdateCompanyDto>().ReverseMap();
 
+            //EvaluationState
+            CreateMap<EvaluationStateEntity, GetCurrentEvaluationDtoEvaluationStateDto>().ReverseMap();
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Qualifier.Application.Database.Role.Commands.CreateRole
     public class CreateRoleDto
     {
         public int roleId { get; set; }
+        public string code { get; set; }
         public string name { get; set; }
         public int? creationUserId { get; set; }
         public int? companyId { get; set; }

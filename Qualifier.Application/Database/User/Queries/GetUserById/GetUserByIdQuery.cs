@@ -36,6 +36,7 @@ namespace Qualifier.Application.Database.User.Queries.GetUserById
                                         image = item.image,
                                         documentNumber = item.documentNumber,
                                         companyId = item.companyId,
+                                        standardId = item.standardId,
                                         userState = new UserStateEntity
                                         {
                                             name = userState.name,

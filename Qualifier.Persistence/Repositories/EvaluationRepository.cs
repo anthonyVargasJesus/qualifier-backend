@@ -12,6 +12,32 @@ namespace Qualifier.Persistence.Repositories
             _context = context;
         }
 
+        public async Task UpdateState(int id, int evaluationStateId)
+        {
+            EvaluationEntity entity = new EvaluationEntity();
+            entity.evaluationId = id;
+            entity.evaluationStateId = evaluationStateId;
+            entity.updateDate = DateTime.UtcNow;
+            var entry = _context.Attach(entity);
+            entry.Property(x => x.evaluationStateId).IsModified = true;
+            entry.Property(x => x.updateDate).IsModified = true;
+            entry.Property(x => x.updateUserId).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateCurrentState(int id, bool isCurrent)
+        {
+            EvaluationEntity entity = new EvaluationEntity();
+            entity.evaluationId = id;
+            entity.isCurrent = isCurrent;
+            entity.updateDate = DateTime.UtcNow;
+            var entry = _context.Attach(entity);
+            entry.Property(x => x.isCurrent).IsModified = true;
+            entry.Property(x => x.updateDate).IsModified = true;
+            entry.Property(x => x.updateUserId).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task Update(int id, EvaluationEntity entity)
         {
             entity.evaluationId = id;
@@ -22,7 +48,9 @@ namespace Qualifier.Persistence.Repositories
             entry.Property(x => x.startDate).IsModified = true;
             entry.Property(x => x.endDate).IsModified = true;
             entry.Property(x => x.description).IsModified = true;
-            entry.Property(x => x.standardId).IsModified = true;
+            entry.Property(x => x.isGapAnalysis).IsModified = true;
+            entry.Property(x => x.isCurrent).IsModified = true;
+            entry.Property(x => x.referenceEvaluationId).IsModified = true;
             entry.Property(x => x.updateDate).IsModified = true;
             entry.Property(x => x.updateUserId).IsModified = true;
             await _context.SaveChangesAsync();

@@ -1,7 +1,11 @@
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Office.Interop.Excel;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
+using Qualifier.Domain.Entities;
 using Qualifier.Domain.Interfaces;
 
 namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.DeleteOptionInMenuInRole
@@ -10,11 +14,12 @@ namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.DeleteOptio
     {
         private readonly IDatabaseService _databaseService;
         private readonly IOptionInMenuInRoleRepository _optionInMenuInRoleRepository;
-
-        public DeleteOptionInMenuInRoleCommand(IDatabaseService databaseService, IOptionInMenuInRoleRepository optionInMenuInRoleRepository)
+        private readonly IMenuInRoleRepository _menuInRoleRepository;
+        public DeleteOptionInMenuInRoleCommand(IDatabaseService databaseService, IOptionInMenuInRoleRepository optionInMenuInRoleRepository, IMenuInRoleRepository menuInRoleRepository)
         {
             _databaseService = databaseService;
             _optionInMenuInRoleRepository = optionInMenuInRoleRepository;
+            this._menuInRoleRepository = menuInRoleRepository;
         }
 
         public async Task<Object> Execute(int id, int updateUserId)
@@ -25,7 +30,56 @@ namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.DeleteOptio
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
+
+                var entity = await (from item in _databaseService.OptionInMenuInRole
+                                    where ((item.isDeleted == null || item.isDeleted == false)
+                                    && item.optionInMenuInRoleId == id)
+                                    select new OptionInMenuInRoleEntity()
+                                    {
+                                        optionInMenuInRoleId = item.optionInMenuInRoleId,
+                                        menuId = item.menuId,
+                                        roleId = item.roleId,
+                                        companyId = item.companyId,
+                                    }).FirstOrDefaultAsync();
+
                 await _optionInMenuInRoleRepository.Delete(id, updateUserId);
+
+                if (entity != null)
+                {
+                    List<OptionInMenuInRoleEntity> optionInMenuInRoles = (from item in _databaseService.OptionInMenuInRole
+                                                                          where item.menuId == entity.menuId && item.roleId == entity.roleId 
+                                                                          && (item.isDeleted == null || item.isDeleted == false)
+                                                                          select new OptionInMenuInRoleEntity()
+                                                                          {
+                                                                              optionInMenuInRoleId = item.optionInMenuInRoleId,
+                                                                          }).ToList();
+
+                    if (optionInMenuInRoles.Count() == 0)
+                    {
+                        var menuInRole = (from item in _databaseService.MenuInRole
+                                          where ((item.isDeleted == null || item.isDeleted == false)
+                                          && item.menuId == entity.menuId && item.roleId == entity.roleId
+                                          && item.companyId == entity.companyId)
+                                          select new MenuInRoleEntity
+                                          {
+                                              menuInRoleId = item.menuInRoleId,
+                                          }).FirstOrDefault();
+
+                        if (menuInRole != null)
+                        {
+                            await _menuInRoleRepository.Delete(menuInRole.menuInRoleId, updateUserId);
+                        }
+                           
+
+
+
+                    }
+
+                }
+
+
+
+   
 
                 BaseResponseCommandDto baseResponseCommandDto = new BaseResponseCommandDto();
                 baseResponseCommandDto.response = "¡Registro eliminado!";

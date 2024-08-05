@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Qualifier.Application.Database.DocumentType.Queries.GetAllDocumentTypesByCompanyId;
 using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
+using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
 using Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
@@ -22,6 +25,43 @@ namespace Qualifier.Api.Controllers
     [Authorize]
     public class EvaluationController : ControllerBase
     {
+
+        [HttpGet("current")]
+        public async Task<IActionResult> Get(int id, [FromServices] IGetCurrentEvaluationQuery query)
+        {
+            var res = await query.Execute(id);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+
+                return BadRequest(res);
+            else
+                return Ok(new
+                {
+                    data = res
+                });
+        }
+
+        [HttpGet("All")]
+        public async Task<IActionResult> GetAll([FromServices] IGetAllEvaluationsByCompanyIdQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId;
+
+            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+
+            Notification notification = new Notification();
+            if (!success)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            var res = await query.Execute(companyId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
+
 
         [HttpGet]
         [Route("excel-dashboard")]
@@ -138,11 +178,17 @@ namespace Qualifier.Api.Controllers
             int companyId;
             bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
 
+            int standardId;
+            bool success3 = int.TryParse(JwtTokenProvider.GetStandardIdFromToken(accessToken), out standardId);
+
             if (success)
                 model.creationUserId = userId;
 
             if (success2)
                 model.companyId = companyId;
+
+            if (success3)
+                model.standardId = standardId;
 
             var res = await createEvaluationCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -164,6 +210,12 @@ namespace Qualifier.Api.Controllers
 
             if (success)
                 model.updateUserId = userId;
+
+            int companyId;
+
+            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            if (success2)
+                model.companyId = companyId;
 
             var res = await updateEvaluationCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))

@@ -13,7 +13,7 @@ namespace Qualifier.Common.Api
 {
     public class JwtTokenProvider
     {
-        public static string GenerateToken(IConfiguration _configuration, int userId, string fullName, string currentRole, List<int> roles, int companyId)
+        public static string GenerateToken(IConfiguration _configuration, int userId, string fullName, string currentRole, List<int> roles, int companyId, int standardId, string standardName)
         {
             string? secretKey = _configuration["Authentication:SecretKey"];
 
@@ -27,6 +27,8 @@ namespace Qualifier.Common.Api
                  new Claim("cr", currentRole),
                  new Claim("userId", userId.ToString()),
                  new Claim("companyId", companyId.ToString()),
+                 new Claim("standardId", standardId.ToString()),
+                 new Claim("cs", standardName.ToString()),
                  new Claim("rls",  JsonConvert.SerializeObject(roles)),
             };
 
@@ -58,6 +60,24 @@ namespace Qualifier.Common.Api
             }
 
             var companyId = TokenInfo["companyId"];
+
+            return companyId;
+        }
+
+        public static string GetStandardIdFromToken(string token)
+        {
+            var TokenInfo = new Dictionary<string, string>();
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token);
+            var claims = jwtSecurityToken.Claims.ToList();
+
+            foreach (var claim in claims)
+            {
+                TokenInfo.Add(claim.Type, claim.Value);
+            }
+
+            var companyId = TokenInfo["standardId"];
 
             return companyId;
         }

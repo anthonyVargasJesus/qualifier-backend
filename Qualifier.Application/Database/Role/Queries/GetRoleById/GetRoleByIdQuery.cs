@@ -24,6 +24,7 @@ namespace Qualifier.Application.Database.Role.Queries.GetRoleById
                                     select new RoleEntity()
                                     {
                                         roleId = item.roleId,
+                                        code = item.code,
                                         name = item.name,
                                     }).FirstOrDefaultAsync();
 

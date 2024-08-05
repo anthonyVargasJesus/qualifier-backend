@@ -34,7 +34,8 @@ namespace Qualifier.Application.Database.User.Commands.Login
 
                 var entity = (from user in _databaseService.User
                             join u2 in _databaseService.UserState on user.userState equals u2
-                            where user.email == loginTryDto.email && (user.isDeleted == null || user.isDeleted == false)
+                            join standard in _databaseService.Standard on user.standardId equals standard.standardId
+                              where user.email == loginTryDto.email && (user.isDeleted == null || user.isDeleted == false)
                             select new UserEntity
                             {
                                 userId = user.userId,
@@ -44,6 +45,8 @@ namespace Qualifier.Application.Database.User.Commands.Login
                                 password = user.password,
                                 email = user.email,
                                 companyId = user.companyId,
+                                standardId = user.standardId,
+                                standard = new StandardEntity { standardId = standard.standardId, name = standard.name},
                                 userState = new UserStateEntity { userStateId = u2.userStateId, name = u2.name, value = u2.value },
                             }).FirstOrDefault();
 
@@ -71,13 +74,18 @@ namespace Qualifier.Application.Database.User.Commands.Login
                 if (domainNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponseWithTitle(domainNotification.errors, noAccessTitle);
 
-                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, login.name, getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId);
+                string standardName = "";
+                if (entity.standard != null)
+                    standardName = entity.standard.name;
+
+                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, login.name, getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, entity.standardId, standardName);
 
                 return _mapper.Map<LoginUserLoginDto>(login);
             }
             catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -19,6 +19,11 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.HasOne(x => x.userState)
             .WithMany(x => x.users)
             .HasForeignKey(x => x.userStateId);
+
+            entityBuilder.HasOne(x => x.standard)
+           .WithMany(x => x.users)
+           .HasForeignKey(x => x.standardId);
+
         }
     }
 }

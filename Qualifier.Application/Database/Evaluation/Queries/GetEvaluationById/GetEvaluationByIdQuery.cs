@@ -28,8 +28,15 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById
                                         startDate = item.startDate,
                                         endDate = item.endDate,
                                         description = item.description,
-                                        standardId = item.standardId,
-                                        standard = new StandardEntity { standardId = item.standardId, name = standard.name },
+                                        referenceEvaluationId = item.referenceEvaluationId,
+                                        isGapAnalysis = item.isGapAnalysis,
+                                        standardId = standard.standardId,
+                                        isCurrent = item.isCurrent,
+                                        standard = new StandardEntity
+                                        {
+                                            standardId = standard.standardId,
+                                            name = standard.name,
+                                        },
                                     }).FirstOrDefaultAsync();
 
                 return _mapper.Map<GetEvaluationByIdDto>(entity);

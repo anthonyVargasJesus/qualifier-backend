@@ -15,7 +15,7 @@ namespace Qualifier.Application.Database.User.Commands.UpdateUser
         public string? image { get; set; }
         public string documentNumber { get; set; }
         public int? updateUserId { get; set; }
-
+        public int? standardId { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {
             if (name == null)

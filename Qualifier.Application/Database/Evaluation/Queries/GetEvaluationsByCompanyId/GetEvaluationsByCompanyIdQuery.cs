@@ -21,7 +21,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByComp
             try
             {
                 var entities = await (from evaluation in _databaseService.Evaluation
-                                      join standard in _databaseService.Standard on evaluation.standard equals standard
+                                      join evaluationState in _databaseService.EvaluationState on evaluation.evaluationState equals evaluationState
                                       where ((evaluation.isDeleted == null || evaluation.isDeleted == false) && evaluation.companyId == companyId)
                                       && (evaluation.description.ToUpper().Contains(search.ToUpper()))
                                       select new EvaluationEntity
@@ -31,7 +31,13 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByComp
                                           endDate = evaluation.endDate,
                                           description = evaluation.description,
                                           standardId = evaluation.standardId,
-                                          standard = new StandardEntity { standardId = evaluation.standardId, name = standard.name },
+                                          isCurrent = evaluation.isCurrent,
+                                          evaluationState = new EvaluationStateEntity
+                                          {
+                                              evaluationStateId = evaluationState.evaluationStateId,
+                                              name = evaluationState.name,
+                                              color = evaluationState.color,
+                                          },
                                       })
                                       .OrderBy(x => x.startDate)
                                         .Skip(skip).Take(pageSize)
@@ -42,9 +48,9 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByComp
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, companyId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

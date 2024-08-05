@@ -32,14 +32,34 @@ namespace Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
-                await _evaluationRepository.Update(id, _mapper.Map<EvaluationEntity>(model));
+                var entity = _mapper.Map<EvaluationEntity>(model);
+                await _evaluationRepository.Update(id, entity);
+
+                    if (entity.isCurrent)
+                    {
+                        var evaluations = await (from evaluation in _databaseService.Evaluation
+                                                 join evaluationState in _databaseService.EvaluationState 
+                                                 on evaluation.evaluationState equals evaluationState
+                                                 where ((evaluation.isDeleted == null || evaluation.isDeleted == false) 
+                                                 && evaluation.companyId == model.companyId)
+                                                 && (evaluation.isCurrent == true)
+                                                 select new EvaluationEntity
+                                                 {
+                                                     evaluationId = evaluation.evaluationId,
+                                                 }
+                                              ).ToListAsync();
+
+                        foreach (var evaluation in evaluations.Where(e => e.evaluationId != entity.evaluationId))
+                            await this._evaluationRepository.UpdateCurrentState(evaluation.evaluationId, false);
+
+                    }
+                
 
                 return model;
             }
             catch (Exception ex)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

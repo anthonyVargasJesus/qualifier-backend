@@ -5,7 +5,6 @@ using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
 
 using Qualifier.Domain.Interfaces;
-using System;
 namespace Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRequirementEvaluation
 {
     public class UpdateRequirementEvaluationCommand : IUpdateRequirementEvaluationCommand
@@ -13,12 +12,14 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRe
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IRequirementEvaluationRepository _requirementEvaluationRepository;
+        private readonly IEvaluationRepository _evaluationRepository;
 
-        public UpdateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IRequirementEvaluationRepository requirementEvaluationRepository)
+        public UpdateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IRequirementEvaluationRepository requirementEvaluationRepository, IEvaluationRepository evaluationRepository)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _requirementEvaluationRepository = requirementEvaluationRepository;
+            _evaluationRepository = evaluationRepository;
         }
 
         public async Task<Object> Execute(UpdateRequirementEvaluationDto model, int id)
@@ -54,6 +55,17 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRe
                     }
 
                 }
+
+                var requirementEvaluation = await (from item in _databaseService.RequirementEvaluation
+                                                   where ((item.isDeleted == null || item.isDeleted == false) && item.requirementEvaluationId == id)
+                                                   select new RequirementEvaluationEntity()
+                                                   {
+                                                       evaluationId = item.evaluationId,
+                                                   }).FirstOrDefaultAsync();
+
+                const int EDITION_EVALUATION_STATE_ID = 2;
+                if (requirementEvaluation != null)
+                    await _evaluationRepository.UpdateState(requirementEvaluation.evaluationId, EDITION_EVALUATION_STATE_ID);
 
                 return model;
             }
