@@ -294,6 +294,10 @@ using Qualifier.Application.Database.Company.Queries.GetCompanyById;
 using Qualifier.Application.Database.Company.Commands.UpdateCompany;
 using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
 using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
+using Qualifier.Application.Database.Section.Queries.GetSectionsByDocumentationId;
+using Qualifier.Application.Database.Section.Queries.GetAllSectionsByDocumentationId;
+using Qualifier.Application.Database.Evaluation.Queries.GetPendingDocumentation;
+using Qualifier.Application.Database.Version.Queries.GetAllVersionsByDocumentationId;
 
 
 
@@ -377,6 +381,7 @@ namespace Qualifier.Application
             services.AddTransient<IDeleteDocumentationCommand, DeleteDocumentationCommand>();
             services.AddTransient<IUpdateDocumentationCommand, UpdateDocumentationCommand>();
             services.AddTransient<IGetAllDocumentationsByStandardIdQuery, GetAllDocumentationsByStandardIdQuery>();
+            services.AddTransient<IGetPendingDocumentationQuery, GetPendingDocumentationQuery>();
 
             //Evaluation
             services.AddTransient<ICreateEvaluationCommand, CreateEvaluationCommand>();
@@ -438,6 +443,7 @@ namespace Qualifier.Application
             services.AddTransient<IDeleteVersionCommand, DeleteVersionCommand>();
             services.AddTransient<IGetVersionByIdQuery, GetVersionByIdQuery>();
             services.AddTransient<IGetVersionsByDocumentationIdQuery, GetVersionsByDocumentationIdQuery>();
+            services.AddTransient<IGetAllVersionsByDocumentationIdQuery, GetAllVersionsByDocumentationIdQuery>();
 
             //SupportForRequirement
             services.AddTransient<ICreateSupportForRequirementCommand, CreateSupportForRequirementCommand>();
@@ -462,6 +468,8 @@ namespace Qualifier.Application
             services.AddTransient<IGetSectionByIdQuery, GetSectionByIdQuery>();
             services.AddTransient<IGetAllSectionsByVersionIdQuery, GetAllSectionsByVersionIdQuery>();
             services.AddTransient<IGetSectionsByVersionIdQuery, GetSectionsByVersionIdQuery>();
+            services.AddTransient<IGetSectionsByDocumentationIdQuery, GetSectionsByDocumentationIdQuery>();
+            services.AddTransient<IGetAllSectionsByDocumentationIdQuery, GetAllSectionsByDocumentationIdQuery>();
 
             //Personal
             services.AddTransient<ICreatePersonalCommand, CreatePersonalCommand>();

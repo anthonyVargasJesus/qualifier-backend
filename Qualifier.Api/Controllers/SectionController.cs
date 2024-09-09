@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.Section.Commands.CreateSection;
 using Qualifier.Application.Database.Section.Commands.DeleteSection;
 using Qualifier.Application.Database.Section.Commands.UpdateSection;
+using Qualifier.Application.Database.Section.Queries.GetAllSectionsByDocumentationId;
 using Qualifier.Application.Database.Section.Queries.GetAllSectionsByVersionId;
 using Qualifier.Application.Database.Section.Queries.GetSectionById;
+using Qualifier.Application.Database.Section.Queries.GetSectionsByDocumentationId;
 using Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
@@ -137,7 +139,38 @@ namespace Qualifier.Api.Controllers
                 {
                     data = res
                 });
+        }
 
+        [HttpGet("documentation")]
+        public async Task<IActionResult> GetByDocumentation(int documentationId, [FromServices] IGetSectionsByDocumentationIdQuery query)
+        {
+            var res = await query.Execute(documentationId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
+
+        [HttpGet("All-by-documentation")]
+        public async Task<IActionResult> GetAllByDocumentation(int documentationId, [FromServices] IGetAllSectionsByDocumentationIdQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId;
+
+            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+
+            Notification notification = new Notification();
+            if (!success)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            var res = await query.Execute(documentationId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
         }
 
     }

@@ -17,7 +17,7 @@ namespace Qualifier.Application.Database.Version.Commands.CreateVersion
         public int standardId { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
-
+        public int? versionReferenceId { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {
             if (number == null)

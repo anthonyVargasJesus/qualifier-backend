@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
 using Qualifier.Application.Database.Requirement.Queries.GetRequirementsByStandardId;
 using Qualifier.Common.Application.Dto;
@@ -23,7 +24,8 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             try
             {
                 var requirements = await (from requirement in _databaseService.Requirement
-                                          where ((requirement.isDeleted == null || requirement.isDeleted == false) && requirement.standardId == standardId)
+                                          where ((requirement.isDeleted == null || requirement.isDeleted == false) && requirement.standardId == standardId
+                                          && requirement.isEvaluable)
                                           select new RequirementEntity
                                           {
                                               requirementId = requirement.requirementId,
@@ -69,7 +71,30 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
 
                                          }).ToListAsync();
 
+                var allDocumentation = await (from documentation in _databaseService.Documentation
+                                              where ((documentation.isDeleted == null || documentation.isDeleted == false)
+                                              && documentation.standardId == standardId)
+                                              select new DocumentationEntity
+                                              {
+                                                  documentationId = documentation.documentationId,
+                                                  name = documentation.name,
+                                              }).ToListAsync();
+
+                var referenceDocumentations = await (from referenceDocumentation in _databaseService.ReferenceDocumentation
+                                                     where ((referenceDocumentation.isDeleted == null || referenceDocumentation.isDeleted == false)
+                                                     && referenceDocumentation.evaluationId == evaluationId)
+                                                     select new ReferenceDocumentationEntity
+                                                     {
+                                                         documentationId = referenceDocumentation.documentationId,
+                                                         requirementEvaluationId = referenceDocumentation.requirementEvaluationId,
+                                                         name = referenceDocumentation.name,
+                                                     }).ToListAsync();
+
+                foreach(var item in evaluations)
+                    item.referenceDocumentations = referenceDocumentations.Where(e => e.requirementEvaluationId == item.requirementEvaluationId).ToList();
+                
                 standardEntity.setEvaluationsToRequirements(evaluations);
+
 
                 BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto> baseResponseDto = new BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto>();
                 List<GetRequirementEvaluationsByProcessRequirementDto> data = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements);
@@ -77,9 +102,10 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                 baseResponseDto.data = data;
                 return baseResponseDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
         public GetControlEvaluationsByProcessMaturityLevelDto? maturityLevel { get; set; }
         public GetControlEvaluationsByProcessResponsibleDto? responsible { get; set; }
         public GetControlEvaluationsByProcessControlDto? control { get; set; }
+        public List<GetControlEvaluationsByProcessReferenceDocumentationDto> referenceDocumentations { get; set; }
     }
 
     public class GetControlEvaluationsByProcessControlGroupDto
@@ -46,6 +48,12 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
 
     }
     public class GetControlEvaluationsByProcessResponsibleDto
+    {
+        public string name { get; set; }
+
+    }
+
+    public class GetControlEvaluationsByProcessReferenceDocumentationDto
     {
         public string name { get; set; }
 

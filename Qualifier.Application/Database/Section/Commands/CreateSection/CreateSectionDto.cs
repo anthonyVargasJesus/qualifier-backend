@@ -11,7 +11,7 @@ namespace Qualifier.Application.Database.Section.Commands.CreateSection
         public int level { get; set; }
         public int parentId { get; set; }
         public int documentationId { get; set; }
-        public int versionId { get; set; }
+        public int? versionId { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
 

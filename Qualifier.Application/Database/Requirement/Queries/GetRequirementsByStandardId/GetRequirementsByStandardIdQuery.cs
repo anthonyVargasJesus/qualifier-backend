@@ -16,7 +16,7 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
             _databaseService = databaseService;
             _mapper = mapper;
         }
-        public async Task<Object> Execute(int skip, int pageSize, string search, int standardId)
+        public async Task<Object> Execute(int standardId)
         {
             try
             {
@@ -39,8 +39,7 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
 
                 var entities = await (from requirement in _databaseService.Requirement
                                       where ((requirement.isDeleted == null || requirement.isDeleted == false)
-                                      && requirement.standardId == standardId) && requirement.level == FIRST_LEVEL
-                                      && (requirement.name.ToUpper().Contains(search.ToUpper()))
+                                      && requirement.standardId == standardId && requirement.level == FIRST_LEVEL)
                                       select new RequirementEntity
                                       {
                                           requirementId = requirement.requirementId,
@@ -50,7 +49,6 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
                                           level = requirement.level,
                                           parentId = requirement.parentId,
                                       }).OrderBy(x => x.numeration)
-                                        .Skip(skip).Take(pageSize)
                                         .ToListAsync();     
 
                 BaseResponseDto<GetRequirementsByStandardIdDto> baseResponseDto = new BaseResponseDto<GetRequirementsByStandardIdDto>();
@@ -71,7 +69,6 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
 
                 baseResponseDto.data = data;
 
-                baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, standardId), pageSize);
                 return baseResponseDto;
             }
             catch (Exception ex)
@@ -89,18 +86,6 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
         {
             var entities = allRequirements.Where(x => x.parentId == idRequirement && x.level == level).ToList();
             return _mapper.Map<List<GetRequirementsByStandardIdDto>>(entities);
-        }
-
-        public async Task<int> getTotal(string search, int standardId)
-        {
-            var total = await (from requirement in _databaseService.Requirement
-                               where ((requirement.isDeleted == null || requirement.isDeleted == false) && requirement.standardId == standardId)
-                               && (requirement.name.ToUpper().Contains(search.ToUpper()))
-                               select new RequirementEntity
-                               {
-                                   requirementId = requirement.requirementId,
-                               }).CountAsync();
-            return total;
         }
 
     }

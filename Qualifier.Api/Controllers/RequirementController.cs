@@ -28,12 +28,9 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> Get(int skip, int pageSize, string? search, int standardId, [FromServices] IGetRequirementsByStandardIdQuery query)
+        public async Task<IActionResult> Get(int standardId, [FromServices] IGetRequirementsByStandardIdQuery query)
         {
-            if (search == null)
-                search = string.Empty;
-
-            var res = await query.Execute(skip, pageSize, search, standardId);
+            var res = await query.Execute(standardId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

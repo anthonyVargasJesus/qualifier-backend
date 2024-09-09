@@ -1,4 +1,5 @@
 using Qualifier.Common.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Qualifier.Domain.Entities
 {
@@ -14,6 +15,10 @@ namespace Qualifier.Domain.Entities
         public int companyId { get; set; }
         public DocumentationEntity documentation { get; set; }
         public RequirementEvaluationEntity requirementEvaluation { get; set; }
+        [NotMapped]
+        public RequirementEntity? requirement { get; set; }
+        [NotMapped]
+        public ControlEntity? control { get; set; }
     }
 }
 

@@ -10,8 +10,8 @@
         public string improvementActions { get; set; }
         public GetRequirementEvaluationsByProcessMaturityLevelDto? maturityLevel { get; set; }
         public GetRequirementEvaluationsByProcessResponsibleDto? responsible { get; set; }
-
         public GetRequirementEvaluationsByProcessChildRequirementDto requirement { get; set; }
+        public List<GetRequirementEvaluationsByProcessReferenceDocumentationDto> referenceDocumentations { get; set; }
     }
 
     public class GetRequirementEvaluationsByProcessRequirementDto
@@ -40,6 +40,11 @@
 
     }
     public class GetRequirementEvaluationsByProcessResponsibleDto
+    {
+        public string name { get; set; }
+
+    }
+    public class GetRequirementEvaluationsByProcessReferenceDocumentationDto
     {
         public string name { get; set; }
 

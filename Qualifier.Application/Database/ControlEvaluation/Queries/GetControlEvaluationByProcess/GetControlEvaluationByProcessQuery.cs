@@ -76,10 +76,25 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                                          }).ToListAsync();
 
 
+                var referenceDocumentations = await (from referenceDocumentation in _databaseService.ReferenceDocumentation
+                                                     where ((referenceDocumentation.isDeleted == null || referenceDocumentation.isDeleted == false)
+                                                     && referenceDocumentation.evaluationId == evaluationId)
+                                                     select new ReferenceDocumentationEntity
+                                                     {
+                                                         documentationId = referenceDocumentation.documentationId,
+                                                         controlEvaluationId = referenceDocumentation.controlEvaluationId,
+                                                         name = referenceDocumentation.name,
+                                                     }).ToListAsync();
+
+                foreach (var item in evaluations)
+                    item.referenceDocumentations = referenceDocumentations.Where(e => e.controlEvaluationId == item.controlEvaluationId).ToList();
+
                 foreach (ControlEntity item in controls)
                     item.setEvaluations(evaluations);
 
                 setControlsWithGroup(groups, controls);
+
+
 
                 BaseResponseDto<GetControlEvaluationsByProcessControlGroupDto> baseResponseDto = new BaseResponseDto<GetControlEvaluationsByProcessControlGroupDto>();
                 List<GetControlEvaluationsByProcessControlGroupDto> data = _mapper.Map<List<GetControlEvaluationsByProcessControlGroupDto>>(groups);

@@ -13,6 +13,7 @@ using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
 using Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetPendingDocumentation;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
@@ -251,6 +252,18 @@ namespace Qualifier.Api.Controllers
 
         }
 
+        [HttpGet("PendingDocumentation")]
+        public async Task<IActionResult> GetPendingDocumentation(int skip, int pageSize, int standardId, int evaluationId, string? search, [FromServices] IGetPendingDocumentationQuery query)
+        {
+            if (search == null)
+                search = string.Empty;
+
+            var res = await query.Execute(skip, pageSize,search, standardId, evaluationId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
 
     }
 }

@@ -2,7 +2,7 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
 {
     public interface IGetRequirementsByStandardIdQuery
     {
-        Task<Object> Execute(int skip, int pageSize, string search, int standardId);
+        Task<Object> Execute(int standardId);
     }
 }
 

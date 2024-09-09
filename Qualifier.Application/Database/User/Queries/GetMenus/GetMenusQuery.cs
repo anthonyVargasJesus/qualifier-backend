@@ -108,7 +108,8 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                                {
                                    optionId = option.optionId,
                                    name = option.name,
-                                   url = option.url
+                                   url = option.url,
+                                   order = optionInMenuInRole.order,
                                }).ToList();
 
 
@@ -130,7 +131,7 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                         
                 }
 
-                    menu.options = options;
+                    menu.options = options.OrderBy(e => e.order).ToList();
 
             }
 

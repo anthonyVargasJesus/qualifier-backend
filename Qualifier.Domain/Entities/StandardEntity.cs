@@ -42,10 +42,34 @@ namespace Qualifier.Domain.Entities
                         if (hasChildren(allRequirements, item.requirementId, THIRD_LEVEL))
                             item.children = getChildren(allRequirements, item.requirementId, THIRD_LEVEL).OrderBy(x => x.numeration).ToList();
                 }
-
             setNumeration(requirements);
-
         }
+
+        public string getNumerationToShow(int requirementId)
+        {
+            string numerationToShow = "";
+            setNumeration(requirements);
+            foreach (RequirementEntity item in requirements)
+            {
+                if (item.requirementId == requirementId)
+                    numerationToShow = item.numerationToShow;
+
+                if (item.children != null)
+                    foreach (var child1 in item.children)
+                    {
+                        if (child1.requirementId == requirementId)
+                            numerationToShow = child1.numerationToShow;
+
+                        if (child1.children != null)
+                            foreach (var child2 in child1.children)
+                                if (child2.requirementId == requirementId)
+                                    numerationToShow = child2.numerationToShow;
+
+                    }
+            }
+            return numerationToShow;
+        }
+
 
         private bool hasChildren(List<RequirementEntity> allRequirements, int idRequirement, int level)
         {
@@ -75,6 +99,30 @@ namespace Qualifier.Domain.Entities
         }
 
 
+        public void setControlsWithChildren(List<ControlGroupEntity> allControlGroups, List<ControlEntity> allControls)
+        {
+            controlsGroups = allControlGroups;
+            foreach (var group in allControlGroups)
+            {
+                group.controls = allControls.Where(e => e.controlGroupId == group.controlGroupId).ToList();
+                foreach (var control in group.controls)
+                    control.numerationToShow = group.number + "." + control.number;
+            }
+        }
+        public string getControlNumerationToShow(int controlId)
+        {
+            string numerationToShow = "";
+            foreach (var group in controlsGroups)
+            {
+                foreach (var control in group.controls)
+                    if (control.controlId == controlId)
+                        numerationToShow = control.numerationToShow;
+            }
+            return numerationToShow;
+        }
+
+
+
         public void setEvaluationsToRequirements(List<RequirementEvaluationEntity> evaluations)
         {
             foreach (RequirementEntity item in requirements)
@@ -82,7 +130,6 @@ namespace Qualifier.Domain.Entities
                 if (item.children == null)
                 {
                     item.requirementEvaluations = evaluations.Where(x => x.requirementId == item.requirementId).ToList();
-
                     if (item.requirementEvaluations != null)
                         if (item.requirementEvaluations.Count == 0)
                             item.requirementEvaluations.Add(getDefaultRequierementeEvaluation(item));
@@ -90,8 +137,6 @@ namespace Qualifier.Domain.Entities
                     if (item.requirementEvaluations != null)
                         setNumerationToEvaluations(item.requirementEvaluations.ToList(), item.numerationToShow);
                 }
-
-
                 if (item.children != null)
                     foreach (var child1 in item.children)
                     {
@@ -112,19 +157,14 @@ namespace Qualifier.Domain.Entities
                                 if (child2.children == null)
                                 {
                                     child2.requirementEvaluations = evaluations.Where(x => x.requirementId == child2.requirementId).ToList();
-
                                     if (child2.requirementEvaluations != null)
                                         if (child2.requirementEvaluations.Count == 0)
                                             child2.requirementEvaluations.Add(getDefaultRequierementeEvaluation(child2));
-
                                     if (child2.requirementEvaluations != null)
                                         setNumerationToEvaluations(child2.requirementEvaluations.ToList(), child2.numerationToShow);
                                 }
-
-
                     }
             }
-
         }
 
         private RequirementEvaluationEntity getDefaultRequierementeEvaluation(RequirementEntity requirement)
@@ -308,13 +348,11 @@ namespace Qualifier.Domain.Entities
             return colors;
         }
 
-
         public void setTotalValuesToControls(List<ControlEvaluationEntity> evaluations, List<MaturityLevelEntity> generalMaturityLevels)
         {
 
             foreach (MaturityLevelEntity maturityLevel in generalMaturityLevels)
                 maturityLevel.value = 0;
-
 
             foreach (ControlGroupEntity controlGroup in controlsGroups)
             {
@@ -343,7 +381,6 @@ namespace Qualifier.Domain.Entities
 
                 controlGroup.maturityLevels = maturityLevelsxControl;
             }
-
         }
 
         public void setTotalValueControlsInMaturityLevels(List<MaturityLevelEntity> maturityLevels)
@@ -446,7 +483,7 @@ namespace Qualifier.Domain.Entities
         public void setReferenceDocumentationToEvaluations(List<RequirementEvaluationEntity> evaluations, List<ReferenceDocumentationEntity> referenceDocumentations)
         {
             foreach (RequirementEvaluationEntity item in evaluations)
-                item.referenceDocumentations = referenceDocumentations.Where(x=> x.requirementEvaluationId == item.requirementEvaluationId).ToList();    
+                item.referenceDocumentations = referenceDocumentations.Where(x => x.requirementEvaluationId == item.requirementEvaluationId).ToList();
         }
 
 

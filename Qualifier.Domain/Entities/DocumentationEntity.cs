@@ -11,9 +11,10 @@ namespace Qualifier.Domain.Entities
         public int standardId { get; set; }
         public int companyId { get; set; }
         public int documentTypeId { get; set; }
-
         public StandardEntity standard { get; set; }
         public DocumentTypeEntity documentType { get; set; }
+        public List<RequirementEntity> requirements { get; set; }
+        public List<ControlEntity> controls { get; set; }
     }
 }
 

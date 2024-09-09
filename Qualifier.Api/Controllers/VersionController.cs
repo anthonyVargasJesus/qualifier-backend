@@ -2,15 +2,18 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard;
+using Qualifier.Application.Database.Location.Queries.GetAllLocationsByCompanyId;
 using Qualifier.Application.Database.Version.Commands.CreateVersion;
 using Qualifier.Application.Database.Version.Commands.CreateWordDocumento;
 using Qualifier.Application.Database.Version.Commands.DeleteVersion;
 using Qualifier.Application.Database.Version.Commands.UpdateVersion;
+using Qualifier.Application.Database.Version.Queries.GetAllVersionsByDocumentationId;
 using Qualifier.Application.Database.Version.Queries.GetVersionById;
 using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
+using Qualifier.Common.Application.Service;
 
 
 namespace Qualifier.Api.Controllers
@@ -20,6 +23,15 @@ namespace Qualifier.Api.Controllers
     public class VersionController : ControllerBase
     {
 
+        [HttpGet("All")]
+        public async Task<IActionResult> GetAll(int documentationId, [FromServices] IGetAllVersionsByDocumentationIdQuery query)
+        {
+            var res = await query.Execute(documentationId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
 
         [HttpGet]
         [Route("word-document")]

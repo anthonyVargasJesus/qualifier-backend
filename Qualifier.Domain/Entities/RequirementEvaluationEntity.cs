@@ -26,6 +26,8 @@ namespace Qualifier.Domain.Entities
 
         [NotMapped]
         public List<ReferenceDocumentationEntity> referenceDocumentations { get; set; }
+        [NotMapped]
+        public List<DocumentationEntity> documentation { get; set; }
     }
 }
 

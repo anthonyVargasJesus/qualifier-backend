@@ -10,8 +10,6 @@ namespace Qualifier.Application.Database.Section.Commands.UpdateSection
         public string description { get; set; }
         public int level { get; set; }
         public int parentId { get; set; }
-        //public int documentationId { get; set; }
-        //public int versionId { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

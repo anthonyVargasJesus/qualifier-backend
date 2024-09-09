@@ -96,7 +96,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                                   }).FirstOrDefaultAsync();
 
             var requirements = await (from requirement in _databaseService.Requirement
-                                      where ((requirement.isDeleted == null || requirement.isDeleted == false) && requirement.standardId == standardId)
+                                      where ((requirement.isDeleted == null || requirement.isDeleted == false) && requirement.standardId == standardId && requirement.isEvaluable)
                                       select new RequirementEntity
                                       {
                                           requirementId = requirement.requirementId,

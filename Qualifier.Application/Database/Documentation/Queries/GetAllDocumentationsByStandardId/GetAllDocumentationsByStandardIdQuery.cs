@@ -26,7 +26,7 @@ namespace Qualifier.Application.Database.Documentation.Queries.GetAllDocumentati
                                       {
                                           documentationId = documentation.documentationId,
                                           name = documentation.name,
-                                      }).ToListAsync();
+                                      }).OrderBy(e=> e.name).ToListAsync();
 
                 BaseResponseDto<GetAllDocumentationsByStandardIdDto> baseResponseDto = new BaseResponseDto<GetAllDocumentationsByStandardIdDto>();
                 baseResponseDto.data = _mapper.Map<List<GetAllDocumentationsByStandardIdDto>>(entities);

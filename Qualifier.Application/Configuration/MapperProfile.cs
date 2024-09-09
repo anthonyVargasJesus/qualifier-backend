@@ -72,6 +72,7 @@ using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
+using Qualifier.Application.Database.Evaluation.Queries.GetPendingDocumentation;
 using Qualifier.Application.Database.ImpactValuation.Commands.CreateImpactValuation;
 using Qualifier.Application.Database.ImpactValuation.Commands.UpdateImpactValuation;
 using Qualifier.Application.Database.ImpactValuation.Queries.GetAllImpactValuationsByCompanyId;
@@ -177,8 +178,10 @@ using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUserById;
 using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUsersByUserId;
 using Qualifier.Application.Database.Section.Commands.CreateSection;
 using Qualifier.Application.Database.Section.Commands.UpdateSection;
+using Qualifier.Application.Database.Section.Queries.GetAllSectionsByDocumentationId;
 using Qualifier.Application.Database.Section.Queries.GetAllSectionsByVersionId;
 using Qualifier.Application.Database.Section.Queries.GetSectionById;
+using Qualifier.Application.Database.Section.Queries.GetSectionsByDocumentationId;
 using Qualifier.Application.Database.Section.Queries.GetSectionsByVersionId;
 using Qualifier.Application.Database.Standard.Commands.CreateStandard;
 using Qualifier.Application.Database.Standard.Commands.UpdateStandard;
@@ -227,6 +230,7 @@ using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInAct
 using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActivesByActivesInventoryId;
 using Qualifier.Application.Database.Version.Commands.CreateVersion;
 using Qualifier.Application.Database.Version.Commands.UpdateVersion;
+using Qualifier.Application.Database.Version.Queries.GetAllVersionsByDocumentationId;
 using Qualifier.Application.Database.Version.Queries.GetVersionById;
 using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
 using Qualifier.Application.Database.Vulnerability.Commands.CreateVulnerability;
@@ -299,6 +303,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<ControlEntity, CreateControlDto>().ReverseMap();
             CreateMap<ControlEntity, GetControlsByControlGroupIdDto>().ReverseMap();
             CreateMap<ControlEntity, GetControlByIdDto>().ReverseMap();
+            CreateMap<ControlEntity, GetPendingDocumentationControlDto>().ReverseMap();
 
             //Requirement
             CreateMap<RequirementEntity, CreateRequirementDto>().ReverseMap();
@@ -307,6 +312,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<RequirementEntity, GetRequirementByIdDto>().ReverseMap();
             CreateMap<RequirementEntity, GetAllRequirementsByStandardIdDto>().ReverseMap();
             CreateMap<RequirementEntity, GetDashboardRequirementDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetPendingDocumentationRequirementDto>().ReverseMap();
 
             //Responsible
             CreateMap<ResponsibleEntity, UpdateResponsibleDto>().ReverseMap();
@@ -341,6 +347,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<RequirementEvaluationEntity, GetRequirementEvaluationsByRequirementIdDto>().ReverseMap();
             CreateMap<RequirementEvaluationEntity, GetRequirementEvaluationByIdDto>().ReverseMap();
 
+
             CreateMap<MaturityLevelEntity, GetRequirementEvaluationsByProcessMaturityLevelDto>().ReverseMap();
             CreateMap<ResponsibleEntity, GetRequirementEvaluationsByProcessResponsibleDto>().ReverseMap();
             CreateMap<RequirementEntity, GetRequirementEvaluationsByProcessRequirementDto>().ReverseMap();
@@ -352,7 +359,8 @@ namespace Qualifier.Application.Configuration
             CreateMap<ReferenceDocumentationEntity, UpdateRequirementEvaluationReferenceDocumentationDto>().ReverseMap();
             CreateMap<ReferenceDocumentationEntity, CreateControlEvaluationReferenceDocumentationDto>().ReverseMap();
             CreateMap<ReferenceDocumentationEntity, UpdateControlEvaluationReferenceDocumentationDto>().ReverseMap();
-
+            CreateMap<ReferenceDocumentationEntity, GetRequirementEvaluationsByProcessReferenceDocumentationDto>().ReverseMap();
+            CreateMap<ReferenceDocumentationEntity, GetControlEvaluationsByProcessReferenceDocumentationDto>().ReverseMap();
 
             //ControlEvaluation
             CreateMap<ControlEvaluationEntity, GetControlEvaluationByIdDto>().ReverseMap();
@@ -405,6 +413,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<DocumentationEntity, GetDocumentationsByCompanyIdDto>().ReverseMap();
             CreateMap<DocumentTypeEntity, GetDocumentationsByCompanyIdDocumentTypeDto>().ReverseMap();
             CreateMap<StandardEntity, GetDocumentationsByCompanyIdStandardDto>().ReverseMap();
+            CreateMap<DocumentationEntity, GetPendingDocumentationDto>().ReverseMap();
 
             //ConfidentialityLevel
             CreateMap<ConfidentialityLevelEntity, CreateConfidentialityLevelDto>().ReverseMap();
@@ -419,6 +428,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<VersionEntity, GetVersionByIdDto>().ReverseMap();
             CreateMap<VersionEntity, GetVersionsByDocumentationIdDto>().ReverseMap();
             CreateMap<ConfidentialityLevelEntity, GetVersionsByDocumentationIdConfidentialityLevelDto>().ReverseMap();
+            CreateMap<VersionEntity, GetAllVersionsByDocumentationIdDto>().ReverseMap();
 
             //SupportForRequirement
             CreateMap<SupportForRequirementEntity, CreateSupportForRequirementDto>().ReverseMap();
@@ -443,6 +453,8 @@ namespace Qualifier.Application.Configuration
             CreateMap<SectionEntity, GetSectionByIdDto>().ReverseMap();
             CreateMap<SectionEntity, GetAllSectionsByVersionIdDto>().ReverseMap();
             CreateMap<SectionEntity, GetSectionsByVersionIdDto>().ReverseMap();
+            CreateMap<SectionEntity, GetSectionsByDocumentationIdDto>().ReverseMap();
+            CreateMap<SectionEntity, GetAllSectionsByDocumentationIdDto>().ReverseMap();
 
             //Personal
             CreateMap<PersonalEntity, CreatePersonalDto>().ReverseMap();

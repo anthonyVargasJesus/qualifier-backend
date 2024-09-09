@@ -12,7 +12,7 @@ namespace Qualifier.Domain.Entities
         public int level { get; set; }
         public int parentId { get; set; }
         public int documentationId { get; set; }
-        public int versionId { get; set; }
+        public int? versionId { get; set; }
         public int companyId { get; set; }
         public DocumentationEntity documentation { get; set; }
         public VersionEntity version { get; set; }

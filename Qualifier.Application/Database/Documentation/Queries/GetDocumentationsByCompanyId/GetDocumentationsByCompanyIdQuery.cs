@@ -41,6 +41,7 @@ namespace Qualifier.Application.Database.Documentation.Queries.GetDocumentations
                                               name = standard.name,
                                           },
                                       })
+                                      .OrderBy(e => e.name)
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();
 
