@@ -13,14 +13,6 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.supportForRequirementId).IsRequired();
             entityBuilder.Property(x => x.documentationId).IsRequired();
             entityBuilder.Property(x => x.requirementId).IsRequired();
-
-            //entityBuilder.HasOne(x => x.documentation)
-            //.WithMany(x => x.supportForRequirements)
-            //.HasForeignKey(x => x.documentationId);
-
-            //entityBuilder.HasOne(x => x.requirement)
-            //.WithMany(x => x.supportForRequirements)
-            //.HasForeignKey(x => x.requirementId);
         }
     }
 }

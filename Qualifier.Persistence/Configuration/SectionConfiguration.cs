@@ -15,18 +15,6 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.name).IsRequired();
             entityBuilder.Property(x => x.level).IsRequired();
             entityBuilder.Property(x => x.companyId).IsRequired();
-
-            //entityBuilder.HasOne(x => x.section)
-            //.WithMany(x => x.sections)
-            //.HasForeignKey(x => x.parentId);
-
-            //entityBuilder.HasOne(x => x.documentation)
-            //.WithMany(x => x.sections)
-            //.HasForeignKey(x => x.documentationId);
-
-            //entityBuilder.HasOne(x => x.version)
-            //.WithMany(x => x.sections)
-            //.HasForeignKey(x => x.versionId);
         }
     }
 }

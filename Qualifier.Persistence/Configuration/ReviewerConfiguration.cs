@@ -12,22 +12,6 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.HasKey(x => x.reviewerId);
             entityBuilder.Property(x => x.reviewerId).IsRequired();
             entityBuilder.Property(x => x.versionId).IsRequired();
-
-            //entityBuilder.HasOne(x => x.personal)
-            //.WithMany(x => x.reviewers)
-            //.HasForeignKey(x => x.personalId);
-
-            //entityBuilder.HasOne(x => x.responsible)
-            //.WithMany(x => x.reviewers)
-            //.HasForeignKey(x => x.responsibleId);
-
-            //entityBuilder.HasOne(x => x.version)
-            //.WithMany(x => x.reviewers)
-            //.HasForeignKey(x => x.versionId);
-
-            //entityBuilder.HasOne(x => x.company)
-            //.WithMany(x => x.reviewers)
-            //.HasForeignKey(x => x.companyId);
         }
     }
 }

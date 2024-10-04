@@ -19,14 +19,6 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.date).IsRequired();
             entityBuilder.Property(x => x.isCurrent).IsRequired();
             entityBuilder.Property(x => x.standardId).IsRequired();
-
-            //entityBuilder.HasOne(x => x.confidentialityLevel)
-            //.WithMany(x => x.versions)
-            //.HasForeignKey(x => x.confidentialityLevelId);
-
-            //entityBuilder.HasOne(x => x.documentation)
-            //.WithMany(x => x.versions)
-            //.HasForeignKey(x => x.documentationId);
         }
     }
 }

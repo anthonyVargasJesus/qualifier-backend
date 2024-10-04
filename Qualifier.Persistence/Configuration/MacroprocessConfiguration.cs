@@ -14,9 +14,6 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.code).IsRequired();
             entityBuilder.Property(x => x.name).IsRequired();
 
-            //entityBuilder.HasMany(x => x.Subprocess)
-            //.WithOne(x => x.Macroprocess)
-            //.HasForeignKey(x => x.macroprocessId);
         }
     }
 }

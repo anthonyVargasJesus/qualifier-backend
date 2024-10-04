@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Qualifier.Common.Application.Dto;
+using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
 
 namespace Qualifier.Application.Database.User.Queries.GetMenus
@@ -59,10 +60,9 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                 baseResponseDto.data = _mapper.Map<List<GetMenusMenuQueryDto>>(login.menus);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+                return BaseApplication.getExceptionErrorResponse();
             }
         }
 

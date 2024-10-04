@@ -41,10 +41,9 @@ namespace Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUsersByUser
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, userId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+                return BaseApplication.getExceptionErrorResponse();
             }
         }
 

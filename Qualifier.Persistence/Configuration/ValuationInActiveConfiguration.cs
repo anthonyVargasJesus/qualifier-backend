@@ -14,18 +14,6 @@ namespace Qualifier.Persistence.Configuration
             entityBuilder.Property(x => x.activesInventoryId).IsRequired();
             entityBuilder.Property(x => x.impactValuationId).IsRequired();
             entityBuilder.Property(x => x.value).IsRequired();
-
-            //entityBuilder.HasOne(x => x.activesInventory)
-            //.WithMany(x => x.valuationInActives)
-            //.HasForeignKey(x => x.activesInventoryId);
-
-            //entityBuilder.HasOne(x => x.impactValuation)
-            //.WithMany(x => x.valuationInActives)
-            //.HasForeignKey(x => x.impactValuationId);
-
-            //entityBuilder.HasOne(x => x.company)
-            //.WithMany(x => x.valuationInActives)
-            //.HasForeignKey(x => x.companyId);
         }
     }
 }

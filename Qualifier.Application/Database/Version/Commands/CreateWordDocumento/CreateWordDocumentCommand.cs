@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NPOI.OpenXmlFormats.Wordprocessing;
 using NPOI.XWPF.Model;
 using NPOI.XWPF.UserModel;
+using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
 
 namespace Qualifier.Application.Database.Version.Commands.CreateWordDocumento
@@ -130,10 +131,15 @@ namespace Qualifier.Application.Database.Version.Commands.CreateWordDocumento
                 // create header and add a test header
                 createHeaderTable(headerFooterPolicy);
 
-                createPresentationPage(wordDoc, version);
+                if (version != null)
+                    createPresentationPage(wordDoc, version);
+
                 createApprovalTable(wordDoc, version, creators, reviewers, approvers);
-                createDocumentIndex(wordDoc, version, sections);
-                createDocumentContent(wordDoc, version, sections);
+
+                if (version != null)
+                    createDocumentIndex(wordDoc, version, sections);
+                if (version != null)
+                    createDocumentContent(wordDoc, version, sections);
 
 
 
@@ -162,10 +168,9 @@ namespace Qualifier.Application.Database.Version.Commands.CreateWordDocumento
 
                 return ms;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+              return BaseApplication.getExceptionErrorResponse();
             }
         }
 
@@ -245,7 +250,6 @@ namespace Qualifier.Application.Database.Version.Commands.CreateWordDocumento
 
             // Configurar el color del borde
 
-            ST_Border sT_Border = new ST_Border();
             borders.left.val = ST_Border.single;
             borders.left.color = color;
 

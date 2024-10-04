@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.NotificationPattern;
@@ -32,7 +33,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
             {
                 string noAccessTitle = "Acceso no autorizado";
 
-                var entity = (from user in _databaseService.User
+                var entity = await (from user in _databaseService.User
                             join u2 in _databaseService.UserState on user.userState equals u2
                             join standard in _databaseService.Standard on user.standardId equals standard.standardId
                               where user.email == loginTryDto.email && (user.isDeleted == null || user.isDeleted == false)
@@ -48,7 +49,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
                                 standardId = user.standardId,
                                 standard = new StandardEntity { standardId = standard.standardId, name = standard.name},
                                 userState = new UserStateEntity { userStateId = u2.userStateId, name = u2.name, value = u2.value },
-                            }).FirstOrDefault();
+                            }).FirstOrDefaultAsync();
 
                 Notification notification = this.loginValidation(loginTryDto, entity);
                 if (notification.hasErrors())
@@ -57,7 +58,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
                 LoginEntity login =  this.UserToEntity(entity);
 
                 login.password = loginTryDto.password;
-                login.roles = (from roleInUser in _databaseService.RoleInUser
+                login.roles = await (from roleInUser in _databaseService.RoleInUser
 
                                join role in _databaseService.Role on roleInUser.role equals role
                                where roleInUser.userId == entity.userId && (roleInUser.isDeleted == null || roleInUser.isDeleted == false)
@@ -66,11 +67,11 @@ namespace Qualifier.Application.Database.User.Commands.Login
                                    roleId = role.roleId,
                                    name = role.name,
                                    code = role.code
-                               }).ToList();
+                               }).ToListAsync();
 
                 //login.setMenus(login.roles);
 
-                Notification domainNotification = _loginService.loginValidation(login, entity.password);
+                Notification domainNotification = _loginService.loginValidation(login, (entity.password == null)?"": entity.password);
                 if (domainNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponseWithTitle(domainNotification.errors, noAccessTitle);
 
@@ -78,14 +79,13 @@ namespace Qualifier.Application.Database.User.Commands.Login
                 if (entity.standard != null)
                     standardName = entity.standard.name;
 
-                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, login.name, getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, entity.standardId, standardName);
+                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, (login.name == null) ? "" : login.name , getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, entity.standardId, standardName);
 
                 return _mapper.Map<LoginUserLoginDto>(login);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 
