@@ -1,20 +1,14 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Drawing;
 using Microsoft.EntityFrameworkCore;
-using NPOI.HSSF.UserModel;
-using NPOI.OpenXmlFormats;
 using NPOI.OpenXmlFormats.Dml;
 using NPOI.OpenXmlFormats.Dml.Chart;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.SS.UserModel.Charts;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
-using NPOI.XSSF.UserModel.Charts;
 using Qualifier.Application.Helpers;
+using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
-using System.Drawing;
 using IndexedColors = NPOI.SS.UserModel.IndexedColors;
 
 
@@ -78,10 +72,9 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                 return ms;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+              return BaseApplication.getExceptionErrorResponse();
             }
         }
 
@@ -872,22 +865,6 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
             FormatExcel.setFormatFirstChildrenRequirementItemCell(workbook, cell, fontSize, isCenter, hexColor, foregroundIsWhite, isBold, borderColor, isVerticalCenter);
         }
 
-
-        private void setItemCell(IWorkbook workbook, IRow row, int rowIndex, int columnIndex, string text)
-        {
-            ICell cell = row.CreateCell(columnIndex);
-            cell.SetCellValue(text);
-            FormatExcel.setFormatItemCell(workbook, cell);
-        }
-
-        private void setHeaderCell(IWorkbook workbook, IRow row, int rowIndex, int columnIndex, string text)
-        {
-            ICell cell = row.CreateCell(columnIndex);
-            cell.SetCellValue(text);
-            FormatExcel.setFormatHeaderCell(workbook, cell);
-
-
-        }
 
         private void setCell(IWorkbook workbook, IRow row, int columnIndex, string text, int fontsize)
         {

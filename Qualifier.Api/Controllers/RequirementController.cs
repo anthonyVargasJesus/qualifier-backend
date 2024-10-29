@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByStandardId;
 using Qualifier.Application.Database.Requirement.Commands.CreateRequirement;
 using Qualifier.Application.Database.Requirement.Commands.DeleteRequirement;
 using Qualifier.Application.Database.Requirement.Commands.UpdateRequirement;

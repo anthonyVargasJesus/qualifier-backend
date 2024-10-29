@@ -13,7 +13,7 @@ namespace Qualifier.Api
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Servicios del módulo Corregir Acta versión beta.",
+                    Title = "Servicios del módulo Corregir Acta versión final",
                     Description = "Administración de APIs"
                 });
 

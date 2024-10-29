@@ -6,7 +6,6 @@ using Qualifier.Application.Database.Control.Commands.UpdateControl;
 using Qualifier.Application.Database.Control.Queries.GetAllControlsByStandardId;
 using Qualifier.Application.Database.Control.Queries.GetControlById;
 using Qualifier.Application.Database.Control.Queries.GetControlsByControlGroupId;
-using Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsByStandardId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 

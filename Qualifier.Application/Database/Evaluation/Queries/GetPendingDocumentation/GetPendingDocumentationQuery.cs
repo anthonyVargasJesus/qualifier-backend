@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Office.Interop.Excel;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -164,10 +163,9 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetPendingDocumentat
                 return baseResponseDto;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

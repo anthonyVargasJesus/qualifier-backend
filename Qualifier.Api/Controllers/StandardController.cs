@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.Standard.Commands.CreateStandard;
 using Qualifier.Application.Database.Standard.Commands.DeleteStandard;

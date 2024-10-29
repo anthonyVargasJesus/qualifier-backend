@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUsersByUserId;
 using Microsoft.AspNetCore.Authentication;
 using Qualifier.Common.Api;
-using Qualifier.Common.Application.NotificationPattern;
-using Qualifier.Common.Application.Service;
-using Qualifier.Application.Database.RoleInUser.Queries.GetAllRoleInUsersByUserId;
 
 
 

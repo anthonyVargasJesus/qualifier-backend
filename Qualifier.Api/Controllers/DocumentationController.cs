@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.Documentation.Commands.CreateDocumentation;
 using Qualifier.Application.Database.Documentation.Commands.DeleteDocumentation;
@@ -8,7 +7,6 @@ using Qualifier.Application.Database.Documentation.Queries.GetAllDocumentationsB
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationById;
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByCompanyId;
 using Qualifier.Application.Database.Documentation.Queries.GetDocumentationsByStandardId;
-using Qualifier.Application.Database.Responsible.Queries.GetAllResponsiblesByStandardId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.ConfidentialityLevel.Commands.CreateConfidentialityLevel;
 using Qualifier.Application.Database.ConfidentialityLevel.Commands.DeleteConfidentialityLevel;

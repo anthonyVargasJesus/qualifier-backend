@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard;
-using Qualifier.Application.Database.Location.Queries.GetAllLocationsByCompanyId;
 using Qualifier.Application.Database.Version.Commands.CreateVersion;
 using Qualifier.Application.Database.Version.Commands.CreateWordDocumento;
 using Qualifier.Application.Database.Version.Commands.DeleteVersion;
@@ -12,8 +9,6 @@ using Qualifier.Application.Database.Version.Queries.GetVersionById;
 using Qualifier.Application.Database.Version.Queries.GetVersionsByDocumentationId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
-using Qualifier.Common.Application.NotificationPattern;
-using Qualifier.Common.Application.Service;
 
 
 namespace Qualifier.Api.Controllers

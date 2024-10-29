@@ -7,7 +7,6 @@ using Qualifier.Application.Database.DefaultSection.Commands.UpdateDefaultSectio
 using Qualifier.Application.Database.DefaultSection.Queries.GetAllDefaultSectionsByDocumentTypeId;
 using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionById;
 using Qualifier.Application.Database.DefaultSection.Queries.GetDefaultSectionsByDocumentTypeId;
-using Qualifier.Application.Database.Standard.Queries.GetAllStandardsByCompanyId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;

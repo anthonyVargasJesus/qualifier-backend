@@ -3,15 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.ControlGroup.Commands.CreateControlGroup;
 using Qualifier.Application.Database.ControlGroup.Commands.DeleteControlGroup;
 using Qualifier.Application.Database.ControlGroup.Commands.UpdateControlGroup;
-using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByCompanyId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByStandardId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupById;
-using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByCompanyId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
-using Qualifier.Common.Application.NotificationPattern;
-using Qualifier.Common.Application.Service;
+
 
 namespace Qualifier.Api.Controllers
 {

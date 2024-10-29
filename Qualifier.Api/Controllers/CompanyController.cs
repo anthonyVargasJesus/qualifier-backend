@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Qualifier.Application.Database.ActiveType.Commands.UpdateActiveType;
 using Qualifier.Application.Database.Company.Commands.UpdateCompany;
 using Qualifier.Application.Database.Company.Queries.GetCompanyById;
 using Qualifier.Common.Api;

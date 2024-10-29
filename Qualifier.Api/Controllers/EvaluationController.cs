@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Qualifier.Application.Database.DocumentType.Queries.GetAllDocumentTypesByCompanyId;
 using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
