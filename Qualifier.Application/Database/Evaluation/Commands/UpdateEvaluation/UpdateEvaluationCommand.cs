@@ -57,7 +57,7 @@ namespace Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
              return BaseApplication.getExceptionErrorResponse();
             }

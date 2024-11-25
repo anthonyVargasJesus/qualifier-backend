@@ -36,10 +36,9 @@ namespace Qualifier.Application.Database.ImpactValuation.Commands.UpdateImpactVa
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

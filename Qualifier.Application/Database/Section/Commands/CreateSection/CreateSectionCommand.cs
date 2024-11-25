@@ -33,10 +33,9 @@ namespace Qualifier.Application.Database.Section.Commands.CreateSection
                 await _databaseService.SaveAsync();
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+              return BaseApplication.getExceptionErrorResponse();
             }
         }
 

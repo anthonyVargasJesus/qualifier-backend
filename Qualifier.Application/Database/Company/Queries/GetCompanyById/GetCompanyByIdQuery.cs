@@ -34,10 +34,9 @@ namespace Qualifier.Application.Database.Company.Queries.GetCompanyById
 
                 return _mapper.Map<GetCompanyByIdDto>(entity);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+              return BaseApplication.getExceptionErrorResponse();
             }
         }
 
