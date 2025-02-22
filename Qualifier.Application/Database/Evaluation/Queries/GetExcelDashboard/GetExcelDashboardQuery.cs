@@ -1204,9 +1204,6 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                 item.spPr = shapeProperties;
             }
 
-            //var barGrouping = chart.GetCTChart().plotArea.barChart.ElementAt(0);
-            //barChart.grouping.val = ST_BarGrouping.clustered;
-
         }
 
 
