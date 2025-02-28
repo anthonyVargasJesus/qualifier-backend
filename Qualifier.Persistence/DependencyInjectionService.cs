@@ -68,6 +68,8 @@ namespace Qualifier.Persistence
             services.AddScoped<IRiskLevelRepository, RiskLevelRepository>();
             services.AddScoped<IRiskRepository, RiskRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IScopeRepository, ScopeRepository>();
+            services.AddScoped<IPolicyRepository, PolicyRepository>();
 
             return services;
         }

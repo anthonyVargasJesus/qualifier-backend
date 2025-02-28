@@ -12,6 +12,9 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
         public int standardId { get; set; }
         public bool isCurrent { get; set; }
         public GetCurrentEvaluationDtoEvaluationStateDto? evaluationState { get; set; }
+        public GetCurrentEvaluationDtoStandardDto? standard { get; set; }
+        public GetCurrentScopeDto? currentScope { get; set; }
+        public GetCurrentPolicyDto? currentPolicy { get; set; }
     }
 
     public class GetCurrentEvaluationDtoEvaluationStateDto
@@ -19,4 +22,20 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
         public string? name { get; set; }
         public string? color { get; set; }
     }
+    public class GetCurrentEvaluationDtoStandardDto
+    {
+        public string? name { get; set; }
+    }
+    public class GetCurrentScopeDto
+    {
+        public int scopeId { get; set; }
+        public string name { get; set; }
+    }
+
+    public class GetCurrentPolicyDto
+    {
+        public int policyId { get; set; }
+        public string name { get; set; }
+    }
+
 }

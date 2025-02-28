@@ -298,6 +298,18 @@ using Qualifier.Application.Database.Section.Queries.GetSectionsByDocumentationI
 using Qualifier.Application.Database.Section.Queries.GetAllSectionsByDocumentationId;
 using Qualifier.Application.Database.Evaluation.Queries.GetPendingDocumentation;
 using Qualifier.Application.Database.Version.Queries.GetAllVersionsByDocumentationId;
+using Qualifier.Application.Database.Scope.Commands.CreateScope;
+using Qualifier.Application.Database.Scope.Commands.DeleteScope;
+using Qualifier.Application.Database.Scope.Commands.UpdateScope;
+using Qualifier.Application.Database.Scope.Queries.GetAllScopesByStandardId;
+using Qualifier.Application.Database.Scope.Queries.GetScopeById;
+using Qualifier.Application.Database.Scope.Queries.GetScopesByStandardId;
+using Qualifier.Application.Database.Policy.Commands.CreatePolicy;
+using Qualifier.Application.Database.Policy.Commands.DeletePolicy;
+using Qualifier.Application.Database.Policy.Commands.UpdatePolicy;
+using Qualifier.Application.Database.Policy.Queries.GetAllPoliciesByStandardId;
+using Qualifier.Application.Database.Policy.Queries.GetPoliciesByStandardId;
+using Qualifier.Application.Database.Policy.Queries.GetPolicyById;
 
 
 
@@ -715,6 +727,23 @@ namespace Qualifier.Application
             //Company
             services.AddTransient<IGetCompanyByIdQuery, GetCompanyByIdQuery>();
             services.AddTransient<IUpdateCompanyCommand, UpdateCompanyCommand>();
+
+            //Scope
+            services.AddTransient<ICreateScopeCommand, CreateScopeCommand>();
+            services.AddTransient<IUpdateScopeCommand, UpdateScopeCommand>();
+            services.AddTransient<IDeleteScopeCommand, DeleteScopeCommand>();
+            services.AddTransient<IGetScopeByIdQuery, GetScopeByIdQuery>();
+            services.AddTransient<IGetAllScopesByStandardIdQuery, GetAllScopesByStandardIdQuery>();
+            services.AddTransient<IGetScopesByStandardIdQuery, GetScopesByStandardIdQuery>();
+
+            //Policy
+            services.AddTransient<ICreatePolicyCommand, CreatePolicyCommand>();
+            services.AddTransient<IUpdatePolicyCommand, UpdatePolicyCommand>();
+            services.AddTransient<IDeletePolicyCommand, DeletePolicyCommand>();
+            services.AddTransient<IGetPolicyByIdQuery, GetPolicyByIdQuery>();
+            services.AddTransient<IGetAllPoliciesByStandardIdQuery, GetAllPoliciesByStandardIdQuery>();
+            services.AddTransient<IGetPoliciesByStandardIdQuery, GetPoliciesByStandardIdQuery>();
+
 
             return services;
         }

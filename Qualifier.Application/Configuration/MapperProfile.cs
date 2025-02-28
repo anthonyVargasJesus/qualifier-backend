@@ -138,6 +138,11 @@ using Qualifier.Application.Database.Personal.Commands.UpdatePersonal;
 using Qualifier.Application.Database.Personal.Queries.GetAllPersonalsByCompanyId;
 using Qualifier.Application.Database.Personal.Queries.GetPersonalById;
 using Qualifier.Application.Database.Personal.Queries.GetPersonalsByCompanyId;
+using Qualifier.Application.Database.Policy.Commands.CreatePolicy;
+using Qualifier.Application.Database.Policy.Commands.UpdatePolicy;
+using Qualifier.Application.Database.Policy.Queries.GetAllPoliciesByStandardId;
+using Qualifier.Application.Database.Policy.Queries.GetPoliciesByStandardId;
+using Qualifier.Application.Database.Policy.Queries.GetPolicyById;
 using Qualifier.Application.Database.Requirement.Commands.CreateRequirement;
 using Qualifier.Application.Database.Requirement.Commands.UpdateRequirement;
 using Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsByStandardId;
@@ -176,6 +181,11 @@ using Qualifier.Application.Database.RoleInUser.Commands.UpdateRoleInUser;
 using Qualifier.Application.Database.RoleInUser.Queries.GetAllRoleInUsersByUserId;
 using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUserById;
 using Qualifier.Application.Database.RoleInUser.Queries.GetRoleInUsersByUserId;
+using Qualifier.Application.Database.Scope.Commands.CreateScope;
+using Qualifier.Application.Database.Scope.Commands.UpdateScope;
+using Qualifier.Application.Database.Scope.Queries.GetAllScopesByStandardId;
+using Qualifier.Application.Database.Scope.Queries.GetScopeById;
+using Qualifier.Application.Database.Scope.Queries.GetScopesByStandardId;
 using Qualifier.Application.Database.Section.Commands.CreateSection;
 using Qualifier.Application.Database.Section.Commands.UpdateSection;
 using Qualifier.Application.Database.Section.Queries.GetAllSectionsByDocumentationId;
@@ -708,6 +718,26 @@ namespace Qualifier.Application.Configuration
 
             //EvaluationState
             CreateMap<EvaluationStateEntity, GetCurrentEvaluationDtoEvaluationStateDto>().ReverseMap();
+            CreateMap<ScopeEntity, GetCurrentScopeDto>().ReverseMap();
+            CreateMap<PolicyEntity, GetCurrentPolicyDto>().ReverseMap();
+            CreateMap<StandardEntity, GetCurrentEvaluationDtoStandardDto>().ReverseMap();
+
+            //Scope
+            CreateMap<ScopeEntity, CreateScopeDto>().ReverseMap();
+            CreateMap<ScopeEntity, UpdateScopeDto>().ReverseMap();
+            CreateMap<ScopeEntity, GetScopeByIdDto>().ReverseMap();
+            CreateMap<ScopeEntity, GetAllScopesByStandardIdDto>().ReverseMap();
+            CreateMap<ScopeEntity, GetScopesByStandardIdDto>().ReverseMap();
+
+            //Policy
+            CreateMap<PolicyEntity, CreatePolicyDto>().ReverseMap();
+            CreateMap<PolicyEntity, UpdatePolicyDto>().ReverseMap();
+            CreateMap<PolicyEntity, GetPolicyByIdDto>().ReverseMap();
+            CreateMap<PolicyEntity, GetAllPoliciesByStandardIdDto>().ReverseMap();
+            CreateMap<PolicyEntity, GetPoliciesByStandardIdDto>().ReverseMap();
+
+
+
         }
     }
 }

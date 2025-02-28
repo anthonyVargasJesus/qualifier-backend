@@ -44,9 +44,38 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
                                             name = evaluationState.name,
                                             color = evaluationState.color,
                                         },
+                                        standard = new StandardEntity
+                                        {
+                                            name = standard.name,
+                                        },
                                     }).FirstOrDefaultAsync();
 
-                return _mapper.Map<GetCurrentEvaluationDto>(entity);
+                int standardId = 0;
+                if (entity != null)
+                    standardId = entity.standardId;
+
+                var currentScope = await (from item in _databaseService.Scope
+                                    where ((item.isDeleted == null || item.isDeleted == false) && item.isCurrent && item.standardId == standardId)
+                                    select new ScopeEntity()
+                                    {
+                                        scopeId = item.scopeId,
+                                        name = item.name,
+                                    }).FirstOrDefaultAsync();
+
+                var currentPolicy = await (from item in _databaseService.Policy
+                                          where ((item.isDeleted == null || item.isDeleted == false) && item.isCurrent && item.standardId == standardId)
+                                          select new PolicyEntity()
+                                          {
+                                              policyId = item.policyId,
+                                              name = item.name,
+                                          }).FirstOrDefaultAsync();
+
+                var entityDto = _mapper.Map<GetCurrentEvaluationDto>(entity);
+                entityDto.currentScope = _mapper.Map<GetCurrentScopeDto>(currentScope);
+                entityDto.currentPolicy = _mapper.Map<GetCurrentPolicyDto>(currentPolicy);
+
+                return entityDto;
+
             }
             catch (Exception)
             {
