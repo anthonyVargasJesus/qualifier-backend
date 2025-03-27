@@ -30,11 +30,11 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRe
             if (responsibleId == null)
                 notification.addError("El responsibleId es obligatorio");
 
-            if (justification == null)
-                notification.addError("El justification es obligatorio");
+            //if (justification == null)
+            //    notification.addError("El justification es obligatorio");
 
-            if (improvementActions == null)
-                notification.addError("El improvementActions es obligatorio");
+            //if (improvementActions == null)
+            //    notification.addError("El improvementActions es obligatorio");
 
         }
 

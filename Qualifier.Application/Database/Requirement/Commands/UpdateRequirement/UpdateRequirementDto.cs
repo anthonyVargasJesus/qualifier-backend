@@ -11,7 +11,7 @@ namespace Qualifier.Application.Database.Requirement.Commands.UpdateRequirement
         public int parentId { get; set; }
         public bool isEvaluable { get; set; }
         public int? updateUserId { get; set; }
-
+        public string letter { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {
             if (numeration == null)

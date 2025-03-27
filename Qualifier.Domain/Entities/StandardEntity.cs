@@ -30,6 +30,7 @@ namespace Qualifier.Domain.Entities
             const int FIRST_LEVEL = 1;
             const int SECOND_LEVEL = 2;
             const int THIRD_LEVEL = 3;
+            const int FOURTH_LEVEL = 4;
 
             requirements = allRequirements.Where(x => x.level == FIRST_LEVEL).OrderBy(x => x.numeration).ToList();
 
@@ -40,7 +41,17 @@ namespace Qualifier.Domain.Entities
 
                     foreach (var item in requirement.children)
                         if (hasChildren(allRequirements, item.requirementId, THIRD_LEVEL))
+                        {
                             item.children = getChildren(allRequirements, item.requirementId, THIRD_LEVEL).OrderBy(x => x.numeration).ToList();
+                            foreach (var item2 in item.children)
+                            {
+                                if (hasChildren(allRequirements, item2.requirementId, FOURTH_LEVEL))
+                                {
+                                    item2.children = getChildren(allRequirements, item2.requirementId, FOURTH_LEVEL).OrderBy(x => x.numeration).ToList();
+                                }
+                            }
+                        }
+                            
                 }
             setNumeration(requirements);
         }
@@ -86,14 +97,30 @@ namespace Qualifier.Domain.Entities
         {
             foreach (RequirementEntity item in localRequirements)
             {
-                item.numerationToShow = item.numeration.ToString();
+                if (item.letter != null)
+                item.numerationToShow = item.letter != ""? item.letter: item.numeration.ToString();
+
                 if (item.children != null)
                     foreach (var child1 in item.children)
                     {
-                        child1.numerationToShow = item.numeration + "." + child1.numeration;
+                        if (child1.letter != null)
+                            child1.numerationToShow = child1.letter != "" ? child1.letter :( item.numeration + "." + child1.numeration);
+
                         if (child1.children != null)
                             foreach (var child2 in child1.children)
-                                child2.numerationToShow = item.numeration + "." + child1.numeration + "." + child2.numeration;
+                            {
+                                if (child2.letter != null)
+                                    child2.numerationToShow = child2.letter != "" ? child2.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration);
+
+                                if (child2.children != null)
+                                {
+                                    foreach (var child3 in child2.children)
+                                    {
+                                        if (child3.letter != null)
+                                            child3.numerationToShow = child3.letter != "" ? child3.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration + "." + child3.numeration);
+                                    }
+                                }
+                            }
                     }
             }
         }
@@ -154,6 +181,7 @@ namespace Qualifier.Domain.Entities
 
                         if (child1.children != null)
                             foreach (var child2 in child1.children)
+                            {
                                 if (child2.children == null)
                                 {
                                     child2.requirementEvaluations = evaluations.Where(x => x.requirementId == child2.requirementId).ToList();
@@ -163,6 +191,29 @@ namespace Qualifier.Domain.Entities
                                     if (child2.requirementEvaluations != null)
                                         setNumerationToEvaluations(child2.requirementEvaluations.ToList(), child2.numerationToShow);
                                 }
+
+                                if (child2.children != null)
+                                {
+
+                                    foreach (var child3 in child2.children)
+                                    {
+                                        if (child3.children == null)
+                                        {
+                                            child3.requirementEvaluations = evaluations.Where(x => x.requirementId == child3.requirementId).ToList();
+                                            if (child3.requirementEvaluations != null)
+                                                if (child3.requirementEvaluations.Count == 0)
+                                                    child3.requirementEvaluations.Add(getDefaultRequierementeEvaluation(child3));
+                                            if (child3.requirementEvaluations != null)
+                                                setNumerationToEvaluations(child3.requirementEvaluations.ToList(), child3.numerationToShow);
+                                        }
+
+
+
+                                    }
+
+                                }
+                            }
+                                
                     }
             }
         }

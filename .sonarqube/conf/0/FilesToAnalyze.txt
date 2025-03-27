@@ -1,0 +1,12 @@
+﻿D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Api\JwtTokenProvider.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\Dto\BaseErrorDto.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\Dto\BaseErrorResponseDto.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\Dto\BaseResponseCommandDto.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\Dto\BaseResponseDto.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\NotificationPattern\Error.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\NotificationPattern\Notification.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\Service\BaseApplication.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Application\Service\Pagination.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\DependencyInjectionService.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Domain\Entities\BaseEntity.cs
+D:\INIT-PROJECTS\Qualifier\qualifier-services\Qualifier.Common\Domain\Helpers\Hashing.cs

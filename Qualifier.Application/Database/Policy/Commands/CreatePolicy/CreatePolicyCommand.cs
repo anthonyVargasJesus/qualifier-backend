@@ -30,10 +30,7 @@ namespace Qualifier.Application.Database.Policy.Commands.CreatePolicy
                 Notification notification = this.createValidation(model);
                 if (notification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(notification.errors);
-
-               
-
-
+ 
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     var entity = _mapper.Map<PolicyEntity>(model);

@@ -30,12 +30,14 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
     {
         public int scopeId { get; set; }
         public string name { get; set; }
+        public string? description { get; set; }
     }
 
     public class GetCurrentPolicyDto
     {
         public int policyId { get; set; }
         public string name { get; set; }
+        public string? description { get; set; }
     }
 
 }

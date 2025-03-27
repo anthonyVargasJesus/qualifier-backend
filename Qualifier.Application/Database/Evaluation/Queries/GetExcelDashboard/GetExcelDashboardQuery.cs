@@ -72,11 +72,13 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                 return ms;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-              return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+              //return BaseApplication.getExceptionErrorResponse();
             }
         }
+        //an
 
         async Task createRequirementsSheet(IWorkbook workbook, int standardId, int evaluationId)
         {
@@ -115,8 +117,8 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                                          value = requirementEvaluation.value,
                                          requirementId = requirementEvaluation.requirementId,
                                          responsibleId = requirementEvaluation.responsibleId,
-                                         justification = requirementEvaluation.justification,
-                                         improvementActions = requirementEvaluation.improvementActions,
+                                         justification = requirementEvaluation.justification == null ? "": requirementEvaluation.justification,
+                                         improvementActions = requirementEvaluation.improvementActions == null ? "" : requirementEvaluation.improvementActions,
                                          requirement = new RequirementEntity
                                          {
                                              requirementId = requirement.requirementId,
@@ -155,7 +157,18 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
 
             ISheet excelSheet = workbook.CreateSheet(standardName);
 
-            string title = standardName + " - ANÁLISIS DE BRECHAS INICIAL";
+            string evaluationName = "";
+            var entity = await (from item in _databaseService.Evaluation
+                                where ((item.isDeleted == null || item.isDeleted == false) && item.evaluationId == evaluationId)
+                                select new EvaluationEntity()
+                                {
+                                    description = item.description,
+                                }).FirstOrDefaultAsync();
+
+            if (entity != null)
+                evaluationName = entity.description;
+
+            string title = standardName + " - " + evaluationName;
 
             excelSheet.SetColumnWidth(0, 2700);
             excelSheet.SetColumnWidth(1, 20000);
@@ -276,8 +289,8 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                                             }
 
                                         setFormatRequirementItemCell(workbook, children2Row, 4, referenceDocumentation, 10, false, headerChild2Color, false, false, grayBorder, false);
-                                        setFormatRequirementItemCell(workbook, children2Row, 5, requirementEvaluation.justification, 10, false, headerChild2Color, false, false, grayBorder, false);
-                                        setFormatRequirementItemCell(workbook, children2Row, 6, requirementEvaluation.improvementActions, 10, false, headerChild2Color, false, false, grayBorder, false);
+                                        setFormatRequirementItemCell(workbook, children2Row, 5, requirementEvaluation.justification==null?"": requirementEvaluation.justification, 10, false, headerChild2Color, false, false, grayBorder, false);
+                                        setFormatRequirementItemCell(workbook, children2Row, 6, requirementEvaluation.improvementActions == null?"": requirementEvaluation.improvementActions, 10, false, headerChild2Color, false, false, grayBorder, false);
                                     }
 
                                 rowIndex++;
@@ -532,8 +545,8 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                                          value = requirementEvaluation.value,
                                          requirementId = requirementEvaluation.requirementId,
                                          responsibleId = requirementEvaluation.responsibleId,
-                                         justification = requirementEvaluation.justification,
-                                         improvementActions = requirementEvaluation.improvementActions,
+                                         justification = requirementEvaluation.justification == null ? "" : requirementEvaluation.justification,
+                                         improvementActions = requirementEvaluation.improvementActions == null ? "" : requirementEvaluation.improvementActions ,
                                          requirement = new RequirementEntity
                                          {
                                              requirementId = requirement.requirementId,

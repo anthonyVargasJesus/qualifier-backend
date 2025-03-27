@@ -10,7 +10,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
         public int? maturityLevelId { get; set; }
         public decimal? value { get; set; }
         public int? responsibleId { get; set; }
-        public string justification { get; set; }
+        public string? justification { get; set; }
         public string improvementActions { get; set; }
         public int standardId { get; set; }
         public int companyId { get; set; }
@@ -30,11 +30,11 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
             if (responsibleId == null)
                 notification.addError("El responsibleId es obligatorio");
 
-            if (justification == null)
-                notification.addError("El justification es obligatorio");
+            //if (justification == null)
+            //    notification.addError("El justification es obligatorio");
 
-            if (improvementActions == null)
-                notification.addError("El improvementActions es obligatorio");
+            //if (improvementActions == null)
+            //    notification.addError("El improvementActions es obligatorio");
 
         }
     }

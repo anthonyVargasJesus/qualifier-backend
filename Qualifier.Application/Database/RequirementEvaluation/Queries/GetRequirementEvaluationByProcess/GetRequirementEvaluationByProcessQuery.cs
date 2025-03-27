@@ -34,11 +34,11 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                               description = requirement.description,
                                               level = requirement.level,
                                               parentId = requirement.parentId,
+                                              letter = (requirement.letter==null)? "" : requirement.letter,
                                           }).ToListAsync();
 
                 var standardEntity = new StandardEntity();
                 standardEntity.setRequirementsWithChildren(requirements);
-
 
                 var evaluations = await (from requirementEvaluation in _databaseService.RequirementEvaluation
                                          join requirement in _databaseService.Requirement on requirementEvaluation.requirement equals requirement
@@ -52,8 +52,8 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                              value = requirementEvaluation.value,
                                              requirementId = requirementEvaluation.requirementId,
                                              responsibleId = requirementEvaluation.responsibleId,
-                                             justification = requirementEvaluation.justification,
-                                             improvementActions = requirementEvaluation.improvementActions,
+                                             justification = requirementEvaluation.justification == null? "" : requirementEvaluation.justification,
+                                             improvementActions = requirementEvaluation.improvementActions == null ? "" : requirementEvaluation.improvementActions,
                                              requirement = new RequirementEntity
                                              {
                                                  requirementId = requirement.requirementId,

@@ -60,6 +60,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
                                     {
                                         scopeId = item.scopeId,
                                         name = item.name,
+                                        description = item.description
                                     }).FirstOrDefaultAsync();
 
                 var currentPolicy = await (from item in _databaseService.Policy
@@ -68,6 +69,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
                                           {
                                               policyId = item.policyId,
                                               name = item.name,
+                                              description = item.description
                                           }).FirstOrDefaultAsync();
 
                 var entityDto = _mapper.Map<GetCurrentEvaluationDto>(entity);

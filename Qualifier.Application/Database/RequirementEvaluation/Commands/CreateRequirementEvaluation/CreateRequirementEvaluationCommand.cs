@@ -53,9 +53,10 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
 
                 return model;
             }
-            catch (Exception )
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -13,9 +13,14 @@ namespace Qualifier.Domain.Entities
         public int level { get; set; }
         public int parentId { get; set; }
         public bool isEvaluable { get; set; }
+        public string? letter { get; set; }
         public int companyId { get; set; }
+
+        [NotMapped]
         public RequirementEntity requirement { get; set; }
+        [NotMapped]
         public ICollection<RequirementEntity> requirements { get; set; }
+        [NotMapped]
         public ICollection<RequirementEvaluationEntity> requirementEvaluations { get; set; }
 
 

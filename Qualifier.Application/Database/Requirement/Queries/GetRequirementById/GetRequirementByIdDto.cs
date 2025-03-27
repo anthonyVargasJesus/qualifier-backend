@@ -10,7 +10,7 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementById
         public int level { get; set; }
         public int parentId { get; set; }
         public bool isEvaluable { get; set; }
-
+        public string letter { get; set; }
     }
 }
 

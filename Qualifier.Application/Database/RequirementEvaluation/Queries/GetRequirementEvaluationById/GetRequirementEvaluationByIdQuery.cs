@@ -29,8 +29,8 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                         maturityLevelId = item.maturityLevelId,
                                         value = item.value,
                                         responsibleId = item.responsibleId,
-                                        justification = item.justification,
-                                        improvementActions = item.improvementActions,
+                                        justification = item.justification == null ? "" : item.justification,
+                                        improvementActions = item.improvementActions == null ? "" : item.improvementActions,
                                         standardId = item.standardId,
                                         companyId = item.companyId,
                                     }).FirstOrDefaultAsync();

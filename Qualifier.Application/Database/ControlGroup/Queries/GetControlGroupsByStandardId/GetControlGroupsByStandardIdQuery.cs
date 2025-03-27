@@ -28,6 +28,7 @@ namespace Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsBy
                                           controlGroupId = controlGroup.controlGroupId,
                                           number = controlGroup.number,
                                           name = controlGroup.name,
+                                          description = controlGroup.description
                                       }).OrderBy(x => x.number)
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();

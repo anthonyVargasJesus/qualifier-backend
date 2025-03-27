@@ -19,6 +19,7 @@ namespace Qualifier.Persistence.Repositories
             var entry = _context.Attach(entity);
             entry.Property(x => x.numeration).IsModified = true;
             entry.Property(x => x.name).IsModified = true;
+            entry.Property(x => x.letter).IsModified = true;
             entry.Property(x => x.description).IsModified = true;
             entry.Property(x => x.level).IsModified = true;
             entry.Property(x => x.parentId).IsModified = true;

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Qualifier.Common.Domain.Entities;
 
 namespace Qualifier.Domain.Entities
@@ -13,6 +14,8 @@ namespace Qualifier.Domain.Entities
         public int documentTypeId { get; set; }
         public StandardEntity standard { get; set; }
         public DocumentTypeEntity documentType { get; set; }
+
+        [NotMapped]
         public List<RequirementEntity> requirements { get; set; }
         public List<ControlEntity> controls { get; set; }
     }

@@ -62,10 +62,9 @@ namespace Qualifier.Application.Database.Scope.Commands.CreateScope
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

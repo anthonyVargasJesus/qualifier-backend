@@ -20,7 +20,6 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
         {
             try
             {
-
                 var allRequirements = await (from requirement in _databaseService.Requirement
                                              where ((requirement.isDeleted == null || requirement.isDeleted == false) && requirement.standardId == standardId)
                                              select new RequirementEntity
@@ -31,11 +30,15 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
                                                  description = requirement.description,
                                                  level = requirement.level,
                                                  parentId = requirement.parentId,
+                                                 letter = requirement.letter == null ? "" : requirement.letter
+
                                              }).ToListAsync();
 
                 const int FIRST_LEVEL = 1;
                 const int SECOND_LEVEL = 2;
                 const int THIRD_LEVEL = 3;
+                const int FOURTH_LEVEL = 4;
+                const int FIFTH_LEVEL = 5;
 
                 var entities = await (from requirement in _databaseService.Requirement
                                       where ((requirement.isDeleted == null || requirement.isDeleted == false)
@@ -48,11 +51,11 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
                                           description = requirement.description,
                                           level = requirement.level,
                                           parentId = requirement.parentId,
+                                          letter = requirement.letter == null ? "" : requirement.letter
                                       }).OrderBy(x => x.numeration)
                                         .ToListAsync();     
 
                 BaseResponseDto<GetRequirementsByStandardIdDto> baseResponseDto = new BaseResponseDto<GetRequirementsByStandardIdDto>();
-
                 List<GetRequirementsByStandardIdDto> data = _mapper.Map<List<GetRequirementsByStandardIdDto>>(entities);
 
                 foreach (var requirement in data)
@@ -63,7 +66,28 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
 
                         foreach (var item in requirement.children)
                             if (hasChildren(allRequirements, item.requirementId, THIRD_LEVEL))
-                                item.children = getChildren(allRequirements, item.requirementId, THIRD_LEVEL).OrderBy(x => x.numeration).ToList();  
+                            {
+                                item.children = getChildren(allRequirements, item.requirementId, THIRD_LEVEL).OrderBy(x => x.numeration).ToList();
+
+                                foreach(var item2 in item.children)
+                                    if (hasChildren(allRequirements, item2.requirementId, FOURTH_LEVEL))
+                                    {
+                                        item2.children = getChildren(allRequirements, item2.requirementId, FOURTH_LEVEL).OrderBy(x => x.numeration).ToList();
+
+                                        foreach (var item3 in item2.children)
+                                        {
+                                            if (hasChildren(allRequirements, item3.requirementId, FIFTH_LEVEL))
+                                            {
+                                                item3.children = getChildren(allRequirements, item3.requirementId, FIFTH_LEVEL).OrderBy(x => x.numeration).ToList();
+                                            }
+                                        }
+
+
+                                    }
+
+
+                            }
+                                
                     }
                 }
 
