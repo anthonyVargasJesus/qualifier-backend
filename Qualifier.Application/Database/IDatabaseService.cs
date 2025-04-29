@@ -60,6 +60,7 @@ namespace Qualifier.Application.Database
         DbSet<EvaluationStateEntity> EvaluationState { get; set; }
         DbSet<ScopeEntity> Scope { get; set; }
         DbSet<PolicyEntity> Policy { get; set; }
+        DbSet<RiskTreatmentMethodEntity> RiskTreatmentMethod { get; set; }
         Task<bool> SaveAsync();
     }
 }

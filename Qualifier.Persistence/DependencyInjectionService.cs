@@ -15,7 +15,7 @@ namespace Qualifier.Persistence
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<DatabaseService>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("HerokuConnectionString")));     
+            options.UseNpgsql(configuration.GetConnectionString("SQLConnectionString")));     
 
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IStandardRepository, StandardRepository>();
@@ -70,6 +70,8 @@ namespace Qualifier.Persistence
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IScopeRepository, ScopeRepository>();
             services.AddScoped<IPolicyRepository, PolicyRepository>();
+            services.AddScoped<IRiskTreatmentMethodRepository, RiskTreatmentMethodRepository>();
+            services.AddScoped<IRiskRepository, RiskRepository>();
 
             return services;
         }

@@ -18,6 +18,7 @@ namespace Qualifier.Domain.Entities
         public int supportTypeId { get; set; }
         public int locationId { get; set; }
         public decimal? valuation { get; set; }
+        public int standardId { get; set; }
         public int? companyId { get; set; }
         public MacroprocessEntity macroprocess { get; set; }
         public SubprocessEntity subprocess { get; set; }

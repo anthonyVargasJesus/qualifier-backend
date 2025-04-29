@@ -3,6 +3,7 @@ using Qualifier.Application.Database.ActivesInventory.Commands.CreateActivesInve
 using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInventory;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoryById;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
 using Qualifier.Application.Database.ActiveType.Commands.CreateActiveType;
 using Qualifier.Application.Database.ActiveType.Commands.UpdateActiveType;
 using Qualifier.Application.Database.ActiveType.Queries.GetActiveTypeById;
@@ -164,13 +165,19 @@ using Qualifier.Application.Database.Reviewer.Queries.GetAllReviewersByVersionId
 using Qualifier.Application.Database.Reviewer.Queries.GetReviewerById;
 using Qualifier.Application.Database.Risk.Commands.CreateRisk;
 using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
+using Qualifier.Application.Database.Risk.Queries.GetAllRisksByEvaluationId;
 using Qualifier.Application.Database.Risk.Queries.GetRiskById;
-using Qualifier.Application.Database.Risk.Queries.GetRisksByCompanyId;
+using Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId;
 using Qualifier.Application.Database.RiskLevel.Commands.CreateRiskLevel;
 using Qualifier.Application.Database.RiskLevel.Commands.UpdateRiskLevel;
 using Qualifier.Application.Database.RiskLevel.Queries.GetAllRiskLevelsByCompanyId;
 using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelById;
 using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelsByCompanyId;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.CreateRiskTreatmentMethod;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.UpdateRiskTreatmentMethod;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetAllRiskTreatmentMethodsByCompanyId;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetRiskTreatmentMethodById;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetRiskTreatmentMethodsByCompanyId;
 using Qualifier.Application.Database.Role.Commands.CreateRole;
 using Qualifier.Application.Database.Role.Commands.UpdateRole;
 using Qualifier.Application.Database.Role.Queries.GetAllRolesByCompanyId;
@@ -700,17 +707,17 @@ namespace Qualifier.Application.Configuration
             CreateMap<RiskLevelEntity, GetAllRiskLevelsByCompanyIdDto>().ReverseMap();
             CreateMap<RiskLevelEntity, GetRiskLevelsByCompanyIdDto>().ReverseMap();
 
-            //Risk
-            CreateMap<RiskEntity, CreateRiskDto>().ReverseMap();
-            CreateMap<RiskEntity, UpdateRiskDto>().ReverseMap();
-            CreateMap<RiskEntity, GetRiskByIdDto>().ReverseMap();
-            CreateMap<RiskEntity, GetRisksByCompanyIdDto>().ReverseMap();
-            CreateMap<ControlEntity, GetRisksByCompanyIdControlDto>().ReverseMap();
-            CreateMap<ControlTypeEntity, GetRisksByCompanyIdControlTypeDto>().ReverseMap();
-            CreateMap<MenaceEntity, GetRisksByCompanyIdMenaceDto>().ReverseMap();
-            CreateMap<ResponsibleEntity, GetRisksByCompanyIdResponsibleDto>().ReverseMap();
-            CreateMap<RiskLevelEntity, GetRisksByCompanyIdRiskLevelDto>().ReverseMap();
-            CreateMap<VulnerabilityEntity, GetRisksByCompanyIdVulnerabilityDto>().ReverseMap();
+            ////Risk
+            //CreateMap<RiskEntity, CreateRiskDto>().ReverseMap();
+            //CreateMap<RiskEntity, UpdateRiskDto>().ReverseMap();
+            //CreateMap<RiskEntity, GetRiskByIdDto>().ReverseMap();
+            //CreateMap<RiskEntity, GetRisksByCompanyIdDto>().ReverseMap();
+            //CreateMap<ControlEntity, GetRisksByCompanyIdControlDto>().ReverseMap();
+            //CreateMap<ControlTypeEntity, GetRisksByCompanyIdControlTypeDto>().ReverseMap();
+            //CreateMap<MenaceEntity, GetRisksByCompanyIdMenaceDto>().ReverseMap();
+            //CreateMap<ResponsibleEntity, GetRisksByCompanyIdResponsibleDto>().ReverseMap();
+            //CreateMap<RiskLevelEntity, GetRisksByCompanyIdRiskLevelDto>().ReverseMap();
+            //CreateMap<VulnerabilityEntity, GetRisksByCompanyIdVulnerabilityDto>().ReverseMap();
             
             //Company
             CreateMap<CompanyEntity, GetCompanyByIdDto>().ReverseMap();
@@ -736,7 +743,24 @@ namespace Qualifier.Application.Configuration
             CreateMap<PolicyEntity, GetAllPoliciesByStandardIdDto>().ReverseMap();
             CreateMap<PolicyEntity, GetPoliciesByStandardIdDto>().ReverseMap();
 
+            //RiskTreatmentMethod
+            CreateMap<RiskTreatmentMethodEntity, CreateRiskTreatmentMethodDto>().ReverseMap();
+            CreateMap<RiskTreatmentMethodEntity, UpdateRiskTreatmentMethodDto>().ReverseMap();
+            CreateMap<RiskTreatmentMethodEntity, GetRiskTreatmentMethodByIdDto>().ReverseMap();
+            CreateMap<RiskTreatmentMethodEntity, GetAllRiskTreatmentMethodsByCompanyIdDto>().ReverseMap();
+            CreateMap<RiskTreatmentMethodEntity, GetRiskTreatmentMethodsByCompanyIdDto>().ReverseMap();
 
+            //Risk
+            CreateMap<RiskEntity, GetRisksByEvaluationIdDto>().ReverseMap();
+            CreateMap<MenaceEntity, GetRisksByEvaluationIdMenaceDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, GetRisksByEvaluationIdVulnerabilityDto>().ReverseMap();
+            CreateMap<RiskEntity, CreateRiskDto>().ReverseMap();
+            CreateMap<RiskEntity, UpdateRiskDto>().ReverseMap();
+            CreateMap<RiskEntity, GetRiskByIdDto>().ReverseMap();
+            CreateMap<RiskEntity, GetAllRisksByEvaluationIdDto>().ReverseMap();
+
+            //ActivesInventory
+            CreateMap<ActivesInventoryEntity, GetAllActivesInventoriesByCompanyIdDto>().ReverseMap();
 
         }
     }

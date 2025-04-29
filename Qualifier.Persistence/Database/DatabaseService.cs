@@ -66,6 +66,7 @@ namespace Qualifier.Persistence.Database
         public DbSet<EvaluationStateEntity> EvaluationState { get; set; }
         public DbSet<ScopeEntity> Scope { get; set; }
         public DbSet<PolicyEntity> Policy { get; set; }
+        public DbSet<RiskTreatmentMethodEntity> RiskTreatmentMethod { get; set; }
 
         public async Task<bool> SaveAsync()
         {
@@ -135,6 +136,8 @@ namespace Qualifier.Persistence.Database
             new EvaluationStateConfiguration(modelBuilder.Entity<EvaluationStateEntity>());
             new ScopeConfiguration(modelBuilder.Entity<ScopeEntity>());
             new PolicyConfiguration(modelBuilder.Entity<PolicyEntity>());
+            new RiskTreatmentMethodConfiguration(modelBuilder.Entity<RiskTreatmentMethodEntity>());
+
         }
 
     }

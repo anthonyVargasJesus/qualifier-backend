@@ -285,11 +285,6 @@ using Qualifier.Application.Database.RiskLevel.Commands.UpdateRiskLevel;
 using Qualifier.Application.Database.RiskLevel.Queries.GetAllRiskLevelsByCompanyId;
 using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelById;
 using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelsByCompanyId;
-using Qualifier.Application.Database.Risk.Commands.CreateRisk;
-using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
-using Qualifier.Application.Database.Risk.Commands.DeleteRisk;
-using Qualifier.Application.Database.Risk.Queries.GetRiskById;
-using Qualifier.Application.Database.Risk.Queries.GetRisksByCompanyId;
 using Qualifier.Application.Database.Company.Queries.GetCompanyById;
 using Qualifier.Application.Database.Company.Commands.UpdateCompany;
 using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
@@ -310,6 +305,20 @@ using Qualifier.Application.Database.Policy.Commands.UpdatePolicy;
 using Qualifier.Application.Database.Policy.Queries.GetAllPoliciesByStandardId;
 using Qualifier.Application.Database.Policy.Queries.GetPoliciesByStandardId;
 using Qualifier.Application.Database.Policy.Queries.GetPolicyById;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.CreateRiskTreatmentMethod;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.UpdateRiskTreatmentMethod;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetAllRiskTreatmentMethodsByCompanyId;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetRiskTreatmentMethodById;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetRiskTreatmentMethodsByCompanyId;
+using Qualifier.Domain.Entities;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.DeleteRiskTreatmentMethod;
+using Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId;
+using Qualifier.Application.Database.Risk.Commands.CreateRisk;
+using Qualifier.Application.Database.Risk.Commands.DeleteRisk;
+using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
+using Qualifier.Application.Database.Risk.Queries.GetAllRisksByEvaluationId;
+using Qualifier.Application.Database.Risk.Queries.GetRiskById;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
 
 
 
@@ -591,6 +600,7 @@ namespace Qualifier.Application
             services.AddTransient<IDeleteActivesInventoryCommand, DeleteActivesInventoryCommand>();
             services.AddTransient<IGetActivesInventoryByIdQuery, GetActivesInventoryByIdQuery>();
             services.AddTransient<IGetActivesInventoriesByCompanyIdQuery, GetActivesInventoriesByCompanyIdQuery>();
+            services.AddTransient<IGetAllActivesInventoriesByCompanyIdQuery, GetAllActivesInventoriesByCompanyIdQuery>();
 
             //ValuationInActive
             services.AddTransient<ICreateValuationInActiveCommand, CreateValuationInActiveCommand>();
@@ -717,12 +727,12 @@ namespace Qualifier.Application
             services.AddTransient<IGetAllRiskLevelsByCompanyIdQuery, GetAllRiskLevelsByCompanyIdQuery>();
             services.AddTransient<IGetRiskLevelsByCompanyIdQuery, GetRiskLevelsByCompanyIdQuery>();
 
-            //Risk
-            services.AddTransient<ICreateRiskCommand, CreateRiskCommand>();
-            services.AddTransient<IUpdateRiskCommand, UpdateRiskCommand>();
-            services.AddTransient<IDeleteRiskCommand, DeleteRiskCommand>();
-            services.AddTransient<IGetRiskByIdQuery, GetRiskByIdQuery>();
-            services.AddTransient<IGetRisksByCompanyIdQuery, GetRisksByCompanyIdQuery>();
+            ////Risk
+            //services.AddTransient<ICreateRiskCommand, CreateRiskCommand>();
+            //services.AddTransient<IUpdateRiskCommand, UpdateRiskCommand>();
+            //services.AddTransient<IDeleteRiskCommand, DeleteRiskCommand>();
+            //services.AddTransient<IGetRiskByIdQuery, GetRiskByIdQuery>();
+            //services.AddTransient<IGetRisksByCompanyIdQuery, GetRisksByCompanyIdQuery>();
 
             //Company
             services.AddTransient<IGetCompanyByIdQuery, GetCompanyByIdQuery>();
@@ -744,6 +754,21 @@ namespace Qualifier.Application
             services.AddTransient<IGetAllPoliciesByStandardIdQuery, GetAllPoliciesByStandardIdQuery>();
             services.AddTransient<IGetPoliciesByStandardIdQuery, GetPoliciesByStandardIdQuery>();
 
+            //RiskTreatmentMethod
+            services.AddTransient<ICreateRiskTreatmentMethodCommand, CreateRiskTreatmentMethodCommand>();
+            services.AddTransient<IDeleteRiskTreatmentMethodCommand, DeleteRiskTreatmentMethodCommand>();
+            services.AddTransient<IUpdateRiskTreatmentMethodCommand, UpdateRiskTreatmentMethodCommand>();
+            services.AddTransient<IGetAllRiskTreatmentMethodsByCompanyIdQuery, GetAllRiskTreatmentMethodsByCompanyIdQuery>();
+            services.AddTransient<IGetRiskTreatmentMethodByIdQuery, GetRiskTreatmentMethodByIdQuery>();
+            services.AddTransient<IGetRiskTreatmentMethodsByCompanyIdQuery, GetRiskTreatmentMethodsByCompanyIdQuery>();
+
+            //Risk
+            services.AddTransient<ICreateRiskCommand, CreateRiskCommand>();
+            services.AddTransient<IUpdateRiskCommand, UpdateRiskCommand>();
+            services.AddTransient<IDeleteRiskCommand, DeleteRiskCommand>();
+            services.AddTransient<IGetRiskByIdQuery, GetRiskByIdQuery>();
+            services.AddTransient<IGetAllRisksByEvaluationIdQuery, GetAllRisksByEvaluationIdQuery>();
+            services.AddTransient<IGetRisksByEvaluationIdQuery, GetRisksByEvaluationIdQuery>();
 
             return services;
         }

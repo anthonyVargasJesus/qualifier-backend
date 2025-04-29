@@ -13,7 +13,7 @@ namespace Qualifier.Api
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Servicios del módulo registro de balance final versión beta",
+                    Title = "Servicios del módulo registro de balance final versión final",
                     Description = "Administración de APIs"
                 });
 

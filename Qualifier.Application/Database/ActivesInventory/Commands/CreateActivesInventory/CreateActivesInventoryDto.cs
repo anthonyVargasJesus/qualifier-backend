@@ -17,6 +17,7 @@ namespace Qualifier.Application.Database.ActivesInventory.Commands.CreateActives
         public int usageClassificationId { get; set; }
         public int supportTypeId { get; set; }
         public int locationId { get; set; }
+        public int standardId { get; set; }
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }
 

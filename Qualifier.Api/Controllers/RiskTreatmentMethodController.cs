@@ -1,29 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Qualifier.Application.Database.ActivesInventory.Commands.CreateActivesInventory;
-using Qualifier.Application.Database.ActivesInventory.Commands.DeleteActivesInventory;
-using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInventory;
-using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoryById;
-using Qualifier.Common.Application.Dto;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.CreateRiskTreatmentMethod;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.DeleteRiskTreatmentMethod;
+using Qualifier.Application.Database.RiskTreatmentMethod.Commands.UpdateRiskTreatmentMethod;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetRiskTreatmentMethodById;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetRiskTreatmentMethodsByCompanyId;
+using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetAllRiskTreatmentMethodsByCompanyId;
 using Qualifier.Common.Api;
+using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
-using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
-using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompanyId;
-using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
-
-
 
 namespace Qualifier.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class ActivesInventoryController : ControllerBase
+    public class RiskTreatmentMethodController : ControllerBase
     {
         [HttpGet("All")]
-        public async Task<IActionResult> GetAll([FromServices] IGetAllActivesInventoriesByCompanyIdQuery query)
+        public async Task<IActionResult> GetAll([FromServices] IGetAllRiskTreatmentMethodsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int companyId;
@@ -45,8 +41,7 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> Get(int skip, int pageSize, string? search, 
-            [FromServices] IGetActivesInventoriesByCompanyIdQuery query)
+        public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetRiskTreatmentMethodsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int companyId;
@@ -72,9 +67,9 @@ namespace Qualifier.Api.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, [FromServices] IGetActivesInventoryByIdQuery getActivesInventoryByIdQuery)
+        public async Task<IActionResult> Get(int id, [FromServices] IGetRiskTreatmentMethodByIdQuery getRiskTreatmentMethodByIdQuery)
         {
-            var res = await getActivesInventoryByIdQuery.Execute(id);
+            var res = await getRiskTreatmentMethodByIdQuery.Execute(id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
 
                 return BadRequest(res);
@@ -86,8 +81,8 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Create([FromBody] CreateActivesInventoryDto model, 
-            [FromServices] ICreateActivesInventoryCommand createActivesInventoryCommand)
+        public async Task<IActionResult> Create([FromBody] CreateRiskTreatmentMethodDto model,
+            [FromServices] ICreateRiskTreatmentMethodCommand createRiskTreatmentMethodCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int userId;
@@ -103,7 +98,7 @@ namespace Qualifier.Api.Controllers
             if (success2)
                 model.companyId = companyId;
 
-            var res = await createActivesInventoryCommand.Execute(model);
+            var res = await createRiskTreatmentMethodCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
@@ -114,8 +109,8 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] UpdateActivesInventoryDto model, int id, 
-            [FromServices] IUpdateActivesInventoryCommand updateActivesInventoryCommand)
+        public async Task<IActionResult> Put([FromBody] UpdateRiskTreatmentMethodDto model, int id,
+            [FromServices] IUpdateRiskTreatmentMethodCommand updateRiskTreatmentMethodCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int userId;
@@ -125,7 +120,7 @@ namespace Qualifier.Api.Controllers
             if (success)
                 model.updateUserId = userId;
 
-            var res = await updateActivesInventoryCommand.Execute(model, id);
+            var res = await updateRiskTreatmentMethodCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
@@ -137,7 +132,7 @@ namespace Qualifier.Api.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> delete(int id, [FromServices] IDeleteActivesInventoryCommand deleteActivesInventoryCommand)
+        public async Task<IActionResult> delete(int id, [FromServices] IDeleteRiskTreatmentMethodCommand deleteRiskTreatmentMethodCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int userIdValue;
@@ -148,7 +143,7 @@ namespace Qualifier.Api.Controllers
             if (success)
                 userId = userIdValue;
 
-            var res = await deleteActivesInventoryCommand.Execute(id, userId);
+            var res = await deleteRiskTreatmentMethodCommand.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
@@ -158,6 +153,5 @@ namespace Qualifier.Api.Controllers
                 });
 
         }
-
     }
 }
