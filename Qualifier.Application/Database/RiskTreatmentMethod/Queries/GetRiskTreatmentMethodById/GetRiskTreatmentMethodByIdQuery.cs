@@ -20,7 +20,8 @@ namespace Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetRiskTrea
             try
             {
                 var entity = await (from item in _databaseService.RiskTreatmentMethod
-                                    where ((item.isDeleted == null || item.isDeleted == false) && item.riskTreatmentMethodId == riskTreatmentMethodId)
+                                    where ((item.isDeleted == null || item.isDeleted == false)
+                                    && item.riskTreatmentMethodId == riskTreatmentMethodId)
                                     select new RiskTreatmentMethodEntity()
                                     {
                                         riskTreatmentMethodId = item.riskTreatmentMethodId,

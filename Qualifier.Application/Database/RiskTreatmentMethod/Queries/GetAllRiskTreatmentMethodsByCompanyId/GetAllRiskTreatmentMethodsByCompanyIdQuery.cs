@@ -6,7 +6,7 @@ using Qualifier.Domain.Entities;
 
 namespace Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetAllRiskTreatmentMethodsByCompanyId
 {
-    internal class GetAllRiskTreatmentMethodsByCompanyIdQuery : IGetAllRiskTreatmentMethodsByCompanyIdQuery
+    public class GetAllRiskTreatmentMethodsByCompanyIdQuery : IGetAllRiskTreatmentMethodsByCompanyIdQuery
     {
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
@@ -21,7 +21,9 @@ namespace Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetAllRiskT
             try
             {
                 var entities = await (from riskTreatmentMethod in _databaseService.RiskTreatmentMethod
-                                      where ((riskTreatmentMethod.isDeleted == null || riskTreatmentMethod.isDeleted == false) && riskTreatmentMethod.companyId == companyId)
+                                      where ((riskTreatmentMethod.isDeleted == null 
+                                      || riskTreatmentMethod.isDeleted == false) 
+                                      && riskTreatmentMethod.companyId == companyId)
                                       select new RiskTreatmentMethodEntity
                                       {
                                           riskTreatmentMethodId = riskTreatmentMethod.riskTreatmentMethodId,
@@ -29,7 +31,8 @@ namespace Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetAllRiskT
                                           companyId = riskTreatmentMethod.companyId,
                                       }).ToListAsync();
 
-                BaseResponseDto<GetAllRiskTreatmentMethodsByCompanyIdDto> baseResponseDto = new BaseResponseDto<GetAllRiskTreatmentMethodsByCompanyIdDto>();
+                BaseResponseDto<GetAllRiskTreatmentMethodsByCompanyIdDto> baseResponseDto 
+                    = new BaseResponseDto<GetAllRiskTreatmentMethodsByCompanyIdDto>();
                 baseResponseDto.data = _mapper.Map<List<GetAllRiskTreatmentMethodsByCompanyIdDto>>(entities);
                 return baseResponseDto;
             }

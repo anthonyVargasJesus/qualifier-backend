@@ -25,6 +25,7 @@ namespace Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesI
                                       select new ActivesInventoryEntity
                                       {
                                           activesInventoryId = activesInventory.activesInventoryId,
+                                          number = activesInventory.number,
                                           name = activesInventory.name,
                                       }).ToListAsync();
 
@@ -36,6 +37,7 @@ namespace Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesI
             {
                 return BaseApplication.getExceptionErrorResponse();
             }
+
         }
 
     }

@@ -9,7 +9,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskById
         public string? activesInventoryName { get; set; }
         public int menaceId { get; set; }
         public int vulnerabilityId { get; set; }
-
+        public int riskAssessmentId { get; set; }
     }
 }
 

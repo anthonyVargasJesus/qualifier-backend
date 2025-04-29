@@ -319,7 +319,10 @@ using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
 using Qualifier.Application.Database.Risk.Queries.GetAllRisksByEvaluationId;
 using Qualifier.Application.Database.Risk.Queries.GetRiskById;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
-
+using Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAssessment;
+using Qualifier.Application.Database.RiskAssessment.Commands.UpdateRiskAssessment;
+using Qualifier.Application.Database.RiskAssessment.Commands.DeleteRiskAssessment;
+using Qualifier.Application.Database.RiskAssessment.Queries.GetRiskAssessmentById;
 
 
 namespace Qualifier.Application
@@ -769,6 +772,13 @@ namespace Qualifier.Application
             services.AddTransient<IGetRiskByIdQuery, GetRiskByIdQuery>();
             services.AddTransient<IGetAllRisksByEvaluationIdQuery, GetAllRisksByEvaluationIdQuery>();
             services.AddTransient<IGetRisksByEvaluationIdQuery, GetRisksByEvaluationIdQuery>();
+
+            //RiskAssessment
+            services.AddTransient<ICreateRiskAssessmentCommand, CreateRiskAssessmentCommand>();
+            services.AddTransient<IUpdateRiskAssessmentCommand, UpdateRiskAssessmentCommand>();
+            services.AddTransient<IDeleteRiskAssessmentCommand, DeleteRiskAssessmentCommand>();
+            services.AddTransient<IGetRiskAssessmentByIdQuery, GetRiskAssessmentByIdQuery>();
+
 
             return services;
         }

@@ -19,7 +19,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskById
         {
             try
             {
-                var entity = await (from item in _databaseService.Risk
+                var risk = await (from item in _databaseService.Risk
                                     where ((item.isDeleted == null || item.isDeleted == false) && item.riskId == riskId)
                                     select new RiskEntity()
                                     {
@@ -33,7 +33,19 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskById
                                         companyId = item.companyId,
                                     }).FirstOrDefaultAsync();
 
-                return _mapper.Map<GetRiskByIdDto>(entity);
+                var riskAssessment = await (from item in _databaseService.RiskAssessment
+                                      where ((item.isDeleted == null || item.isDeleted == false) && item.riskId == riskId)
+                                      select new RiskAssessmentEntity
+                                      {
+                                          riskAssessmentId = item.riskAssessmentId,
+
+                                      }).FirstOrDefaultAsync();
+
+                var riskDto = _mapper.Map<GetRiskByIdDto>(risk);
+                if (riskAssessment != null)
+                    riskDto.riskAssessmentId = riskAssessment.riskAssessmentId;
+
+                return riskDto;
             }
             catch (Exception)
             {

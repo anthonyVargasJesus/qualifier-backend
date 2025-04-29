@@ -168,6 +168,9 @@ using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
 using Qualifier.Application.Database.Risk.Queries.GetAllRisksByEvaluationId;
 using Qualifier.Application.Database.Risk.Queries.GetRiskById;
 using Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId;
+using Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAssessment;
+using Qualifier.Application.Database.RiskAssessment.Commands.UpdateRiskAssessment;
+using Qualifier.Application.Database.RiskAssessment.Queries.GetRiskAssessmentById;
 using Qualifier.Application.Database.RiskLevel.Commands.CreateRiskLevel;
 using Qualifier.Application.Database.RiskLevel.Commands.UpdateRiskLevel;
 using Qualifier.Application.Database.RiskLevel.Queries.GetAllRiskLevelsByCompanyId;
@@ -761,6 +764,12 @@ namespace Qualifier.Application.Configuration
 
             //ActivesInventory
             CreateMap<ActivesInventoryEntity, GetAllActivesInventoriesByCompanyIdDto>().ReverseMap();
+
+            //RiskAssessment
+            CreateMap<RiskAssessmentEntity, CreateRiskAssessmentDto>().ReverseMap();
+            CreateMap<RiskAssessmentEntity, UpdateRiskAssessmentDto>().ReverseMap();
+            CreateMap<RiskAssessmentEntity, GetRiskAssessmentByIdDto>().ReverseMap();
+
 
         }
     }

@@ -61,6 +61,7 @@ namespace Qualifier.Application.Database
         DbSet<ScopeEntity> Scope { get; set; }
         DbSet<PolicyEntity> Policy { get; set; }
         DbSet<RiskTreatmentMethodEntity> RiskTreatmentMethod { get; set; }
+        DbSet<RiskAssessmentEntity> RiskAssessment { get; set; }
         Task<bool> SaveAsync();
     }
 }
