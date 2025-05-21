@@ -3,22 +3,22 @@ using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
 
-namespace Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAssessment
+namespace Qualifier.Application.Database.ResidualRisk.Commands.CreateResidualRisk
 
 {
-    public class CreateRiskAssessmentCommand : ICreateRiskAssessmentCommand
+    public class CreateResidualRiskCommand : ICreateResidualRiskCommand
     {
 
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
 
-        public CreateRiskAssessmentCommand(IDatabaseService databaseService, IMapper mapper)
+        public CreateResidualRiskCommand(IDatabaseService databaseService, IMapper mapper)
         {
             _databaseService = databaseService;
             _mapper = mapper;
         }
 
-        public async Task<Object> Execute(CreateRiskAssessmentDto model)
+        public async Task<Object> Execute(CreateResidualRiskDto model)
         {
             try
             {
@@ -26,14 +26,11 @@ namespace Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAsses
                 if (notification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(notification.errors);
 
-                var entity = _mapper.Map<RiskAssessmentEntity>(model);
+                var entity = _mapper.Map<ResidualRiskEntity>(model);
                 entity.creationDate = DateTime.UtcNow;
                 entity.creationUserId = model.creationUserId;
-                await _databaseService.RiskAssessment.AddAsync(entity);
+                await _databaseService.ResidualRisk.AddAsync(entity);
                 await _databaseService.SaveAsync();
-
-                model.riskAssessmentId = entity.riskAssessmentId;
-
                 return model;
             }
             catch (Exception)
@@ -42,7 +39,7 @@ namespace Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAsses
             }
         }
 
-        private Notification createValidation(CreateRiskAssessmentDto request)
+        private Notification createValidation(CreateResidualRiskDto request)
         {
             Notification notification = new Notification();
             request.requiredFieldsValidation(notification);

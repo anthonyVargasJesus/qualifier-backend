@@ -20,13 +20,6 @@ builder.Services
     .AddExternal(builder.Configuration)
     .AddPersistence(builder.Configuration);
 
-//builder.Services
-    //.AddWebAPI()
-    //.AddCommon()
-    //.AddApplication()
-    //.AddExternal(builder.Configuration)
-    //.AddPersistence(builder.Configuration);
-
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(options =>

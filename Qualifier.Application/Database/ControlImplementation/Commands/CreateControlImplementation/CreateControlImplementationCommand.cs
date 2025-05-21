@@ -3,22 +3,22 @@ using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
 
-namespace Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAssessment
+namespace Qualifier.Application.Database.ControlImplementation.Commands.CreateControlImplementation
 
 {
-    public class CreateRiskAssessmentCommand : ICreateRiskAssessmentCommand
+    public class CreateControlImplementationCommand : ICreateControlImplementationCommand
     {
 
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
 
-        public CreateRiskAssessmentCommand(IDatabaseService databaseService, IMapper mapper)
+        public CreateControlImplementationCommand(IDatabaseService databaseService, IMapper mapper)
         {
             _databaseService = databaseService;
             _mapper = mapper;
         }
 
-        public async Task<Object> Execute(CreateRiskAssessmentDto model)
+        public async Task<Object> Execute(CreateControlImplementationDto model)
         {
             try
             {
@@ -26,13 +26,13 @@ namespace Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAsses
                 if (notification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(notification.errors);
 
-                var entity = _mapper.Map<RiskAssessmentEntity>(model);
+                var entity = _mapper.Map<ControlImplementationEntity>(model);
                 entity.creationDate = DateTime.UtcNow;
                 entity.creationUserId = model.creationUserId;
-                await _databaseService.RiskAssessment.AddAsync(entity);
+                await _databaseService.ControlImplementation.AddAsync(entity);
                 await _databaseService.SaveAsync();
 
-                model.riskAssessmentId = entity.riskAssessmentId;
+                model.controlImplementationId = entity.controlImplementationId;
 
                 return model;
             }
@@ -42,7 +42,7 @@ namespace Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAsses
             }
         }
 
-        private Notification createValidation(CreateRiskAssessmentDto request)
+        private Notification createValidation(CreateControlImplementationDto request)
         {
             Notification notification = new Notification();
             request.requiredFieldsValidation(notification);

@@ -20,7 +20,8 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskById
             try
             {
                 var risk = await (from item in _databaseService.Risk
-                                    where ((item.isDeleted == null || item.isDeleted == false) && item.riskId == riskId)
+                                  join activesInventory in _databaseService.ActivesInventory on item.activesInventoryId equals activesInventory.activesInventoryId
+                                  where ((item.isDeleted == null || item.isDeleted == false) && item.riskId == riskId)
                                     select new RiskEntity()
                                     {
                                         riskId = item.riskId,
@@ -31,25 +32,60 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskById
                                         menaceId = item.menaceId,
                                         vulnerabilityId = item.vulnerabilityId,
                                         companyId = item.companyId,
-                                    }).FirstOrDefaultAsync();
+                                    }).FirstAsync();
 
                 var riskAssessment = await (from item in _databaseService.RiskAssessment
                                       where ((item.isDeleted == null || item.isDeleted == false) && item.riskId == riskId)
                                       select new RiskAssessmentEntity
                                       {
                                           riskAssessmentId = item.riskAssessmentId,
-
                                       }).FirstOrDefaultAsync();
+
+                var valuations = await (from valuationInActive in _databaseService.ValuationInActive
+                                      where ((valuationInActive.isDeleted == null || valuationInActive.isDeleted == false) 
+                                      && valuationInActive.activesInventoryId == risk.activesInventoryId)
+                                      select new ValuationInActiveEntity
+                                      {
+                                          value = valuationInActive.value,
+                                      }).ToListAsync();
+
+                var activeInventory = new ActivesInventoryEntity();
+                activeInventory.setCID(valuations);
 
                 var riskDto = _mapper.Map<GetRiskByIdDto>(risk);
                 if (riskAssessment != null)
                     riskDto.riskAssessmentId = riskAssessment.riskAssessmentId;
 
+                riskDto.valuationCID = activeInventory.valuationCID;
+
+
+
+                var riskTreatment = await (from item in _databaseService.RiskTreatment
+                                            where ((item.isDeleted == null || item.isDeleted == false) && item.riskId == riskId)
+                                            select new RiskTreatmentEntity
+                                            {
+                                                riskTreatmentId = item.riskTreatmentId,
+                                            }).FirstOrDefaultAsync();
+
+                if (riskTreatment != null)
+                    riskDto.riskTreatmentId = riskTreatment.riskTreatmentId;
+
+                var controlImplementation = await (from item in _databaseService.ControlImplementation
+                                           where ((item.isDeleted == null || item.isDeleted == false) && item.riskId == riskId)
+                                           select new ControlImplementationEntity
+                                           {
+                                               controlImplementationId = item.controlImplementationId,
+                                           }).FirstOrDefaultAsync();
+
+                if (controlImplementation != null)
+                    riskDto.controlImplementationId = controlImplementation.controlImplementationId;
+
                 return riskDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

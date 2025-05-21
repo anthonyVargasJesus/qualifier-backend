@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Qualifier.Common.Domain.Entities;
 
 namespace Qualifier.Domain.Entities
@@ -28,6 +29,23 @@ namespace Qualifier.Domain.Entities
         public UsageClassificationEntity usageClassification { get; set; }
         public SupportTypeEntity supportType { get; set; }
         public LocationEntity location { get; set; }
+
+        [NotMapped]
+        public decimal valuationCID { get; set; }
+        public void setCID(List<ValuationInActiveEntity> valuations)
+        {
+            if (valuations == null || valuations.Count == 0)
+                return;
+
+            decimal sum = 0;
+            foreach (ValuationInActiveEntity item in valuations)
+                sum = sum + item.value;
+
+            valuationCID = Math.Round(sum / valuations.Count,2);
+
+        }
+
+
     }
 }
 

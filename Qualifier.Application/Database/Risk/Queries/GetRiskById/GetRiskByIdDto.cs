@@ -10,6 +10,9 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskById
         public int menaceId { get; set; }
         public int vulnerabilityId { get; set; }
         public int riskAssessmentId { get; set; }
+        public decimal valuationCID { get; set; }
+        public int riskTreatmentId { get; set; }
+        public int controlImplementationId { get; set; }
     }
 }
 

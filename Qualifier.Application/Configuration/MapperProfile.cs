@@ -35,6 +35,9 @@ using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByS
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupById;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByCompanyId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
+using Qualifier.Application.Database.ControlImplementation.Commands.CreateControlImplementation;
+using Qualifier.Application.Database.ControlImplementation.Commands.UpdateControlImplementation;
+using Qualifier.Application.Database.ControlImplementation.Queries.GetControlImplementationById;
 using Qualifier.Application.Database.ControlType.Commands.CreateControlType;
 using Qualifier.Application.Database.ControlType.Commands.UpdateControlType;
 using Qualifier.Application.Database.ControlType.Queries.GetAllControlTypesByCompanyId;
@@ -154,6 +157,11 @@ using Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRequir
 using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationById;
 using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
 using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationsByRequirementId;
+using Qualifier.Application.Database.ResidualRisk.Commands.CreateResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Commands.UpdateResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetAllResidualRisksByCompanyId;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetResidualRiskById;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetResidualRisksByCompanyId;
 using Qualifier.Application.Database.Responsible.Commands.CreateResponsible;
 using Qualifier.Application.Database.Responsible.Commands.UpdateResponsible;
 using Qualifier.Application.Database.Responsible.Queries.GetAllResponsiblesByStandardId;
@@ -176,6 +184,9 @@ using Qualifier.Application.Database.RiskLevel.Commands.UpdateRiskLevel;
 using Qualifier.Application.Database.RiskLevel.Queries.GetAllRiskLevelsByCompanyId;
 using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelById;
 using Qualifier.Application.Database.RiskLevel.Queries.GetRiskLevelsByCompanyId;
+using Qualifier.Application.Database.RiskTreatment.Commands.CreateRiskTreatment;
+using Qualifier.Application.Database.RiskTreatment.Commands.UpdateRiskTreatment;
+using Qualifier.Application.Database.RiskTreatment.Queries.GetRiskTreatmentById;
 using Qualifier.Application.Database.RiskTreatmentMethod.Commands.CreateRiskTreatmentMethod;
 using Qualifier.Application.Database.RiskTreatmentMethod.Commands.UpdateRiskTreatmentMethod;
 using Qualifier.Application.Database.RiskTreatmentMethod.Queries.GetAllRiskTreatmentMethodsByCompanyId;
@@ -770,6 +781,22 @@ namespace Qualifier.Application.Configuration
             CreateMap<RiskAssessmentEntity, UpdateRiskAssessmentDto>().ReverseMap();
             CreateMap<RiskAssessmentEntity, GetRiskAssessmentByIdDto>().ReverseMap();
 
+            //RiskTreatment
+            CreateMap<RiskTreatmentEntity, CreateRiskTreatmentDto>().ReverseMap();
+            CreateMap<RiskTreatmentEntity, UpdateRiskTreatmentDto>().ReverseMap();
+            CreateMap<RiskTreatmentEntity, GetRiskTreatmentByIdDto>().ReverseMap();
+
+            //ResidualRisk
+            CreateMap<ResidualRiskEntity, CreateResidualRiskDto>().ReverseMap();
+            CreateMap<ResidualRiskEntity, UpdateResidualRiskDto>().ReverseMap();
+            CreateMap<ResidualRiskEntity, GetResidualRiskByIdDto>().ReverseMap();
+            CreateMap<ResidualRiskEntity, GetAllResidualRisksByCompanyIdDto>().ReverseMap();
+            CreateMap<ResidualRiskEntity, GetResidualRisksByCompanyIdDto>().ReverseMap();
+
+            //ControlImplementation
+            CreateMap<ControlImplementationEntity, CreateControlImplementationDto>().ReverseMap();
+            CreateMap<ControlImplementationEntity, UpdateControlImplementationDto>().ReverseMap();
+            CreateMap<ControlImplementationEntity, GetControlImplementationByIdDto>().ReverseMap();
 
         }
     }

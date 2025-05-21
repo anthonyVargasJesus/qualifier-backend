@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Qualifier.Application.Database.ValuationInActive.Commands.CreateValuationInActive;
-using Qualifier.Application.Database.ValuationInActive.Commands.DeleteValuationInActive;
-using Qualifier.Application.Database.ValuationInActive.Commands.UpdateValuationInActive;
-using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActiveById;
+using Qualifier.Application.Database.ResidualRisk.Commands.CreateResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Commands.DeleteResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Commands.UpdateResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetResidualRiskById;
 using Qualifier.Common.Application.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetResidualRisksByCompanyId;
 using Microsoft.AspNetCore.Authentication;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
-using Qualifier.Application.Database.ValuationInActive.Queries.GetAllValuationInActivesByCompanyId;
-using Qualifier.Application.Database.ValuationInActive.Queries.GetValuationInActivesByActivesInventoryId;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetAllResidualRisksByCompanyId;
 
 
 
@@ -19,10 +19,10 @@ namespace Qualifier.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ValuationInActiveController : ControllerBase
+    public class ResidualRiskController : ControllerBase
     {
         [HttpGet("All")]
-        public async Task<IActionResult> GetAll([FromServices] IGetAllValuationInActivesByCompanyIdQuery query)
+        public async Task<IActionResult> GetAll([FromServices] IGetAllResidualRisksByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int companyId;
@@ -44,24 +44,34 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> Get(int skip, int pageSize, int activesInventoryId, string? search, [FromServices] IGetValuationInActivesByActivesInventoryIdQuery query)
+        public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetResidualRisksByCompanyIdQuery query)
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId;
+
+            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+
+            Notification notification = new Notification();
+            if (!success)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
 
             if (search == null)
                 search = string.Empty;
 
-            var res = await query.Execute(skip, pageSize, search, activesInventoryId);
+            var res = await query.Execute(skip, pageSize, search, companyId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
                 return Ok(res);
         }
 
-
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, [FromServices] IGetValuationInActiveByIdQuery getValuationInActiveByIdQuery)
+        public async Task<IActionResult> Get(int id, [FromServices] IGetResidualRiskByIdQuery getResidualRiskByIdQuery)
         {
-            var res = await getValuationInActiveByIdQuery.Execute(id);
+            var res = await getResidualRiskByIdQuery.Execute(id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
 
                 return BadRequest(res);
@@ -73,7 +83,8 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Create([FromBody] CreateValuationInActiveDto model, [FromServices] ICreateValuationInActiveCommand createValuationInActiveCommand)
+        public async Task<IActionResult> Create([FromBody] CreateResidualRiskDto model,
+            [FromServices] ICreateResidualRiskCommand createResidualRiskCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int userId;
@@ -89,7 +100,7 @@ namespace Qualifier.Api.Controllers
             if (success2)
                 model.companyId = companyId;
 
-            var res = await createValuationInActiveCommand.Execute(model);
+            var res = await createResidualRiskCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
@@ -100,7 +111,8 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] UpdateValuationInActiveDto model, int id, [FromServices] IUpdateValuationInActiveCommand updateValuationInActiveCommand)
+        public async Task<IActionResult> Put([FromBody] UpdateResidualRiskDto model, int id,
+            [FromServices] IUpdateResidualRiskCommand updateResidualRiskCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int userId;
@@ -110,7 +122,7 @@ namespace Qualifier.Api.Controllers
             if (success)
                 model.updateUserId = userId;
 
-            var res = await updateValuationInActiveCommand.Execute(model, id);
+            var res = await updateResidualRiskCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
@@ -120,9 +132,8 @@ namespace Qualifier.Api.Controllers
                 });
         }
 
-
         [HttpDelete("{id}")]
-        public async Task<IActionResult> delete(int id, [FromServices] IDeleteValuationInActiveCommand deleteValuationInActiveCommand)
+        public async Task<IActionResult> delete(int id, [FromServices] IDeleteResidualRiskCommand deleteResidualRiskCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int userIdValue;
@@ -133,7 +144,7 @@ namespace Qualifier.Api.Controllers
             if (success)
                 userId = userIdValue;
 
-            var res = await deleteValuationInActiveCommand.Execute(id, userId);
+            var res = await deleteResidualRiskCommand.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

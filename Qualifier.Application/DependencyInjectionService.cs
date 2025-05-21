@@ -321,8 +321,19 @@ using Qualifier.Application.Database.Risk.Queries.GetRiskById;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
 using Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAssessment;
 using Qualifier.Application.Database.RiskAssessment.Commands.UpdateRiskAssessment;
-using Qualifier.Application.Database.RiskAssessment.Commands.DeleteRiskAssessment;
 using Qualifier.Application.Database.RiskAssessment.Queries.GetRiskAssessmentById;
+using Qualifier.Application.Database.RiskTreatment.Commands.CreateRiskTreatment;
+using Qualifier.Application.Database.RiskTreatment.Commands.UpdateRiskTreatment;
+using Qualifier.Application.Database.RiskTreatment.Queries.GetRiskTreatmentById;
+using Qualifier.Application.Database.ResidualRisk.Commands.CreateResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Commands.UpdateResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Commands.DeleteResidualRisk;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetResidualRiskById;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetAllResidualRisksByCompanyId;
+using Qualifier.Application.Database.ResidualRisk.Queries.GetResidualRisksByCompanyId;
+using Qualifier.Application.Database.ControlImplementation.Commands.CreateControlImplementation;
+using Qualifier.Application.Database.ControlImplementation.Commands.UpdateControlImplementation;
+using Qualifier.Application.Database.ControlImplementation.Queries.GetControlImplementationById;
 
 
 namespace Qualifier.Application
@@ -776,9 +787,25 @@ namespace Qualifier.Application
             //RiskAssessment
             services.AddTransient<ICreateRiskAssessmentCommand, CreateRiskAssessmentCommand>();
             services.AddTransient<IUpdateRiskAssessmentCommand, UpdateRiskAssessmentCommand>();
-            services.AddTransient<IDeleteRiskAssessmentCommand, DeleteRiskAssessmentCommand>();
             services.AddTransient<IGetRiskAssessmentByIdQuery, GetRiskAssessmentByIdQuery>();
 
+            //RiskTreatment
+            services.AddTransient<ICreateRiskTreatmentCommand, CreateRiskTreatmentCommand>();
+            services.AddTransient<IUpdateRiskTreatmentCommand, UpdateRiskTreatmentCommand>();
+            services.AddTransient<IGetRiskTreatmentByIdQuery, GetRiskTreatmentByIdQuery>();
+
+            //ResidualRisk
+            services.AddTransient<ICreateResidualRiskCommand, CreateResidualRiskCommand>();
+            services.AddTransient<IUpdateResidualRiskCommand, UpdateResidualRiskCommand>();
+            services.AddTransient<IDeleteResidualRiskCommand, DeleteResidualRiskCommand>();
+            services.AddTransient<IGetResidualRiskByIdQuery, GetResidualRiskByIdQuery>();
+            services.AddTransient<IGetAllResidualRisksByCompanyIdQuery, GetAllResidualRisksByCompanyIdQuery>();
+            services.AddTransient<IGetResidualRisksByCompanyIdQuery, GetResidualRisksByCompanyIdQuery>();
+
+            //ControlImplementation
+            services.AddTransient<ICreateControlImplementationCommand, CreateControlImplementationCommand>();
+            services.AddTransient<IUpdateControlImplementationCommand, UpdateControlImplementationCommand>();
+            services.AddTransient<IGetControlImplementationByIdQuery, GetControlImplementationByIdQuery>();
 
             return services;
         }

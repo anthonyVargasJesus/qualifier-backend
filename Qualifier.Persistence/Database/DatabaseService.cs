@@ -68,6 +68,9 @@ namespace Qualifier.Persistence.Database
         public DbSet<PolicyEntity> Policy { get; set; }
         public DbSet<RiskTreatmentMethodEntity> RiskTreatmentMethod { get; set; }
         public DbSet<RiskAssessmentEntity> RiskAssessment { get; set; }
+        public DbSet<RiskTreatmentEntity> RiskTreatment { get; set; }
+        public DbSet<ResidualRiskEntity> ResidualRisk { get; set; }
+        public DbSet<ControlImplementationEntity> ControlImplementation { get; set; }
         
 
         public async Task<bool> SaveAsync()
@@ -140,6 +143,9 @@ namespace Qualifier.Persistence.Database
             new PolicyConfiguration(modelBuilder.Entity<PolicyEntity>());
             new RiskTreatmentMethodConfiguration(modelBuilder.Entity<RiskTreatmentMethodEntity>());
             new RiskAssessmentConfiguration(modelBuilder.Entity<RiskAssessmentEntity>());
+            new RiskTreatmentConfiguration(modelBuilder.Entity<RiskTreatmentEntity>());
+            new ResidualRiskConfiguration(modelBuilder.Entity<ResidualRiskEntity>());
+            new ControlImplementationConfiguration(modelBuilder.Entity<ControlImplementationEntity>());
 
         }
 

@@ -4,17 +4,17 @@ using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Interfaces;
 
-namespace Qualifier.Application.Database.RiskAssessment.Commands.DeleteRiskAssessment
+namespace Qualifier.Application.Database.ResidualRisk.Commands.DeleteResidualRisk
 {
-    public class DeleteRiskAssessmentCommand : IDeleteRiskAssessmentCommand
+    public class DeleteResidualRiskCommand : IDeleteResidualRiskCommand
     {
         private readonly IDatabaseService _databaseService;
-        private readonly IRiskAssessmentRepository _riskAssessmentRepository;
+        private readonly IResidualRiskRepository _residualRiskRepository;
 
-        public DeleteRiskAssessmentCommand(IDatabaseService databaseService, IRiskAssessmentRepository riskAssessmentRepository)
+        public DeleteResidualRiskCommand(IDatabaseService databaseService, IResidualRiskRepository residualRiskRepository)
         {
             _databaseService = databaseService;
-            _riskAssessmentRepository = riskAssessmentRepository;
+            _residualRiskRepository = residualRiskRepository;
         }
 
         public async Task<Object> Execute(int id, int updateUserId)
@@ -25,7 +25,7 @@ namespace Qualifier.Application.Database.RiskAssessment.Commands.DeleteRiskAsses
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
-                await _riskAssessmentRepository.Delete(id, updateUserId);
+                await _residualRiskRepository.Delete(id, updateUserId);
 
                 BaseResponseCommandDto baseResponseCommandDto = new BaseResponseCommandDto();
                 baseResponseCommandDto.response = "¡Registro eliminado!";
@@ -41,7 +41,7 @@ namespace Qualifier.Application.Database.RiskAssessment.Commands.DeleteRiskAsses
         private async Task<Notification> existsValidationAsync(int id)
         {
             Notification notification = new Notification();
-            int total = await _databaseService.RiskAssessment.CountAsync(item => item.riskAssessmentId == id);
+            int total = await _databaseService.ResidualRisk.CountAsync(item => item.residualRiskId == id);
             if (total == 0)
                 notification.addError("El Id " + id.ToString() + " no se encuentra registrado");
             return notification;

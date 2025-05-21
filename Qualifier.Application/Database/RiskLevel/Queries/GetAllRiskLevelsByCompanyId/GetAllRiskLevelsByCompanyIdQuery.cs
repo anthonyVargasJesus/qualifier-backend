@@ -33,7 +33,7 @@ namespace Qualifier.Application.Database.RiskLevel.Queries.GetAllRiskLevelsByCom
                                           maximum = riskLevel.maximum,
                                           color = riskLevel.color,
                                           companyId = riskLevel.companyId,
-                                      }).ToListAsync();
+                                      }).OrderBy(e => e.riskLevelId).ToListAsync();
 
                 BaseResponseDto<GetAllRiskLevelsByCompanyIdDto> baseResponseDto = new BaseResponseDto<GetAllRiskLevelsByCompanyIdDto>();
                 baseResponseDto.data = _mapper.Map<List<GetAllRiskLevelsByCompanyIdDto>>(entities);
