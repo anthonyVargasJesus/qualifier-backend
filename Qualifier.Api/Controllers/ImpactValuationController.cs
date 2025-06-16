@@ -11,6 +11,7 @@ using Qualifier.Common.Api;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Application.Database.ImpactValuation.Queries.GetAllImpactValuationsByCompanyId;
+using Qualifier.Api.Helpers;
 
 
 
@@ -48,12 +49,11 @@ namespace Qualifier.Api.Controllers
             [FromServices] IGetImpactValuationsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -89,18 +89,16 @@ namespace Qualifier.Api.Controllers
             [FromServices] ICreateImpactValuationCommand createImpactValuationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+            else
                 model.companyId = companyId;
+
+            model.creationUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await createImpactValuationCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -117,12 +115,8 @@ namespace Qualifier.Api.Controllers
             [FromServices] IUpdateImpactValuationCommand updateImpactValuationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
-
-            if (success)
-                model.updateUserId = userId;
+            model.updateUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await updateImpactValuationCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -139,13 +133,8 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> delete(int id, [FromServices] IDeleteImpactValuationCommand deleteImpactValuationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userIdValue);
-
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
+            int userId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await deleteImpactValuationCommand.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Qualifier.Api.Helpers;
 using Qualifier.Application.Database.Indicator.Commands.CreateIndicator;
 using Qualifier.Application.Database.Indicator.Commands.DeleteIndicator;
 using Qualifier.Application.Database.Indicator.Commands.UpdateIndicator;
@@ -22,12 +23,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetIndicatorsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -58,21 +58,20 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Create([FromBody] CreateIndicatorDto model, [FromServices] ICreateIndicatorCommand createIndicatorCommand)
+        public async Task<IActionResult> Create([FromBody] CreateIndicatorDto model, 
+            [FromServices] ICreateIndicatorCommand createIndicatorCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+            else
                 model.companyId = companyId;
+
+            model.creationUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await createIndicatorCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -85,15 +84,12 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] UpdateIndicatorDto model, int id, [FromServices] IUpdateIndicatorCommand updateIndicatorCommand)
+        public async Task<IActionResult> Put([FromBody] UpdateIndicatorDto model, int id, 
+            [FromServices] IUpdateIndicatorCommand updateIndicatorCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
-
-            if (success)
-                model.updateUserId = userId;
+            model.updateUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await updateIndicatorCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -107,16 +103,12 @@ namespace Qualifier.Api.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> delete(int id, [FromServices] IDeleteIndicatorCommand deleteIndicatorCommand)
+        public async Task<IActionResult> delete(int id, 
+            [FromServices] IDeleteIndicatorCommand deleteIndicatorCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userIdValue);
-
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
+            int userId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await deleteIndicatorCommand.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))

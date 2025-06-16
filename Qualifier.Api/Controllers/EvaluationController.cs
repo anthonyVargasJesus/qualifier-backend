@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Qualifier.Api.Helpers;
 using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
@@ -43,12 +44,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> GetAll([FromServices] IGetAllEvaluationsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -64,15 +64,15 @@ namespace Qualifier.Api.Controllers
 
         [HttpGet]
         [Route("excel-dashboard")]
-        public async Task<FileResult> GetDashboardExcelAsync(int standardId, int evaluationId, [FromServices] IGetExcelDashboardQuery query)
+        public async Task<FileResult> GetDashboardExcelAsync(int standardId, int evaluationId,
+            [FromServices] IGetExcelDashboardQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             MemoryStream ms = new MemoryStream();
@@ -86,12 +86,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Get(int standardId, int evaluationId, [FromServices] IGetDashboardQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -108,12 +107,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> GetControlDashboard(int standardId, int evaluationId, [FromServices] IGetControlsDashboardQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -130,12 +128,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetEvaluationsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -170,21 +167,19 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Create([FromBody] CreateEvaluationDto model, [FromServices] ICreateEvaluationCommand createEvaluationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+            else
+                model.companyId = companyId;
+
+            model.creationUserId = HttpContext.GetUserIdAsync(accessToken);
 
             int standardId;
             bool success3 = int.TryParse(JwtTokenProvider.GetStandardIdFromToken(accessToken), out standardId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
-                model.companyId = companyId;
 
             if (success3)
                 model.standardId = standardId;
@@ -203,18 +198,16 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Put([FromBody] UpdateEvaluationDto model, int id, [FromServices] IUpdateEvaluationCommand updateEvaluationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            if (success)
-                model.updateUserId = userId;
-
-            int companyId;
-
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-            if (success2)
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+            else
                 model.companyId = companyId;
+
+            model.updateUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await updateEvaluationCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -231,13 +224,8 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> delete(int id, [FromServices] IDeleteEvaluationCommand deleteEvaluationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userIdValue);
-
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
+            int userId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await deleteEvaluationCommand.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))

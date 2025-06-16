@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Qualifier.Api.Helpers;
 using Qualifier.Application.Database.DocumentType.Commands.CreateDocumentType;
 using Qualifier.Application.Database.DocumentType.Commands.DeleteDocumentType;
 using Qualifier.Application.Database.DocumentType.Commands.UpdateDocumentType;
@@ -21,12 +22,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> GetAll([FromServices] IGetAllDocumentTypesByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -43,12 +43,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetDocumentTypesByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -83,18 +82,16 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Create([FromBody] CreateDocumentTypeDto model, [FromServices] ICreateDocumentTypeCommand createDocumentTypeCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+            else
                 model.companyId = companyId;
+
+            model.creationUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await createDocumentTypeCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -110,12 +107,14 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Put([FromBody] UpdateDocumentTypeDto model, int id, [FromServices] IUpdateDocumentTypeCommand updateDocumentTypeCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            if (success)
-                model.updateUserId = userId;
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+
+            model.updateUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await updateDocumentTypeCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -132,13 +131,14 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> delete(int id, [FromServices] IDeleteDocumentTypeCommand deleteDocumentTypeCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userIdValue);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+
+            int userId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await deleteDocumentTypeCommand.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))

@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Qualifier.Api.Helpers;
 using Qualifier.Application.Database.Location.Commands.CreateLocation;
 using Qualifier.Application.Database.Location.Commands.DeleteLocation;
 using Qualifier.Application.Database.Location.Commands.UpdateLocation;
+using Qualifier.Application.Database.Location.Queries.GetAllLocationsByCompanyId;
 using Qualifier.Application.Database.Location.Queries.GetLocationById;
-using Qualifier.Common.Application.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Qualifier.Application.Database.Location.Queries.GetLocationsByCompanyId;
-using Microsoft.AspNetCore.Authentication;
 using Qualifier.Common.Api;
+using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
-using Qualifier.Application.Database.Location.Queries.GetAllLocationsByCompanyId;
 
 
 
@@ -25,12 +26,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> GetAll([FromServices] IGetAllLocationsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -47,12 +47,11 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetLocationsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -84,21 +83,20 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Create([FromBody] CreateLocationDto model, [FromServices] ICreateLocationCommand createLocationCommand)
+        public async Task<IActionResult> Create([FromBody] CreateLocationDto model,
+            [FromServices] ICreateLocationCommand createLocationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+            else
                 model.companyId = companyId;
+
+            model.creationUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await createLocationCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -114,12 +112,8 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Put([FromBody] UpdateLocationDto model, int id, [FromServices] IUpdateLocationCommand updateLocationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
-
-            if (success)
-                model.updateUserId = userId;
+            model.updateUserId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await updateLocationCommand.Execute(model, id);
             if (res.GetType() == typeof(BaseErrorResponseDto))
@@ -136,13 +130,7 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> delete(int id, [FromServices] IDeleteLocationCommand deleteLocationCommand)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userIdValue);
-
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
+            int userId = HttpContext.GetUserIdAsync(accessToken);
 
             var res = await deleteLocationCommand.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))

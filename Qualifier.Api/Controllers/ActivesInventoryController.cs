@@ -12,6 +12,7 @@ using Qualifier.Common.Application.Service;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
 using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompanyId;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
+using Qualifier.Api.Helpers;
 
 
 
@@ -26,12 +27,10 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> GetAll([FromServices] IGetAllActivesInventoriesByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
@@ -49,12 +48,10 @@ namespace Qualifier.Api.Controllers
             [FromServices] IGetActivesInventoriesByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
 
             Notification notification = new Notification();
-            if (!success)
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
                 notification.addError("El usuario no está asociado a institución");
 
             if (notification.hasErrors())
