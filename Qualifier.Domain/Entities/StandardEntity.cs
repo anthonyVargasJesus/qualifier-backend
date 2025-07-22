@@ -224,6 +224,9 @@ namespace Qualifier.Domain.Entities
             {
                 requirementEvaluationId = 0,
                 requirementId = requirement.requirementId,
+                state = "Pendiente",
+                percentage = 0,
+                auditorStatus = 0,
                 requirement = new RequirementEntity
                 {
                     requirementId = requirement.requirementId,

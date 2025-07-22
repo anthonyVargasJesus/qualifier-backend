@@ -7,6 +7,7 @@ namespace Qualifier.Domain.Entities
     {
         public long referenceDocumentationId { get; set; }
         public string name { get; set; }
+        public string url { get; set; }
         public string description { get; set; }
         public int documentationId { get; set; }
         public long? requirementEvaluationId { get; set; }

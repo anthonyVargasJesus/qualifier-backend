@@ -11,14 +11,16 @@ namespace Qualifier.Application.Database.User.Commands.Login
     public class LoginUserLoginTryDto
     {
         public string? email { get; set; }
-        public string? password { get; set; }
+        public string? uid { get; set; }
+        public string? tokenFirebase { get; set; }
+
         public void requiredValidation(Notification notification)
         {
             if (email == null || email == "")
                 notification.addError("El correo electrónico es obligatorio");
 
-            if (password == null || password == "")
-                notification.addError("La contraseña es obligatoria");
+            //if (password == null || password == "")
+            //    notification.addError("La contraseña es obligatoria");
 
         }
     }

@@ -28,6 +28,13 @@ namespace Qualifier.Domain.Entities
         public List<ReferenceDocumentationEntity> referenceDocumentations { get; set; }
         [NotMapped]
         public List<DocumentationEntity> documentation { get; set; }
+        [NotMapped]
+        public string? state { get; set; }
+        [NotMapped]
+        public decimal? percentage { get; set; }
+        public int? auditorStatus { get; set; }
+        [NotMapped]
+        public string? auditorStatusText { get; set; }
     }
 }
 

@@ -7,11 +7,11 @@ namespace pangolin.domain.services
 {
     public class LoginService: ILoginService
     {
-        public Notification loginValidation(LoginEntity login, string storedHash)
+        public Notification loginValidation(LoginEntity login)
         {
             Notification notification = new Notification();
             validateExists(notification, login);
-            validatePassword(notification, login.password, storedHash);
+            //validatePassword(notification, login.password, storedHash);
             login.validation(notification);
             return notification;
         }

@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
-using Qualifier.Common.Domain.Helpers;
 using Qualifier.Domain.Entities;
 using Qualifier.Domain.Interfaces;
 using System.Data;
-using System.Runtime.InteropServices;
+using FirebaseAdmin.Auth;
+using Qualifier.Application.Firebase;
 
 
 namespace Qualifier.Application.Database.User.Commands.Login
@@ -20,7 +20,8 @@ namespace Qualifier.Application.Database.User.Commands.Login
         private readonly ILoginService _loginService;
         private readonly IConfiguration _configuration;
 
-        public LoginUserCommand(IDatabaseService databaseService, IMapper mapper, ILoginService loginService, IConfiguration configuration)
+        public LoginUserCommand(IDatabaseService databaseService, IMapper mapper, ILoginService loginService,
+            IConfiguration configuration)
         {
             _databaseService = databaseService;
             _mapper = mapper;
@@ -31,6 +32,11 @@ namespace Qualifier.Application.Database.User.Commands.Login
         {
             try
             {
+                FirebaseManager.configCredentials();
+
+                FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance
+                    .VerifyIdTokenAsync(loginTryDto.tokenFirebase);
+
                 string noAccessTitle = "Acceso no autorizado";
 
                 var entity = await (from user in _databaseService.User
@@ -43,7 +49,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
                                 name = user.name,
                                 firstName = user.firstName,
                                 lastName = user.lastName == null ? null : user.lastName,
-                                password = user.password,
+                                //password = user.password,
                                 email = user.email,
                                 companyId = user.companyId,
                                 standardId = user.standardId,
@@ -57,7 +63,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
 
                 LoginEntity login =  this.UserToEntity(entity);
 
-                login.password = loginTryDto.password;
+                //login.password = loginTryDto.password;
                 login.roles = await (from roleInUser in _databaseService.RoleInUser
 
                                join role in _databaseService.Role on roleInUser.role equals role
@@ -71,7 +77,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
 
                 //login.setMenus(login.roles);
 
-                Notification domainNotification = _loginService.loginValidation(login, (entity.password == null)?"": entity.password);
+                Notification domainNotification = _loginService.loginValidation(login);
                 if (domainNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponseWithTitle(domainNotification.errors, noAccessTitle);
 
@@ -79,7 +85,8 @@ namespace Qualifier.Application.Database.User.Commands.Login
                 if (entity.standard != null)
                     standardName = entity.standard.name;
 
-                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, (login.name == null) ? "" : login.name , getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, entity.standardId, standardName);
+                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, (login.name == null) ? "" : login.name 
+                    , getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, entity.standardId, standardName);
 
                 return _mapper.Map<LoginUserLoginDto>(login);
             }
@@ -134,7 +141,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
             return rls;
         }
 
-        private Notification loginValidation(LoginUserLoginTryDto loginTryDto, UserEntity user)
+        private Notification loginValidation(LoginUserLoginTryDto loginTryDto, UserEntity? user)
         {
             Notification notification = new Notification();
             loginRequiredValidation(notification, loginTryDto);
@@ -142,7 +149,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
             return notification;
         }
 
-        private void existsValidation(Notification notification, UserEntity user)
+        private void existsValidation(Notification notification, UserEntity? user)
         {
             if (user == null)
                 notification.addError("El correo no se encuentra registrado");

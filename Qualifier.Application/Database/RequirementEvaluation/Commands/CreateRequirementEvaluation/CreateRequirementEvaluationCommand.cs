@@ -29,6 +29,8 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
                     return BaseApplication.getApplicationErrorResponse(notification.errors);
 
                 var entity = _mapper.Map<RequirementEvaluationEntity>(model);
+                const int PENDING_AUDITOR_STATUS_VALUE = 1;
+                entity.auditorStatus = PENDING_AUDITOR_STATUS_VALUE;
                 entity.creationDate = DateTime.UtcNow;
                 entity.creationUserId = model.creationUserId;
                 await _databaseService.RequirementEvaluation.AddAsync(entity);

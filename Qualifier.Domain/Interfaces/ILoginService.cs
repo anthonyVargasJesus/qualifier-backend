@@ -5,7 +5,7 @@ namespace Qualifier.Domain.Interfaces
 {
     public interface ILoginService
     {
-        Notification loginValidation(LoginEntity login, string storedHash);
+        Notification loginValidation(LoginEntity login);
         void validateExists(Notification notification, LoginEntity login);
         void validatePassword(Notification notification, string password, string hash);
 

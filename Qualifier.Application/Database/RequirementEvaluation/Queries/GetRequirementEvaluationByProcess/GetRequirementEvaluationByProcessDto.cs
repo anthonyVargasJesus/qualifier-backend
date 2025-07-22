@@ -1,4 +1,6 @@
-﻿namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess
 {
     public class GetRequirementEvaluationsByProcessDto
     {
@@ -12,6 +14,10 @@
         public GetRequirementEvaluationsByProcessResponsibleDto? responsible { get; set; }
         public GetRequirementEvaluationsByProcessChildRequirementDto requirement { get; set; }
         public List<GetRequirementEvaluationsByProcessReferenceDocumentationDto> referenceDocumentations { get; set; }
+        public string? state { get; set; }
+        public decimal? percentage { get; set; }
+        public int? auditorStatus { get; set; }
+        public string? auditorStatusText { get; set; }
     }
 
     public class GetRequirementEvaluationsByProcessRequirementDto
@@ -37,7 +43,7 @@
     {
         public string abbreviation { get; set; }
         public string color { get; set; }
-
+        public decimal value { get; set; }
     }
     public class GetRequirementEvaluationsByProcessResponsibleDto
     {

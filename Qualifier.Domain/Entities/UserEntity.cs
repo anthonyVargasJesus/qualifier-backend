@@ -12,6 +12,7 @@ namespace Qualifier.Domain.Entities
         public string? lastName { get; set; }
         public string? email { get; set; }
         public string? phone { get; set; }
+        public string? uid { get; set; }
         public string? password { get; set; }
         public int userStateId { get; set; }
         public string? image { get; set; }
