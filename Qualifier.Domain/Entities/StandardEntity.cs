@@ -93,35 +93,64 @@ namespace Qualifier.Domain.Entities
             return entities;
         }
 
-        private void setNumeration(List<RequirementEntity> localRequirements)
+        //private void setNumeration(List<RequirementEntity> localRequirements)
+        //{
+        //    foreach (RequirementEntity item in localRequirements)
+        //    {
+        //        if (item.letter != null)
+        //            item.numerationToShow = item.letter != "" ? item.letter : item.numeration.ToString();
+
+        //        if (item.children != null)
+        //            foreach (var child1 in item.children)
+        //            {
+        //                if (child1.letter != null)
+        //                    child1.numerationToShow = child1.letter != "" ? child1.letter : (item.numeration + "." + child1.numeration);
+
+        //                if (child1.children != null)
+        //                    foreach (var child2 in child1.children)
+        //                    {
+        //                        if (child2.letter != null)
+        //                            child2.numerationToShow = child2.letter != "" ? child2.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration);
+
+        //                        if (child2.children != null)
+        //                        {
+        //                            foreach (var child3 in child2.children)
+        //                            {
+        //                                if (child3.letter != null)
+        //                                    child3.numerationToShow = child3.letter != "" ? child3.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration + "." + child3.numeration);
+        //                            }
+        //                        }
+        //                    }
+        //            }
+        //    }
+        //}
+
+        private void setNumeration(List<RequirementEntity> requirements, string parentNumeration = "", string parentBreadcrumb = "")
         {
-            foreach (RequirementEntity item in localRequirements)
+            foreach (var item in requirements)
             {
-                if (item.letter != null)
-                item.numerationToShow = item.letter != ""? item.letter: item.numeration.ToString();
+                // Determinar numeración del item actual
+                if (!string.IsNullOrEmpty(item.letter))
+                {
+                    item.numerationToShow = item.letter;
+                }
+                else
+                {
+                    item.numerationToShow = string.IsNullOrEmpty(parentNumeration)
+                        ? item.numeration.ToString()
+                        : parentNumeration + "." + item.numeration;
+                }
 
-                if (item.children != null)
-                    foreach (var child1 in item.children)
-                    {
-                        if (child1.letter != null)
-                            child1.numerationToShow = child1.letter != "" ? child1.letter :( item.numeration + "." + child1.numeration);
+                // Determinar breadcrumb del item actual
+                item.breadcrumbToShow = string.IsNullOrEmpty(parentBreadcrumb)
+                    ? item.numerationToShow
+                    : parentBreadcrumb + " > " + item.numerationToShow;
 
-                        if (child1.children != null)
-                            foreach (var child2 in child1.children)
-                            {
-                                if (child2.letter != null)
-                                    child2.numerationToShow = child2.letter != "" ? child2.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration);
-
-                                if (child2.children != null)
-                                {
-                                    foreach (var child3 in child2.children)
-                                    {
-                                        if (child3.letter != null)
-                                            child3.numerationToShow = child3.letter != "" ? child3.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration + "." + child3.numeration);
-                                    }
-                                }
-                            }
-                    }
+                // Si tiene hijos, llamar recursivamente pasando numeration y breadcrumb acumulados
+                if (item.children != null && item.children.Any())
+                {
+                    setNumeration(item.children, item.numerationToShow, item.breadcrumbToShow);
+                }
             }
         }
 
@@ -162,7 +191,7 @@ namespace Qualifier.Domain.Entities
                             item.requirementEvaluations.Add(getDefaultRequierementeEvaluation(item));
 
                     if (item.requirementEvaluations != null)
-                        setNumerationToEvaluations(item.requirementEvaluations.ToList(), item.numerationToShow);
+                        setNumerationToEvaluations(item.requirementEvaluations.ToList(), item.numerationToShow, item.breadcrumbToShow);
                 }
                 if (item.children != null)
                     foreach (var child1 in item.children)
@@ -176,7 +205,7 @@ namespace Qualifier.Domain.Entities
                                     child1.requirementEvaluations.Add(getDefaultRequierementeEvaluation(child1));
 
                             if (child1.requirementEvaluations != null)
-                                setNumerationToEvaluations(child1.requirementEvaluations.ToList(), child1.numerationToShow);
+                                setNumerationToEvaluations(child1.requirementEvaluations.ToList(), child1.numerationToShow, child1.breadcrumbToShow);
                         }
 
                         if (child1.children != null)
@@ -189,7 +218,7 @@ namespace Qualifier.Domain.Entities
                                         if (child2.requirementEvaluations.Count == 0)
                                             child2.requirementEvaluations.Add(getDefaultRequierementeEvaluation(child2));
                                     if (child2.requirementEvaluations != null)
-                                        setNumerationToEvaluations(child2.requirementEvaluations.ToList(), child2.numerationToShow);
+                                        setNumerationToEvaluations(child2.requirementEvaluations.ToList(), child2.numerationToShow, child2.breadcrumbToShow);
                                 }
 
                                 if (child2.children != null)
@@ -204,7 +233,7 @@ namespace Qualifier.Domain.Entities
                                                 if (child3.requirementEvaluations.Count == 0)
                                                     child3.requirementEvaluations.Add(getDefaultRequierementeEvaluation(child3));
                                             if (child3.requirementEvaluations != null)
-                                                setNumerationToEvaluations(child3.requirementEvaluations.ToList(), child3.numerationToShow);
+                                                setNumerationToEvaluations(child3.requirementEvaluations.ToList(), child3.numerationToShow, child3.breadcrumbToShow);
                                         }
 
 
@@ -235,11 +264,15 @@ namespace Qualifier.Domain.Entities
             };
         }
 
-        private void setNumerationToEvaluations(List<RequirementEvaluationEntity> requirementEvaluations, string numerationToShow)
+        private void setNumerationToEvaluations(List<RequirementEvaluationEntity> requirementEvaluations, string numerationToShow, string? breadcrumbToShow)
         {
             foreach (var item in requirementEvaluations)
                 if (item.requirement != null)
+                {
                     item.requirement.numerationToShow = numerationToShow;
+                    item.requirement.breadcrumbToShow = breadcrumbToShow;
+                }
+                   
         }
 
 

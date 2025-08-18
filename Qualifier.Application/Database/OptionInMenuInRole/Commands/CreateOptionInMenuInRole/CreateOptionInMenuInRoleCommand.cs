@@ -53,6 +53,7 @@ namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.CreateOptio
                     entity.creationUserId = model.creationUserId;
                     menuInRole.menuId = model.menuId;
                     menuInRole.roleId = model.roleId;
+                    menuInRole.companyId = model.companyId!.Value;
                     await _databaseService.MenuInRole.AddAsync(menuInRole);
                     await _databaseService.SaveAsync();
                 }

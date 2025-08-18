@@ -34,7 +34,6 @@ namespace Qualifier.Application.Database.User.Queries.GetUsersByCompanyId
                                           lastName = user.lastName,
                                           email = user.email,
                                           phone = user.phone,
-                                          password = user.password,
                                           userStateId = user.userStateId,
                                           image = user.image,
                                           documentNumber = user.documentNumber,
@@ -52,9 +51,10 @@ namespace Qualifier.Application.Database.User.Queries.GetUsersByCompanyId
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, companyId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

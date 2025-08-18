@@ -16,33 +16,45 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             _mapper = mapper;
         }
 
-        public async Task<Object> Execute(int standardId, int evaluationId)
+        public async Task<Object> Execute(int standardId, int evaluationId, string search)
         {
             try
             {
-                var requirements = await (from requirement in _databaseService.Requirement
-                                          where ((requirement.isDeleted == null || requirement.isDeleted == false) 
-                                          && requirement.standardId == standardId
-                                          && requirement.isEvaluable)
-                                          select new RequirementEntity
+                var entities = await (from requirement in _databaseService.Requirement
+                                      join parent in _databaseService.Requirement
+                                      on requirement.parentId equals parent.requirementId into parentJoin
+                                      from parent in parentJoin.DefaultIfEmpty() 
+                                      where ((requirement.isDeleted == null || requirement.isDeleted == false)
+                                      && requirement.standardId == standardId
+                                      && requirement.isEvaluable)
+                                      select new RequirementEntity
+                                      {
+                                          requirementId = requirement.requirementId,
+                                          numeration = requirement.numeration,
+                                          name = requirement.name,
+                                          description = requirement.description,
+                                          level = requirement.level,
+                                          parentId = requirement.parentId,
+                                          letter = (requirement.letter == null) ? "" : requirement.letter,
+                                          requirement = parent == null ? null : new RequirementEntity
                                           {
-                                              requirementId = requirement.requirementId,
-                                              numeration = requirement.numeration,
-                                              name = requirement.name,
-                                              description = requirement.description,
+                                              numeration = parent.numeration,
+                                              name = parent.name,
                                               level = requirement.level,
-                                              parentId = requirement.parentId,
                                               letter = (requirement.letter == null) ? "" : requirement.letter,
-                                          }).ToListAsync();
+
+                                          }
+                                      }).ToListAsync();
 
                 var standardEntity = new StandardEntity();
-                standardEntity.setRequirementsWithChildren(requirements);
+                standardEntity.setRequirementsWithChildren(entities);
 
                 var evaluations = await (from requirementEvaluation in _databaseService.RequirementEvaluation
                                          join requirement in _databaseService.Requirement on requirementEvaluation.requirement equals requirement
                                          join maturityLevel in _databaseService.MaturityLevel on requirementEvaluation.maturityLevel equals maturityLevel
                                          join responsible in _databaseService.Responsible on requirementEvaluation.responsible equals responsible
-                                         where ((requirementEvaluation.isDeleted == null || requirementEvaluation.isDeleted == false) && requirementEvaluation.evaluationId == evaluationId)
+                                         where ((requirementEvaluation.isDeleted == null || requirementEvaluation.isDeleted == false) 
+                                         && requirementEvaluation.evaluationId == evaluationId)
                                          select new RequirementEvaluationEntity
                                          {
                                              requirementEvaluationId = requirementEvaluation.requirementEvaluationId,
@@ -87,6 +99,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                                          documentationId = referenceDocumentation.documentationId,
                                                          requirementEvaluationId = referenceDocumentation.requirementEvaluationId,
                                                          name = referenceDocumentation.name,
+                                                         url = referenceDocumentation.url == null ? "" : referenceDocumentation.url,
                                                      }).ToListAsync();
 
                 foreach (var item in evaluations)
@@ -99,9 +112,8 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                 standardEntity.setEvaluationsToRequirements(evaluations);
 
                 BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto> baseResponseDto = new BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto>();
-                List<GetRequirementEvaluationsByProcessRequirementDto> data = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements);
+                baseResponseDto.data = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements);
 
-                baseResponseDto.data = data;
                 return baseResponseDto;
             }
             catch (Exception ex)
@@ -111,6 +123,48 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             }
         }
 
+        public static List<RequirementEntity> SearchRequirements(
+           IEnumerable<RequirementEntity> requirements,
+           string keyword)
+        {
+            var results = new List<RequirementEntity>();
+            var visited = new HashSet<int>(); // 👈 evita duplicados por requirementId
+
+            void Search(IEnumerable<RequirementEntity> nodes)
+            {
+                foreach (var req in nodes)
+                {
+                    // ¿Coincide con la búsqueda?
+                    if (!string.IsNullOrEmpty(req.name) &&
+                        req.name.Contains(keyword, StringComparison.OrdinalIgnoreCase) &&
+                        visited.Add(req.requirementId)) // solo agrega si no existe aún
+                    {
+                        results.Add(req);
+                    }
+
+                    // Recursión en hijos
+                    if (req.children != null && req.children.Any())
+                    {
+                        Search(req.children);
+                    }
+                }
+            }
+
+            Search(requirements);
+            return results;
+        }
+
+        private static string BuildNumerationToShow(RequirementEntity node)
+        {
+            if (node == null) return "";
+
+            // Si no tiene padre, devuelve solo su numerationToShow actual
+            if (node.requirement == null)
+                return node.numerationToShow;
+
+            // Si tiene padre, concatena el del padre con el suyo
+            return $"{BuildNumerationToShow(node.requirement)}.{node.numerationToShow}";
+        }
 
         private void setEvaluationState(RequirementEvaluationEntity item)
         {
@@ -138,7 +192,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
 
                 }
 
-                    item.percentage = (item.value / OPTIMIZED_VALUE) * 100;
+                item.percentage = (item.value / OPTIMIZED_VALUE) * 100;
 
             }
 

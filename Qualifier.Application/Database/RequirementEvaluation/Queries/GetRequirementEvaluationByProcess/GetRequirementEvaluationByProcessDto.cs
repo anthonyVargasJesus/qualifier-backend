@@ -30,6 +30,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
         public string numerationToShow { get; set; }
         public List<GetRequirementEvaluationsByProcessDto> requirementEvaluations { get; set; }
         public List<GetRequirementEvaluationsByProcessRequirementDto> children { get; set; }
+        public string? breadcrumbToShow { get; set; }
     }
 
     public class GetRequirementEvaluationsByProcessChildRequirementDto
@@ -37,6 +38,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
         public int requirementId { get; set; }
         public string name { get; set; }
         public string numerationToShow { get; set; }
+        public string? breadcrumbToShow { get; set; }
     }
 
     public class GetRequirementEvaluationsByProcessMaturityLevelDto
@@ -53,7 +55,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
     public class GetRequirementEvaluationsByProcessReferenceDocumentationDto
     {
         public string name { get; set; }
-
+        public string url { get; set; }
     }
 
 }

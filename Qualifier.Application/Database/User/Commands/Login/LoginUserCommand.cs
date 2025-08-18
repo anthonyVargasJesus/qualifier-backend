@@ -132,11 +132,12 @@ namespace Qualifier.Application.Database.User.Commands.Login
             return currentRole;
         }
 
-        private List<int> getRolesArray(List<RoleEntity> roles)
+        private List<string> getRolesArray(List<RoleEntity> roles)
         {
-            List<int> rls = new List<int>();
+            List<string> rls = new List<string>();
             foreach (RoleEntity role in roles)
-                rls.Add(role.roleId);
+                if (!string.IsNullOrEmpty(role.code))
+                    rls.Add(role.code);
 
             return rls;
         }

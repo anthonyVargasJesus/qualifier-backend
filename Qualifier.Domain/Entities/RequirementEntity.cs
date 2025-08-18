@@ -17,7 +17,7 @@ namespace Qualifier.Domain.Entities
         public int companyId { get; set; }
 
         [NotMapped]
-        public RequirementEntity requirement { get; set; }
+        public RequirementEntity? requirement { get; set; }
         [NotMapped]
         public ICollection<RequirementEntity> requirements { get; set; }
         [NotMapped]
@@ -35,6 +35,9 @@ namespace Qualifier.Domain.Entities
         public decimal value { get; set; }
         [NotMapped]
         public IndicatorEntity? indicator { get; set; }
+
+        [NotMapped]
+        public string? breadcrumbToShow { get; set; }
 
         public void setIndicator(List<IndicatorEntity> indicators, decimal? value)
         {

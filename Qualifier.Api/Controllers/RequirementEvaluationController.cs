@@ -17,9 +17,12 @@ namespace Qualifier.Api.Controllers
     public class RequirementEvaluationController : ControllerBase
     {
         [HttpGet("all")]
-        public async Task<IActionResult> Get(int standardId, int evaluationId, [FromServices] IGetRequirementEvaluationByProcessQuery query)
+        public async Task<IActionResult> Get(int standardId, int evaluationId, string? search, [FromServices] IGetRequirementEvaluationByProcessQuery query)
         {
-            var res = await query.Execute(standardId, evaluationId);
+            if (search == null)
+                search = string.Empty;
+
+            var res = await query.Execute(standardId, evaluationId, search);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

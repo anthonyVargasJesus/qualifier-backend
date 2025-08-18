@@ -42,9 +42,11 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
 
     public class CreateRequirementEvaluationReferenceDocumentationDto
     {
-        public string name { get; set; }
+        public string? name { get; set; }
         public int documentationId { get; set; }
         public long requirementEvaluationId { get; set; }
+        public string? url { get; set; }
+        public string? description { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
     }

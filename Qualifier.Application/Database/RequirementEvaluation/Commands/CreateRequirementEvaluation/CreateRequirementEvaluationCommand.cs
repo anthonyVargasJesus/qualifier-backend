@@ -41,6 +41,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
                     foreach (var item in model.referenceDocumentations)
                     {
                         item.companyId = entity.companyId;
+
                         var entity2 = _mapper.Map<ReferenceDocumentationEntity>(item);
                         entity2.requirementEvaluationId = requirementEvaluationId;
                         entity2.evaluationId = entity.evaluationId;

@@ -334,6 +334,11 @@ using Qualifier.Application.Database.ResidualRisk.Queries.GetResidualRisksByComp
 using Qualifier.Application.Database.ControlImplementation.Commands.CreateControlImplementation;
 using Qualifier.Application.Database.ControlImplementation.Commands.UpdateControlImplementation;
 using Qualifier.Application.Database.ControlImplementation.Queries.GetControlImplementationById;
+using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationsByRequirementEvaluationId;
+using Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateReferenceDocumentation;
+using Qualifier.Application.Database.ReferenceDocumentation.Commands.UpdateReferenceDocumentation;
+using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationById;
+using Qualifier.Application.Database.ReferenceDocumentation.Commands.DeleteReferenceDocumentation;
 
 
 namespace Qualifier.Application
@@ -806,6 +811,14 @@ namespace Qualifier.Application
             services.AddTransient<ICreateControlImplementationCommand, CreateControlImplementationCommand>();
             services.AddTransient<IUpdateControlImplementationCommand, UpdateControlImplementationCommand>();
             services.AddTransient<IGetControlImplementationByIdQuery, GetControlImplementationByIdQuery>();
+
+            services.AddTransient<IGetReferenceDocumentationsByRequirementEvaluationIdQuery, GetReferenceDocumentationsByRequirementEvaluationIdQuery>();
+            services.AddTransient<ICreateReferenceDocumentationCommand, CreateReferenceDocumentationCommand>();
+
+            //ReferenceDocumentation
+            services.AddTransient<IUpdateReferenceDocumentationCommand, UpdateReferenceDocumentationCommand>();
+            services.AddTransient<IGetReferenceDocumentationByIdQuery, GetReferenceDocumentationByIdQuery>();
+            services.AddTransient<IDeleteReferenceDocumentationCommand, DeleteReferenceDocumentationCommand>();
 
             return services;
         }

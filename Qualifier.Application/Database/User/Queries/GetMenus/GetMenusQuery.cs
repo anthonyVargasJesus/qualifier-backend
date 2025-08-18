@@ -83,7 +83,7 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                                   order = menuInRole.order,
                               }).ToList();
 
-          
+
 
                 asignOptions(role.menus, role.roleId, standardId, standardName);
                 foreach (var menu in role.menus)
@@ -97,7 +97,7 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
         private void asignOptions(List<MenuEntity> menus, int roleId, int standardId, string standardName)
         {
             const string CURRENT_STANDARD_MENU = "CURRENT_STANDARD";
-            const string CURRENT_STANDARD_ROUTE = "edit-standard";
+            const string CURRENT_STANDARD_ROUTE = "security/edit-standard";
 
             foreach (MenuEntity menu in menus)
             {
@@ -113,25 +113,32 @@ namespace Qualifier.Application.Database.User.Queries.GetMenus
                                }).ToList();
 
 
-                foreach (var option in options)
-                    if (option.url == CURRENT_STANDARD_ROUTE)
-                    {
-                        option.url = option.url + "/" + standardId + "/1";
-                        option.name = standardName;
-                    }
+                //foreach (var option in options)
+                //    if (option.url == CURRENT_STANDARD_ROUTE)
+                //    {
+                //        const string STANDARDS_ROUTE = "current-standard/standard";
+                //        if (option.url != STANDARDS_ROUTE)
+                //            option.url = option.url + "/" + standardId + "/1";
+
+                //        option.name = standardName;
+                //    }
 
                 if (menu.name == CURRENT_STANDARD_MENU)
                 {
                     foreach (var option in options)
                     {
-                        option.url = option.url + "/" + standardId;
+                        const string STANDARDS_ROUTE = "current-standard/standard";
+                        const string DOCUMENT_TYPE_ROUTE = "current-standard/document-type";
+                        const string CONTROL_TYPE_ROUTE = "current-standard/control-type";
+                        if (option.url != STANDARDS_ROUTE && option.url != DOCUMENT_TYPE_ROUTE && option.url != CONTROL_TYPE_ROUTE)
+                            option.url = option.url + "/" + standardId;
                         //option.name = standardName;
                     }
-                          
-                        
+
+
                 }
 
-                    menu.options = options.OrderBy(e => e.order).ToList();
+                menu.options = options.OrderBy(e => e.order).ToList();
 
             }
 

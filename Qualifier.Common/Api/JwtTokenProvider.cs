@@ -13,7 +13,7 @@ namespace Qualifier.Common.Api
 {
     public class JwtTokenProvider
     {
-        public static string GenerateToken(IConfiguration _configuration, int userId, string fullName, string currentRole, List<int> roles, int companyId, int standardId, string standardName)
+        public static string GenerateToken(IConfiguration _configuration, int userId, string fullName, string currentRole, List<string> roles, int companyId, int standardId, string standardName)
         {
             string? secretKey = _configuration["Authentication:SecretKey"];
 

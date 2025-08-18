@@ -31,7 +31,6 @@ namespace Qualifier.Application.Database.User.Queries.GetUserById
                                         lastName = item.lastName,
                                         email = item.email,
                                         phone = item.phone,
-                                        password = item.password,
                                         userStateId = item.userStateId,
                                         image = item.image,
                                         documentNumber = item.documentNumber,

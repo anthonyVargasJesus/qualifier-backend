@@ -147,6 +147,10 @@ using Qualifier.Application.Database.Policy.Commands.UpdatePolicy;
 using Qualifier.Application.Database.Policy.Queries.GetAllPoliciesByStandardId;
 using Qualifier.Application.Database.Policy.Queries.GetPoliciesByStandardId;
 using Qualifier.Application.Database.Policy.Queries.GetPolicyById;
+using Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateReferenceDocumentation;
+using Qualifier.Application.Database.ReferenceDocumentation.Commands.UpdateReferenceDocumentation;
+using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationById;
+using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationsByRequirementEvaluationId;
 using Qualifier.Application.Database.Requirement.Commands.CreateRequirement;
 using Qualifier.Application.Database.Requirement.Commands.UpdateRequirement;
 using Qualifier.Application.Database.Requirement.Queries.GetAllRequirementsByStandardId;
@@ -797,6 +801,13 @@ namespace Qualifier.Application.Configuration
             CreateMap<ControlImplementationEntity, CreateControlImplementationDto>().ReverseMap();
             CreateMap<ControlImplementationEntity, UpdateControlImplementationDto>().ReverseMap();
             CreateMap<ControlImplementationEntity, GetControlImplementationByIdDto>().ReverseMap();
+
+            //ReferenceDocumentation
+            CreateMap<ReferenceDocumentationEntity, GetReferenceDocumentationsByRequirementEvaluationIdDto>().ReverseMap();
+            CreateMap<DocumentationEntity, GetReferenceDocumentationsByRequirementEvaluationIdDocumentationDto>().ReverseMap();
+            CreateMap<ReferenceDocumentationEntity, CreateReferenceDocumentationDto>().ReverseMap();
+            CreateMap<ReferenceDocumentationEntity, UpdateReferenceDocumentationDto>().ReverseMap();
+            CreateMap<ReferenceDocumentationEntity, GetReferenceDocumentationByIdDto>().ReverseMap();
 
         }
     }

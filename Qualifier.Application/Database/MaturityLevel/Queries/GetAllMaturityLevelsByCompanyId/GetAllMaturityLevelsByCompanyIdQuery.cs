@@ -30,7 +30,7 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLev
                                           value = maturityLevel.value,
                                           color = maturityLevel.color,
                                       })
-                                   
+                                       .OrderBy(e=>e.value)
                                       .ToListAsync();
 
                 BaseResponseDto<GetAllMaturityLevelsByCompanyIdDto> baseResponseDto = new BaseResponseDto<GetAllMaturityLevelsByCompanyIdDto>();
