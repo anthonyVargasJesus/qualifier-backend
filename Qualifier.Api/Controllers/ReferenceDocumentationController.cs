@@ -6,6 +6,7 @@ using Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateRefer
 using Qualifier.Application.Database.ReferenceDocumentation.Commands.DeleteReferenceDocumentation;
 using Qualifier.Application.Database.ReferenceDocumentation.Commands.UpdateReferenceDocumentation;
 using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationById;
+using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationsByControlEvaluationId;
 using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationsByRequirementEvaluationId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
@@ -28,6 +29,20 @@ namespace Qualifier.Api.Controllers
                 search = string.Empty;
 
             var res = await query.Execute(skip, pageSize, search, requirementEvaluationId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
+
+        [HttpGet("ByControl")]
+        public async Task<IActionResult> GetByControl(int skip, int pageSize, int controlEvaluationId, string? search,
+    [FromServices] IGetReferenceDocumentationsByControlEvaluationIdQuery query)
+        {
+            if (search == null)
+                search = string.Empty;
+
+            var res = await query.Execute(skip, pageSize, search, controlEvaluationId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

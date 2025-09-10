@@ -52,6 +52,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetDashboard
                                             minimum = indicator.minimum,
                                             maximum = indicator.maximum,
                                             color = indicator.color,
+                                            factor = indicator.factor== null?0: indicator.factor,
                                         }).ToListAsync();
 
                 const int FIRST_LEVEL = 1;
@@ -90,7 +91,6 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetDashboard
 
                 List<BartVerticalDashboardRequirement> bartVerticalDashboardRequirements = standardEntity.getBarChartDashboard();
 
-
                 GetDashboardDto data = new GetDashboardDto();
                 data.maturityLevels = _mapper.Map<List<GetDashboardMaturityLevelDto>>(maturityLevels).ToList();
                 data.requirements = _mapper.Map<List<GetDashboardRequirementDto>>(standardEntity.requirements).ToList();
@@ -98,7 +98,8 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetDashboard
                 data.pieDashboardRequirementDto = _mapper.Map<List<GetPieDashboardRequirementDto>>(pieDashboardRequirements).ToList();
                 data.bartVerticalDashboardRequirementDto = _mapper.Map<List<GetBartVerticalDashboardRequirementDto>>(bartVerticalDashboardRequirements).ToList();
                 data.colors = colors;
-
+                data.indicators = getData(_mapper.Map<List<GetDashboardIndicatorDto>>(indicators).ToList(), _mapper.Map<List<GetDashboardRequirementDto>>(standardEntity.requirements).ToList());
+                data.requirementsIndicator = getRequirementIndicator(_mapper.Map<List<GetDashboardIndicatorDto>>(indicators), data.requirements);
                 return data;
             }
             catch (Exception)
@@ -108,6 +109,62 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetDashboard
         }
 
 
+        List<GetDashboardIndicatorDto> getData(List<GetDashboardIndicatorDto> indicators, List<GetDashboardRequirementDto> requirements)
+        {
+            List<GetDashboardIndicatorDto> result = new List<GetDashboardIndicatorDto>();
+
+            var stateIndicator = new GetDashboardIndicatorDto();
+            stateIndicator.name = "Estado";
+            stateIndicator.color = "#0070c0";
+            indicators.Add(stateIndicator);
+
+            foreach (var indicator in indicators)
+            {
+                var series = new List<GetDashboardMaturityLevelInRequirementDto>();
+
+                foreach (var requirement in requirements)
+                {
+                    var serie = new GetDashboardMaturityLevelInRequirementDto();
+                    serie.name = "Cláusula " + requirement.numeration.ToString();
+
+                    // 📌 Caso 1: Estado real (usamos requirement.value)
+                    if (indicator.name == "Estado")
+                        serie.value = requirement.indicatorValue;
+                    else
+                        serie.value = indicator.factor;
+                    
+                    series.Add(serie);
+                }
+
+                result.Add(new GetDashboardIndicatorDto
+                {
+                    name = indicator.name,
+                    color = indicator.color,
+                    series = series
+                });
+            }
+
+            return result;
+        }
+
+
+        GetDashboardIndicatorDto getRequirementIndicator(List<GetDashboardIndicatorDto> indicators, List<GetDashboardRequirementDto> requirements)
+        {
+            GetDashboardIndicatorDto result = new GetDashboardIndicatorDto();
+            result.minimum = indicators.Min(x => x.factor);
+            result.maximum = indicators.Max(x => x.factor);
+            result.value = requirements.Average(x => x.indicatorValue);
+
+            foreach (GetDashboardIndicatorDto item in indicators)
+                if (item.minimum != null && item.maximum != null)
+                    if (result.value > item.minimum.Value && result.value <= item.maximum.Value)
+                    {
+                        result.name = item.name;
+                        result.color = item.color;
+                    }
+            
+            return result;
+        }
 
     }
 }

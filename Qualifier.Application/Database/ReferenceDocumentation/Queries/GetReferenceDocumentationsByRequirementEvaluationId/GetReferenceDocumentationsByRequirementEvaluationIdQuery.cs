@@ -28,12 +28,13 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
                                       {
                                           referenceDocumentationId = referenceDocumentation.referenceDocumentationId,
                                           name = referenceDocumentation.name,
-                                          url = referenceDocumentation.url,
+                                          url = (referenceDocumentation.url == null) ? "" : referenceDocumentation.url,
                                           documentation = new DocumentationEntity
                                           {
                                               name = documentation.name,
                                           },
                                       })
+                                      .OrderBy(x => x.name)
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();
 
@@ -42,9 +43,10 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, requirementEvaluationId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

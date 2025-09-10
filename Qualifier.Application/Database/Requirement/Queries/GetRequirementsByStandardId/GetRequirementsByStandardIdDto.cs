@@ -10,6 +10,7 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementsBySt
         public int parentId { get; set; }
         public string letter { get; set; }
         public List<GetRequirementsByStandardIdDto> children { get; set; }
+        public string numerationToShow { get; set; }
     }
 }
 

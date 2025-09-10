@@ -12,9 +12,7 @@ namespace Qualifier.Domain.Entities
         public decimal? maximum { get; set; }
         public string color { get; set; }
         public int companyId { get; set; }
-
-
-
+        public decimal? factor { get; set; }
     }
 }
 

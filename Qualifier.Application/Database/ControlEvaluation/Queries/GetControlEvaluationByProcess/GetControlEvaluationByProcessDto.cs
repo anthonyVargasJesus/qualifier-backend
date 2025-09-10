@@ -1,12 +1,21 @@
-﻿using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess
 {
+    public class GetControlEvaluationsByProcessResponseDto
+    {
+        public List<GetControlEvaluationsByProcessLegendDto>? legend { get; set; }
+        public List<GetControlEvaluationsByProcessMaturityLevelDto>? maturityLegend { get; set; }
+        public List<GetControlEvaluationsByProcessControlGroupDto>? groups { get; set; }
+    }
+    public class GetControlEvaluationsByProcessControlGroupDto
+    {
+        public int controlGroupId { get; set; }
+        public int number { get; set; }
+        public string name { get; set; }
+        public List<GetControlEvaluationsByProcessControlDto> controls { get; set; }
+    }
+
     public class GetControlEvaluationsByProcessDto
     {
         public long controlEvaluationId { get; set; }
@@ -21,15 +30,10 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
         public GetControlEvaluationsByProcessResponsibleDto? responsible { get; set; }
         public GetControlEvaluationsByProcessControlDto? control { get; set; }
         public List<GetControlEvaluationsByProcessReferenceDocumentationDto> referenceDocumentations { get; set; }
+        public string? state { get; set; }
+        public decimal? percentage { get; set; }
     }
 
-    public class GetControlEvaluationsByProcessControlGroupDto
-    {
-        public int controlGroupId { get; set; }
-        public int number { get; set; }
-        public string name { get; set; }
-        public List<GetControlEvaluationsByProcessControlDto> controls { get; set; }
-    }
 
     public class GetControlEvaluationsByProcessControlDto
     {
@@ -45,6 +49,8 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
     {
         public string abbreviation { get; set; }
         public string color { get; set; }
+        public decimal value { get; set; }
+        public int total { get; set; }
 
     }
     public class GetControlEvaluationsByProcessResponsibleDto
@@ -56,6 +62,14 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
     public class GetControlEvaluationsByProcessReferenceDocumentationDto
     {
         public string name { get; set; }
-
+        public string? url { get; set; }
     }
+
+    public class GetControlEvaluationsByProcessLegendDto
+    {
+        public string? name { get; set; }
+        public int value { get; set; }
+        public string? color { get; set; }
+    }
+
 }

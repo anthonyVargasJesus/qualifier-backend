@@ -15,6 +15,8 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard
         public List<GetPieControlDashboardControlGroupDto> pieControlDashboardControlGroup { get; set; }
         public List<GetBartVerticalControlDashboardDto> bartVerticalDashboardControlGroupDto { get; set; }
         public List<string>? colors { get; set; }
+        public GetControlDashboardMaturityLevelInControlIndicatorDto controlsIndicator { get; set; }
+        public List<GetDashboardControlIndicatorDto> indicators { get; set; }
     }
 
     public class GetControlDashboardControlGroupDto
@@ -25,6 +27,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard
         public decimal? value { get; set; }
         public GetControlDashboardMaturityLevelInControlIndicatorDto indicator { get; set; }
         public List<GetDashboardMaturityLevelInControlDto> maturityLevels { get; set; }
+        public decimal indicatorValue { get; set; }
     }
     public class GetControlDashboardMaturityLevelInControlIndicatorDto
     {
@@ -32,8 +35,11 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard
         public string name { get; set; }
         public string description { get; set; }
         public string abbreviation { get; set; }
+        public decimal? minimum { get; set; }
+        public decimal? maximum { get; set; }
         public string color { get; set; }
-
+        public decimal? factor { get; set; }
+        public decimal? value { get; set; }
     }
     public class GetDashboardMaturityLevelInControlDto
     {
@@ -69,5 +75,20 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard
         public string name { get; set; }
         public decimal value { get; set; }
     }
+
+    public class GetDashboardControlIndicatorDto
+    {
+        public int indicatorId { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public string abbreviation { get; set; }
+        public decimal? minimum { get; set; }
+        public decimal? maximum { get; set; }
+        public string color { get; set; }
+        public List<GetControlDashboardMaturityLevelInControlIndicatorDto>? series { get; set; }
+        public decimal? factor { get; set; }
+        public decimal? value { get; set; }
+    }
+
 
 }

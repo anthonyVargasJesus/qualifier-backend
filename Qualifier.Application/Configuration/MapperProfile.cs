@@ -4,6 +4,11 @@ using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInve
 using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoryById;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
+using Qualifier.Application.Database.ActivesInventoryInDefaultRisk.Commands.CreateActivesInventoryInDefaultRisk;
+using Qualifier.Application.Database.ActivesInventoryInDefaultRisk.Commands.UpdateActivesInventoryInDefaultRisk;
+using Qualifier.Application.Database.ActivesInventoryInDefaultRisk.Queries.GetActivesInventoryInDefaultRiskById;
+using Qualifier.Application.Database.ActivesInventoryInDefaultRisk.Queries.GetActivesInventoryInDefaultRisksByDefaultRiskId;
+using Qualifier.Application.Database.ActivesInventoryInDefaultRisk.Queries.GetAllActivesInventoryInDefaultRisksByDefaultRiskId;
 using Qualifier.Application.Database.ActiveType.Commands.CreateActiveType;
 using Qualifier.Application.Database.ActiveType.Commands.UpdateActiveType;
 using Qualifier.Application.Database.ActiveType.Queries.GetActiveTypeById;
@@ -12,6 +17,12 @@ using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompa
 using Qualifier.Application.Database.Approver.Commands.CreateApprover;
 using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
 using Qualifier.Application.Database.Approver.Queries.GetApproverById;
+using Qualifier.Application.Database.Breach.Commands.CreateBreach;
+using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
+using Qualifier.Application.Database.Breach.Queries.GetBreachById;
+using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
+using Qualifier.Application.Database.BreachSeverity.Queries.GetAllBreachSeveritiesByCompanyId;
+using Qualifier.Application.Database.BreachStatus.Queries.GetAllBreachStatussByCompanyId;
 using Qualifier.Application.Database.Company.Commands.UpdateCompany;
 using Qualifier.Application.Database.Company.Queries.GetCompanyById;
 using Qualifier.Application.Database.ConfidentialityLevel.Commands.CreateConfidentialityLevel;
@@ -38,6 +49,11 @@ using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStan
 using Qualifier.Application.Database.ControlImplementation.Commands.CreateControlImplementation;
 using Qualifier.Application.Database.ControlImplementation.Commands.UpdateControlImplementation;
 using Qualifier.Application.Database.ControlImplementation.Queries.GetControlImplementationById;
+using Qualifier.Application.Database.ControlInDefaultRisk.Commands.CreateControlInDefaultRisk;
+using Qualifier.Application.Database.ControlInDefaultRisk.Commands.UpdateControlInDefaultRisk;
+using Qualifier.Application.Database.ControlInDefaultRisk.Queries.GetAllControlInDefaultRisksByControlId;
+using Qualifier.Application.Database.ControlInDefaultRisk.Queries.GetControlInDefaultRiskById;
+using Qualifier.Application.Database.ControlInDefaultRisk.Queries.GetControlInDefaultRisksByControlId;
 using Qualifier.Application.Database.ControlType.Commands.CreateControlType;
 using Qualifier.Application.Database.ControlType.Commands.UpdateControlType;
 using Qualifier.Application.Database.ControlType.Queries.GetAllControlTypesByCompanyId;
@@ -52,6 +68,11 @@ using Qualifier.Application.Database.Custodian.Commands.UpdateCustodian;
 using Qualifier.Application.Database.Custodian.Queries.GetAllCustodiansByCompanyId;
 using Qualifier.Application.Database.Custodian.Queries.GetCustodianById;
 using Qualifier.Application.Database.Custodian.Queries.GetCustodiansByCompanyId;
+using Qualifier.Application.Database.DefaultRisk.Commands.CreateDefaultRisk;
+using Qualifier.Application.Database.DefaultRisk.Commands.UpdateDefaultRisk;
+using Qualifier.Application.Database.DefaultRisk.Queries.GetAllDefaultRisksByStandardId;
+using Qualifier.Application.Database.DefaultRisk.Queries.GetDefaultRiskById;
+using Qualifier.Application.Database.DefaultRisk.Queries.GetDefaultRisksByStandardId;
 using Qualifier.Application.Database.DefaultSection.Commands.CreateDefaultSection;
 using Qualifier.Application.Database.DefaultSection.Commands.UpdateDefaultSection;
 using Qualifier.Application.Database.DefaultSection.Queries.GetAllDefaultSectionsByDocumentTypeId;
@@ -150,6 +171,7 @@ using Qualifier.Application.Database.Policy.Queries.GetPolicyById;
 using Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateReferenceDocumentation;
 using Qualifier.Application.Database.ReferenceDocumentation.Commands.UpdateReferenceDocumentation;
 using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationById;
+using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationsByControlEvaluationId;
 using Qualifier.Application.Database.ReferenceDocumentation.Queries.GetReferenceDocumentationsByRequirementEvaluationId;
 using Qualifier.Application.Database.Requirement.Commands.CreateRequirement;
 using Qualifier.Application.Database.Requirement.Commands.UpdateRequirement;
@@ -161,6 +183,11 @@ using Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRequir
 using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationById;
 using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
 using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationsByRequirementId;
+using Qualifier.Application.Database.RequirementInDefaultRisk.Commands.CreateRequirementInDefaultRisk;
+using Qualifier.Application.Database.RequirementInDefaultRisk.Commands.UpdateRequirementInDefaultRisk;
+using Qualifier.Application.Database.RequirementInDefaultRisk.Queries.GetAllRequirementInDefaultRisksByRequirementId;
+using Qualifier.Application.Database.RequirementInDefaultRisk.Queries.GetRequirementInDefaultRiskById;
+using Qualifier.Application.Database.RequirementInDefaultRisk.Queries.GetRequirementInDefaultRisksByRequirementId;
 using Qualifier.Application.Database.ResidualRisk.Commands.CreateResidualRisk;
 using Qualifier.Application.Database.ResidualRisk.Commands.UpdateResidualRisk;
 using Qualifier.Application.Database.ResidualRisk.Queries.GetAllResidualRisksByCompanyId;
@@ -808,6 +835,75 @@ namespace Qualifier.Application.Configuration
             CreateMap<ReferenceDocumentationEntity, CreateReferenceDocumentationDto>().ReverseMap();
             CreateMap<ReferenceDocumentationEntity, UpdateReferenceDocumentationDto>().ReverseMap();
             CreateMap<ReferenceDocumentationEntity, GetReferenceDocumentationByIdDto>().ReverseMap();
+
+            //ReferenceDocumentation
+            CreateMap<ReferenceDocumentationEntity, GetReferenceDocumentationsByControlEvaluationIdDto>().ReverseMap();
+            CreateMap<DocumentationEntity, GetReferenceDocumentationsByControlEvaluationIdDocumentationDto>().ReverseMap();
+
+            CreateMap<IndicatorEntity, GetDashboardIndicatorDto>().ReverseMap();
+
+            CreateMap<IndicatorEntity, GetDashboardControlIndicatorDto>().ReverseMap();
+
+            //DefaultRisk
+            CreateMap<DefaultRiskEntity, CreateDefaultRiskDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, UpdateDefaultRiskDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, GetDefaultRiskByIdDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, GetAllDefaultRisksByStandardIdDto>().ReverseMap();
+            CreateMap<MenaceEntity, GetAllDefaultRisksByStandardIdMenaceDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, GetAllDefaultRisksByStandardIdVulnerabilityDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, GetDefaultRisksByStandardIdDto>().ReverseMap();
+            CreateMap<MenaceEntity, GetDefaultRisksByStandardIdMenaceDto>().ReverseMap();
+            CreateMap<VulnerabilityEntity, GetDefaultRisksByStandardIdVulnerabilityDto>().ReverseMap();
+
+            //RequirementInDefaultRisk
+            CreateMap<RequirementInDefaultRiskEntity, CreateRequirementInDefaultRiskDto>().ReverseMap();
+            CreateMap<RequirementInDefaultRiskEntity, UpdateRequirementInDefaultRiskDto>().ReverseMap();
+            CreateMap<RequirementInDefaultRiskEntity, GetRequirementInDefaultRiskByIdDto>().ReverseMap();
+            CreateMap<RequirementInDefaultRiskEntity, GetAllRequirementInDefaultRisksByRequirementIdDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, GetAllRequirementInDefaultRisksByRequirementIdDefaultRiskDto>().ReverseMap();
+            CreateMap<RequirementInDefaultRiskEntity, GetRequirementInDefaultRisksByRequirementIdDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, GetRequirementInDefaultRisksByRequirementIdDefaultRiskDto>().ReverseMap();
+
+            //ControlInDefaultRisk
+            CreateMap<ControlInDefaultRiskEntity, CreateControlInDefaultRiskDto>().ReverseMap();
+            CreateMap<ControlInDefaultRiskEntity, UpdateControlInDefaultRiskDto>().ReverseMap();
+            CreateMap<ControlInDefaultRiskEntity, GetControlInDefaultRiskByIdDto>().ReverseMap();
+            CreateMap<ControlInDefaultRiskEntity, GetAllControlInDefaultRisksByControlIdDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, GetAllControlInDefaultRisksByControlIdDefaultRiskDto>().ReverseMap();
+            CreateMap<ControlInDefaultRiskEntity, GetControlInDefaultRisksByControlIdDto>().ReverseMap();
+            CreateMap<DefaultRiskEntity, GetControlInDefaultRisksByControlIdDefaultRiskDto>().ReverseMap();
+
+            //ActivesInventoryInDefaultRisk
+            CreateMap<ActivesInventoryInDefaultRiskEntity, CreateActivesInventoryInDefaultRiskDto>().ReverseMap();
+            CreateMap<ActivesInventoryInDefaultRiskEntity, UpdateActivesInventoryInDefaultRiskDto>().ReverseMap();
+            CreateMap<ActivesInventoryInDefaultRiskEntity, GetActivesInventoryInDefaultRiskByIdDto>().ReverseMap();
+            CreateMap<ActivesInventoryInDefaultRiskEntity, GetAllActivesInventoryInDefaultRisksByDefaultRiskIdDto>().ReverseMap();
+            CreateMap<ActivesInventoryEntity, GetAllActivesInventoryInDefaultRisksByDefaultRiskIdActivesInventoryDto>().ReverseMap();
+            CreateMap<ActivesInventoryInDefaultRiskEntity, GetActivesInventoryInDefaultRisksByDefaultRiskIdDto>().ReverseMap();
+            CreateMap<ActivesInventoryEntity, GetActivesInventoryInDefaultRisksByDefaultRiskIdActivesInventoryDto>().ReverseMap();
+
+            //Breach
+            CreateMap<BreachEntity, CreateBreachDto>().ReverseMap();
+            CreateMap<BreachEntity, UpdateBreachDto>().ReverseMap();
+            CreateMap<BreachEntity, GetBreachByIdDto>().ReverseMap();
+
+
+            //BreachSeverity
+            CreateMap<BreachSeverityEntity, GetAllBreachSeveritiesByCompanyIdDto>().ReverseMap();
+
+            //BreachStatus
+            CreateMap<BreachStatusEntity, GetAllBreachStatussByCompanyIdDto>().ReverseMap();
+
+            //Breach
+            CreateMap<BreachEntity, GetBreachsByEvaluationIdDto>().ReverseMap();
+            CreateMap<BreachSeverityEntity, GetBreachsByEvaluationIdBreachSeverityDto>().ReverseMap();
+            CreateMap<BreachStatusEntity, GetBreachsByEvaluationIdBreachStatusDto>().ReverseMap();
+            CreateMap<ControlEntity, GetBreachsByEvaluationIdControlDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetBreachsByEvaluationIdRequirementDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetBreachsByEvaluationIdResponsibleDto>().ReverseMap();
+
+            CreateMap<ControlEntity, GetBreachsByIdControlDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetBreachsByIdRequirementDto>().ReverseMap();
 
         }
     }

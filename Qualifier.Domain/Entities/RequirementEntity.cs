@@ -1,5 +1,5 @@
-using Qualifier.Common.Domain.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using Qualifier.Common.Domain.Entities;
 
 namespace Qualifier.Domain.Entities
 {
@@ -38,9 +38,12 @@ namespace Qualifier.Domain.Entities
 
         [NotMapped]
         public string? breadcrumbToShow { get; set; }
-
+        [NotMapped]
+        public decimal indicatorValue { get; set; }
         public void setIndicator(List<IndicatorEntity> indicators, decimal? value)
         {
+            if (value.HasValue)
+                indicatorValue = value.Value;
             //const int ID_BASIC_INDICATOR = 3;
             //const int ID_MEDIUM_INDICATOR = 2;
             //const int ID_ADVANCED_INDICATOR = 1;

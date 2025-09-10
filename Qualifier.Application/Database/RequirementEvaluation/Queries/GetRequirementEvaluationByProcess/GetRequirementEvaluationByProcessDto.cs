@@ -2,6 +2,25 @@
 
 namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess
 {
+    public class GetRequirementEvaluationsByProcessResponseDto
+    {
+        public List<GetRequirementEvaluationsByProcessLegendDto>? legend { get; set; }
+        public List<GetRequirementEvaluationsByProcessMaturityLevelDto>? maturityLegend { get; set; }
+        public List<GetRequirementEvaluationsByProcessRequirementDto>? requirements { get; set; }
+    }
+    public class GetRequirementEvaluationsByProcessRequirementDto
+    {
+        public int requirementId { get; set; }
+        public int numeration { get; set; }
+        public string name { get; set; }
+        public int level { get; set; }
+        public int parentId { get; set; }
+        public string numerationToShow { get; set; }
+        public List<GetRequirementEvaluationsByProcessDto> requirementEvaluations { get; set; }
+        public List<GetRequirementEvaluationsByProcessRequirementDto> children { get; set; }
+        public string? breadcrumbToShow { get; set; }
+    }
+
     public class GetRequirementEvaluationsByProcessDto
     {
         public long requirementEvaluationId { get; set; }
@@ -20,18 +39,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
         public string? auditorStatusText { get; set; }
     }
 
-    public class GetRequirementEvaluationsByProcessRequirementDto
-    {
-        public int requirementId { get; set; }
-        public int numeration { get; set; }
-        public string name { get; set; }
-        public int level { get; set; }
-        public int parentId { get; set; }
-        public string numerationToShow { get; set; }
-        public List<GetRequirementEvaluationsByProcessDto> requirementEvaluations { get; set; }
-        public List<GetRequirementEvaluationsByProcessRequirementDto> children { get; set; }
-        public string? breadcrumbToShow { get; set; }
-    }
+
 
     public class GetRequirementEvaluationsByProcessChildRequirementDto
     {
@@ -46,16 +54,23 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
         public string abbreviation { get; set; }
         public string color { get; set; }
         public decimal value { get; set; }
+        public int total { get; set; }
     }
     public class GetRequirementEvaluationsByProcessResponsibleDto
     {
         public string name { get; set; }
-
     }
     public class GetRequirementEvaluationsByProcessReferenceDocumentationDto
     {
-        public string name { get; set; }
-        public string url { get; set; }
+        public string? name { get; set; }
+        public string? url { get; set; }
+    }
+    public class GetRequirementEvaluationsByProcessLegendDto
+    {
+        public string? name { get; set; }
+        public int value { get; set; }
+        public string? color { get; set; }
     }
 
 }
+ 

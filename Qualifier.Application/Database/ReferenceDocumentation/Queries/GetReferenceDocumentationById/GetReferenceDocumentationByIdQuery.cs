@@ -25,7 +25,7 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
                                     {
                                         referenceDocumentationId = item.referenceDocumentationId,
                                         name = item.name,
-                                        url = item.url,
+                                        url = (item.url == null) ? "" : item.url,
                                         description = (item.description == null)?"": item.description,
                                         documentationId = item.documentationId,
                                         requirementEvaluationId = item.requirementEvaluationId,

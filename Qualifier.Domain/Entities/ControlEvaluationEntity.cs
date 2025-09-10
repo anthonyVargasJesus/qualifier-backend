@@ -27,6 +27,11 @@ namespace Qualifier.Domain.Entities
         public int controlGroupId { get; set; }
         [NotMapped]
         public List<ReferenceDocumentationEntity> referenceDocumentations { get; set; }
+
+        [NotMapped]
+        public string? state { get; set; }
+        [NotMapped]
+        public decimal? percentage { get; set; }
     }
 }
 

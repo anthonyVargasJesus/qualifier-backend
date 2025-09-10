@@ -65,6 +65,13 @@ namespace Qualifier.Application.Database
         DbSet<RiskTreatmentEntity> RiskTreatment { get; set; }
         DbSet<ResidualRiskEntity> ResidualRisk { get; set; }
         DbSet<ControlImplementationEntity> ControlImplementation { get; set; }
+        DbSet<DefaultRiskEntity> DefaultRisk { get; set; }
+        DbSet<RequirementInDefaultRiskEntity> RequirementInDefaultRisk { get; set; }
+        DbSet<ControlInDefaultRiskEntity> ControlInDefaultRisk { get; set; }
+        DbSet<ActivesInventoryInDefaultRiskEntity> ActivesInventoryInDefaultRisk { get; set; }
+        DbSet<BreachStatusEntity> BreachStatus { get; set; }
+        DbSet<BreachSeverityEntity> BreachSeverity { get; set; }
+        DbSet<BreachEntity> Breach { get; set; }
         Task<bool> SaveAsync();
     }
 }

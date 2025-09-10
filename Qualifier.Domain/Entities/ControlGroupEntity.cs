@@ -21,9 +21,13 @@ namespace Qualifier.Domain.Entities
         public decimal value { get; set; }
         [NotMapped]
         public IndicatorEntity? indicator { get; set; }
-
+        [NotMapped]
+        public decimal indicatorValue { get; set; }
         public void setIndicator(List<IndicatorEntity> indicators, decimal? value)
         {
+            if (value.HasValue)
+                indicatorValue = value.Value;
+
             const int ID_NOT_APPLICABLE_INDICATOR = 4;
             const int ID_NOT_IMPLEMENTED_INDICATOR = 5;
 

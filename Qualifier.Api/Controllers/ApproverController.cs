@@ -7,6 +7,7 @@ using Qualifier.Application.Database.Approver.Queries.GetApproverById;
 using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Qualifier.Api.Controllers
@@ -14,6 +15,7 @@ namespace Qualifier.Api.Controllers
     [Route("api/[controller]")]
 
     [ApiController]
+    [Authorize]
     public class ApproverController : ControllerBase
     {
 

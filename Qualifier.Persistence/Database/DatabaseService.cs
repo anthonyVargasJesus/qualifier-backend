@@ -71,7 +71,13 @@ namespace Qualifier.Persistence.Database
         public DbSet<RiskTreatmentEntity> RiskTreatment { get; set; }
         public DbSet<ResidualRiskEntity> ResidualRisk { get; set; }
         public DbSet<ControlImplementationEntity> ControlImplementation { get; set; }
-        
+        public DbSet<DefaultRiskEntity> DefaultRisk { get; set; }
+        public DbSet<RequirementInDefaultRiskEntity> RequirementInDefaultRisk { get; set; }
+        public DbSet<ControlInDefaultRiskEntity> ControlInDefaultRisk { get; set; }
+        public DbSet<ActivesInventoryInDefaultRiskEntity> ActivesInventoryInDefaultRisk { get; set; }
+        public DbSet<BreachStatusEntity> BreachStatus { get; set; }
+        public DbSet<BreachSeverityEntity> BreachSeverity { get; set; }
+        public DbSet<BreachEntity> Breach { get; set; }
 
         public async Task<bool> SaveAsync()
         {
@@ -146,7 +152,13 @@ namespace Qualifier.Persistence.Database
             new RiskTreatmentConfiguration(modelBuilder.Entity<RiskTreatmentEntity>());
             new ResidualRiskConfiguration(modelBuilder.Entity<ResidualRiskEntity>());
             new ControlImplementationConfiguration(modelBuilder.Entity<ControlImplementationEntity>());
-
+            new DefaultRiskConfiguration(modelBuilder.Entity<DefaultRiskEntity>());
+            new RequirementInDefaultRiskConfiguration(modelBuilder.Entity<RequirementInDefaultRiskEntity>());
+            new ControlInDefaultRiskConfiguration(modelBuilder.Entity<ControlInDefaultRiskEntity>());
+            new ActivesInventoryInDefaultRiskConfiguration(modelBuilder.Entity<ActivesInventoryInDefaultRiskEntity>());
+            new BreachStatusConfiguration(modelBuilder.Entity<BreachStatusEntity>());
+            new BreachSeverityConfiguration(modelBuilder.Entity<BreachSeverityEntity>());
+            new BreachConfiguration(modelBuilder.Entity<BreachEntity>());
         }
 
     }

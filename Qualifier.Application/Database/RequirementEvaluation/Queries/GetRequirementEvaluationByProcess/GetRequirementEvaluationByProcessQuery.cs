@@ -42,7 +42,6 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                               name = parent.name,
                                               level = requirement.level,
                                               letter = (requirement.letter == null) ? "" : requirement.letter,
-
                                           }
                                       }).ToListAsync();
 
@@ -100,21 +99,32 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                                          requirementEvaluationId = referenceDocumentation.requirementEvaluationId,
                                                          name = referenceDocumentation.name,
                                                          url = referenceDocumentation.url == null ? "" : referenceDocumentation.url,
+                                                         creationDate = referenceDocumentation.creationDate,
                                                      }).ToListAsync();
 
                 foreach (var item in evaluations)
                 {
-                    item.referenceDocumentations = referenceDocumentations.Where(e => e.requirementEvaluationId == item.requirementEvaluationId).ToList();
+                    item.referenceDocumentations = referenceDocumentations.Where(e => e.requirementEvaluationId == item.requirementEvaluationId).OrderBy(x => x.creationDate).ToList();
                     setEvaluationState(item);
                     setAuditorStatus(item);
                 }
 
                 standardEntity.setEvaluationsToRequirements(evaluations);
 
-                BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto> baseResponseDto = new BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto>();
-                baseResponseDto.data = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements);
+                var legend = CreateLegend(standardEntity.requirements);
+                var maturityLegend = CreateMaturityLegend(standardEntity.requirements);
 
-                return baseResponseDto;
+                var response = new GetRequirementEvaluationsByProcessResponseDto
+                {
+                    legend = legend,
+                    maturityLegend = maturityLegend,
+                    requirements = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements)
+                };
+
+                //BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto> baseResponseDto = new BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto>();
+                //baseResponseDto.data = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements);
+
+                return response;
             }
             catch (Exception ex)
             {
@@ -123,36 +133,6 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             }
         }
 
-        public static List<RequirementEntity> SearchRequirements(
-           IEnumerable<RequirementEntity> requirements,
-           string keyword)
-        {
-            var results = new List<RequirementEntity>();
-            var visited = new HashSet<int>(); // 👈 evita duplicados por requirementId
-
-            void Search(IEnumerable<RequirementEntity> nodes)
-            {
-                foreach (var req in nodes)
-                {
-                    // ¿Coincide con la búsqueda?
-                    if (!string.IsNullOrEmpty(req.name) &&
-                        req.name.Contains(keyword, StringComparison.OrdinalIgnoreCase) &&
-                        visited.Add(req.requirementId)) // solo agrega si no existe aún
-                    {
-                        results.Add(req);
-                    }
-
-                    // Recursión en hijos
-                    if (req.children != null && req.children.Any())
-                    {
-                        Search(req.children);
-                    }
-                }
-            }
-
-            Search(requirements);
-            return results;
-        }
 
         private static string BuildNumerationToShow(RequirementEntity node)
         {
@@ -215,6 +195,170 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             else
                 item.auditorStatusText = "Estado desconocido";
         }
+
+
+
+        List<GetRequirementEvaluationsByProcessLegendDto> CreateLegend(List<RequirementEntity> requirements)
+        {
+            int approved = 0;
+            int notApproved = 0;
+            int pending = 0;
+
+            CountStates(requirements, ref approved, ref notApproved, ref pending);
+
+            Console.WriteLine($"Cumplidos: {approved}");
+            Console.WriteLine($"No cumplidos: {notApproved}");
+            Console.WriteLine($"Pendientes: {pending}");
+
+            var cumplidos = new GetRequirementEvaluationsByProcessLegendDto
+            {
+                name = "CUMPLIDOS",
+                value = approved,
+                color = "#4CAF50"
+            };
+
+            var noCumplidos = new GetRequirementEvaluationsByProcessLegendDto
+            {
+                name = "NO CUMPLIDOS",
+                value = notApproved,
+                color = "#F44336"
+            };
+
+            var pendientes = new GetRequirementEvaluationsByProcessLegendDto
+            {
+                name = "PENDIENTES",
+                value = pending,
+                color = "#FF9800"
+            };
+
+            var legend = new List<GetRequirementEvaluationsByProcessLegendDto>
+            {
+                cumplidos,
+                noCumplidos,
+                pendientes
+            };
+
+            return legend;
+        }
+
+        void CountStates(List<RequirementEntity> requirements,
+                         ref int approved,
+                         ref int notApproved,
+                         ref int pending)
+        {
+            foreach (var req in requirements)
+            {
+                // 🔎 Recorremos todas las evaluaciones de este requirement
+                if (req.requirementEvaluations != null && req.requirementEvaluations.Any())
+                {
+                    foreach (var eval in req.requirementEvaluations)
+                    {
+                        switch (eval.state)
+                        {
+                            case "Cumplido":
+                                approved++;
+                                break;
+                            case "No cumplido":
+                                notApproved++;
+                                break;
+                            case "Pendiente":
+                                pending++;
+                                break;
+                        }
+                    }
+                }
+
+                // 👶 Si el requirement tiene hijos, seguir contando
+                if (req.children != null && req.children.Any())
+                {
+                    CountStates(req.children, ref approved, ref notApproved, ref pending);
+                }
+            }
+        }
+
+        List<GetRequirementEvaluationsByProcessMaturityLevelDto>
+     CreateMaturityLegend(List<RequirementEntity> requirements)
+        {
+            var legend = new Dictionary<decimal, GetRequirementEvaluationsByProcessMaturityLevelDto>();
+
+            CountMaturity(requirements, legend);
+
+            // Calcular valores porcentuales (value)
+            int totalAll = legend.Values.Sum(x => x.total);
+            foreach (var item in legend.Values)
+            {
+                item.value = totalAll > 0
+                    ? Math.Round((decimal)item.total / totalAll * 100, 2)
+                    : 0;
+            }
+
+            // 📌 Ordenar: primero todos los que tengan value > 0, y al final el 0 (Pendiente)
+            return legend.Values
+                         .OrderBy(x => x.abbreviation == "PENDIENTES" ? decimal.MaxValue :
+                                       legend.First(l => l.Value == x).Key) // usamos la key real
+                         .ToList();
+        }
+
+        void CountMaturity(List<RequirementEntity> requirements,
+            Dictionary<decimal, GetRequirementEvaluationsByProcessMaturityLevelDto> legend)
+        {
+            foreach (var req in requirements)
+            {
+                if (req.requirementEvaluations != null && req.requirementEvaluations.Any())
+                {
+                    foreach (var eval in req.requirementEvaluations)
+                    {
+                        decimal levelValue;
+                        string abbreviation;
+                        string color;
+
+                        if (eval.maturityLevel == null)
+                        {
+                            // 📌 Caso PENDIENTE
+                            levelValue = 0;
+                            abbreviation = "PENDIENTES";
+                            color = "#FF9800"; // gris
+                        }
+                        else
+                        {
+                            levelValue = eval.maturityLevel.value;
+                            abbreviation = eval.maturityLevel.abbreviation!;
+                            color = eval.maturityLevel.color!;
+                        }
+
+                        if (!legend.ContainsKey(levelValue))
+                        {
+                            legend[levelValue] = new GetRequirementEvaluationsByProcessMaturityLevelDto
+                            {
+                                abbreviation = abbreviation,
+                                color = color,
+                                total = 0,
+                                value = 0
+                            };
+                        }
+
+                        legend[levelValue].total++;
+                    }
+                }
+
+                if (req.children != null && req.children.Any())
+                    CountMaturity(req.children, legend);
+            }
+        }
+
+
+
+        void Search(List<RequirementEntity> requirements)
+        {
+            foreach (var requirement in requirements)
+            {
+                if (requirement.children != null && requirement.children.Any())
+                    Search(requirement.children);
+                
+            }
+        }
+
+
 
 
     }
