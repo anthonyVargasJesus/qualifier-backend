@@ -2,6 +2,23 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Qualifier.Application.Configuration;
+using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
+using Qualifier.Application.Database.ActionPlan.Commands.DeleteActionPlan;
+using Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
+using Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActionPlanPriority;
+using Qualifier.Application.Database.ActionPlanPriority.Commands.DeleteActionPlanPriority;
+using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPlanPriority;
+using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPrioritiesByCompanyId;
+using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
+using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
+using Qualifier.Application.Database.ActionPlanStatus.Commands.CreateActionPlanStatus;
+using Qualifier.Application.Database.ActionPlanStatus.Commands.DeleteActionPlanStatus;
+using Qualifier.Application.Database.ActionPlanStatus.Commands.UpdateActionPlanStatus;
+using Qualifier.Application.Database.ActionPlanStatus.Queries.GetActionPlanStatusById;
+using Qualifier.Application.Database.ActionPlanStatus.Queries.GetActionPlanStatussByCompanyId;
+using Qualifier.Application.Database.ActionPlanStatus.Queries.GetAllActionPlanStatussByCompanyId;
 using Qualifier.Application.Database.ActivesInventory.Commands.CreateActivesInventory;
 using Qualifier.Application.Database.ActivesInventory.Commands.DeleteActivesInventory;
 using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInventory;
@@ -30,6 +47,7 @@ using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
+using Qualifier.Application.Database.Breach.Queries.GetRisksIdentification;
 using Qualifier.Application.Database.BreachSeverity.Queries.GetAllBreachSeveritiesByCompanyId;
 using Qualifier.Application.Database.BreachStatus.Queries.GetAllBreachStatussByCompanyId;
 using Qualifier.Application.Database.Company.Commands.UpdateCompany;
@@ -370,7 +388,6 @@ using Qualifier.Application.Database.VulnerabilityType.Commands.UpdateVulnerabil
 using Qualifier.Application.Database.VulnerabilityType.Queries.GetAllVulnerabilityTypesByCompanyId;
 using Qualifier.Application.Database.VulnerabilityType.Queries.GetVulnerabilityTypeById;
 using Qualifier.Application.Database.VulnerabilityType.Queries.GetVulnerabilityTypesByCompanyId;
-using Qualifier.Domain.Entities;
 
 
 namespace Qualifier.Application
@@ -491,7 +508,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetDocumentTypeByIdQuery, GetDocumentTypeByIdQuery>();
             services.AddTransient<IGetDocumentTypesByCompanyIdQuery, GetDocumentTypesByCompanyIdQuery>();
             services.AddTransient<IGetAllDocumentTypesByCompanyIdQuery, GetAllDocumentTypesByCompanyIdQuery>();
-            
+
             //DefaultSection
             services.AddTransient<ICreateDefaultSectionCommand, CreateDefaultSectionCommand>();
             services.AddTransient<IUpdateDefaultSectionCommand, UpdateDefaultSectionCommand>();
@@ -532,7 +549,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetSupportForControlsByDocumentationIdQuery, GetSupportForControlsByDocumentationIdQuery>();
 
             services.AddTransient<IGetAllControlsByStandardIdQuery, GetAllControlsByStandardIdQuery>();
-                   
+
             //Section
             services.AddTransient<ICreateSectionCommand, CreateSectionCommand>();
             services.AddTransient<IUpdateSectionCommand, UpdateSectionCommand>();
@@ -701,7 +718,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetMenuInRolesByRoleIdQuery, GetMenuInRolesByRoleIdQuery>();
 
             services.AddTransient<IGetAllMenusByRoleIdQuery, GetAllMenusByRoleIdQuery>();
-            
+
             //OptionInMenuInRole
             services.AddTransient<ICreateOptionInMenuInRoleCommand, CreateOptionInMenuInRoleCommand>();
             services.AddTransient<IDeleteOptionInMenuInRoleCommand, DeleteOptionInMenuInRoleCommand>();
@@ -896,6 +913,31 @@ namespace Qualifier.Application
             services.AddTransient<IGetAllBreachSeveritiesByCompanyIdQuery, GetAllBreachSeveritiesByCompanyIdQuery>();
 
             services.AddTransient<IGetAllBreachStatussByCompanyIdQuery, GetAllBreachStatussByCompanyIdQuery>();
+
+            //ActionPlanStatus
+            services.AddTransient<ICreateActionPlanStatusCommand, CreateActionPlanStatusCommand>();
+            services.AddTransient<IUpdateActionPlanStatusCommand, UpdateActionPlanStatusCommand>();
+            services.AddTransient<IDeleteActionPlanStatusCommand, DeleteActionPlanStatusCommand>();
+            services.AddTransient<IGetActionPlanStatusByIdQuery, GetActionPlanStatusByIdQuery>();
+            services.AddTransient<IGetAllActionPlanStatussByCompanyIdQuery, GetAllActionPlanStatussByCompanyIdQuery>();
+            services.AddTransient<IGetActionPlanStatussByCompanyIdQuery, GetActionPlanStatussByCompanyIdQuery>();
+
+            //ActionPlanPriority
+            services.AddTransient<ICreateActionPlanPriorityCommand, CreateActionPlanPriorityCommand>();
+            services.AddTransient<IUpdateActionPlanPriorityCommand, UpdateActionPlanPriorityCommand>();
+            services.AddTransient<IDeleteActionPlanPriorityCommand, DeleteActionPlanPriorityCommand>();
+            services.AddTransient<IGetActionPlanPriorityByIdQuery, GetActionPlanPriorityByIdQuery>();
+            services.AddTransient<IGetAllActionPlanPrioritiesByCompanyIdQuery, GetAllActionPlanPrioritiesByCompanyIdQuery>();
+            services.AddTransient<IGetActionPlanPrioritiesByCompanyIdQuery, GetActionPlanPrioritiesByCompanyIdQuery>();
+
+            //ActionPlan
+            services.AddTransient<ICreateActionPlanCommand, CreateActionPlanCommand>();
+            services.AddTransient<IUpdateActionPlanCommand, UpdateActionPlanCommand>();
+            services.AddTransient<IDeleteActionPlanCommand, DeleteActionPlanCommand>();
+            services.AddTransient<IGetActionPlanByIdQuery, GetActionPlanByIdQuery>();
+            services.AddTransient<IGetActionPlansByBreachIdQuery, GetActionPlansByBreachIdQuery>();
+
+            services.AddTransient<IGetRisksIdentificationQuery, GetRisksIdentificationQuery>();
 
             return services;
         }

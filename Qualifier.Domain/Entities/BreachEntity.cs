@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Qualifier.Common.Domain.Entities;
 
 namespace Qualifier.Domain.Entities
@@ -24,6 +25,8 @@ namespace Qualifier.Domain.Entities
         public ResponsibleEntity responsible { get; set; }
         public RequirementEntity? requirement { get; set; }
         public ControlEntity? control { get; set; }
+        [NotMapped]
+        public List<DefaultRiskEntity>? defaultRisks { get; set; }
     }
 }
 

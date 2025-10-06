@@ -6,6 +6,7 @@ using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
+using Qualifier.Application.Database.Breach.Queries.GetRisksIdentification;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 
@@ -16,6 +17,24 @@ namespace Qualifier.Api.Controllers
     [Authorize]
     public class BreachController : ControllerBase
     {
+
+        [HttpGet("RisksIdentification")]
+        public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetRisksIdentificationQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            int companyId;
+            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+
+            if (search == null)
+                search = string.Empty;
+
+            var res = await query.Execute(skip, pageSize, search, companyId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
 
         [HttpGet()]
         public async Task<IActionResult> Get(int skip, int pageSize, string? search, int evaluationId, [FromServices] IGetBreachsByEvaluationIdQuery query)

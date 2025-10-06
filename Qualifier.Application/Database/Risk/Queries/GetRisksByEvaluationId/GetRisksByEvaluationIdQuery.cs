@@ -28,6 +28,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                                       select new RiskEntity
                                       {
                                           riskId = risk.riskId,
+                                          name = risk.name,
                                           activesInventoryId = risk.activesInventoryId,
                                           activesInventoryNumber = risk.activesInventoryNumber,
                                           activesInventoryName = risk.activesInventoryName,

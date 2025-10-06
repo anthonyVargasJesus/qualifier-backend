@@ -5,6 +5,7 @@ namespace Qualifier.Domain.Entities
     public class RiskEntity : BaseEntity
     {
         public int riskId { get; set; }
+        public string? name { get; set; }
         public int evaluationId { get; set; }
         public int activesInventoryId { get; set; }
         public string? activesInventoryNumber { get; set; }

@@ -5,6 +5,7 @@ namespace Qualifier.Application.Database.Risk.Commands.UpdateRisk
     public class UpdateRiskDto
     {
         public int riskId { get; set; }
+        public string? name { get; set; }
         public int evaluationId { get; set; }
         public int activesInventoryId { get; set; }
         public string? activesInventoryNumber { get; set; }

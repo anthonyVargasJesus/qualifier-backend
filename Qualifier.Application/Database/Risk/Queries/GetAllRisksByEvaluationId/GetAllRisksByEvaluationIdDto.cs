@@ -3,6 +3,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetAllRisksByEvaluationId
     public class GetAllRisksByEvaluationIdDto
     {
         public int riskId { get; set; }
+        public string? name { get; set; }
         public int evaluationId { get; set; }
         public int activesInventoryId { get; set; }
         public string activesInventoryNumber { get; set; }

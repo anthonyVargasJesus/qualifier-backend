@@ -69,10 +69,6 @@ namespace Qualifier.Domain.Entities
 
         //}
 
-
-
-
-
     }
 }
 

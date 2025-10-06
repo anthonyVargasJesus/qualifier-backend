@@ -72,6 +72,9 @@ namespace Qualifier.Application.Database
         DbSet<BreachStatusEntity> BreachStatus { get; set; }
         DbSet<BreachSeverityEntity> BreachSeverity { get; set; }
         DbSet<BreachEntity> Breach { get; set; }
+        DbSet<ActionPlanStatusEntity> ActionPlanStatus { get; set; }
+        DbSet<ActionPlanPriorityEntity> ActionPlanPriority { get; set; }
+        DbSet<ActionPlanEntity> ActionPlan { get; set; }
         Task<bool> SaveAsync();
     }
 }

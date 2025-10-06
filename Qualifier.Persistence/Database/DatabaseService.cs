@@ -78,7 +78,9 @@ namespace Qualifier.Persistence.Database
         public DbSet<BreachStatusEntity> BreachStatus { get; set; }
         public DbSet<BreachSeverityEntity> BreachSeverity { get; set; }
         public DbSet<BreachEntity> Breach { get; set; }
-
+        public DbSet<ActionPlanStatusEntity> ActionPlanStatus { get; set; }
+        public DbSet<ActionPlanPriorityEntity> ActionPlanPriority { get; set; }
+        public DbSet<ActionPlanEntity> ActionPlan { get; set; }
         public async Task<bool> SaveAsync()
         {
 
@@ -159,6 +161,9 @@ namespace Qualifier.Persistence.Database
             new BreachStatusConfiguration(modelBuilder.Entity<BreachStatusEntity>());
             new BreachSeverityConfiguration(modelBuilder.Entity<BreachSeverityEntity>());
             new BreachConfiguration(modelBuilder.Entity<BreachEntity>());
+            new ActionPlanStatusConfiguration(modelBuilder.Entity<ActionPlanStatusEntity>());
+            new ActionPlanPriorityConfiguration(modelBuilder.Entity<ActionPlanPriorityEntity>());
+            new ActionPlanConfiguration(modelBuilder.Entity<ActionPlanEntity>());
         }
 
     }

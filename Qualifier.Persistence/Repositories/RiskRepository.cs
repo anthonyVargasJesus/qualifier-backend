@@ -18,6 +18,7 @@ namespace Qualifier.Persistence.Repositories
             entity.updateDate = DateTime.UtcNow;
             var entry = _context.Attach(entity);
             entry.Property(x => x.activesInventoryId).IsModified = true;
+            entry.Property(x => x.name).IsModified = true;
             entry.Property(x => x.activesInventoryNumber).IsModified = true;
             entry.Property(x => x.activesInventoryName).IsModified = true;
             entry.Property(x => x.menaceId).IsModified = true;

@@ -82,6 +82,9 @@ namespace Qualifier.Persistence
             services.AddScoped<IControlInDefaultRiskRepository, ControlInDefaultRiskRepository>();
             services.AddScoped<IActivesInventoryInDefaultRiskRepository, ActivesInventoryInDefaultRiskRepository>();
             services.AddScoped<IBreachRepository, BreachRepository>();
+            services.AddScoped<IActionPlanStatusRepository, ActionPlanStatusRepository>();
+            services.AddScoped<IActionPlanPriorityRepository, ActionPlanPriorityRepository>();
+            services.AddScoped<IActionPlanRepository, ActionPlanRepository>();
 
             return services;
         }

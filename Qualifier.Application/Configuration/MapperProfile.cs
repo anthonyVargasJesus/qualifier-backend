@@ -1,4 +1,18 @@
 ﻿using AutoMapper;
+using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
+using Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
+using Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActionPlanPriority;
+using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPlanPriority;
+using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPrioritiesByCompanyId;
+using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
+using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
+using Qualifier.Application.Database.ActionPlanStatus.Commands.CreateActionPlanStatus;
+using Qualifier.Application.Database.ActionPlanStatus.Commands.UpdateActionPlanStatus;
+using Qualifier.Application.Database.ActionPlanStatus.Queries.GetActionPlanStatusById;
+using Qualifier.Application.Database.ActionPlanStatus.Queries.GetActionPlanStatussByCompanyId;
+using Qualifier.Application.Database.ActionPlanStatus.Queries.GetAllActionPlanStatussByCompanyId;
 using Qualifier.Application.Database.ActivesInventory.Commands.CreateActivesInventory;
 using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInventory;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
@@ -21,6 +35,7 @@ using Qualifier.Application.Database.Breach.Commands.CreateBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
+using Qualifier.Application.Database.Breach.Queries.GetRisksIdentification;
 using Qualifier.Application.Database.BreachSeverity.Queries.GetAllBreachSeveritiesByCompanyId;
 using Qualifier.Application.Database.BreachStatus.Queries.GetAllBreachStatussByCompanyId;
 using Qualifier.Application.Database.Company.Commands.UpdateCompany;
@@ -904,6 +919,38 @@ namespace Qualifier.Application.Configuration
 
             CreateMap<ControlEntity, GetBreachsByIdControlDto>().ReverseMap();
             CreateMap<RequirementEntity, GetBreachsByIdRequirementDto>().ReverseMap();
+
+            //ActionPlanStatus
+            CreateMap<ActionPlanStatusEntity, CreateActionPlanStatusDto>().ReverseMap();
+            CreateMap<ActionPlanStatusEntity, UpdateActionPlanStatusDto>().ReverseMap();
+            CreateMap<ActionPlanStatusEntity, GetActionPlanStatusByIdDto>().ReverseMap();
+            CreateMap<ActionPlanStatusEntity, GetAllActionPlanStatussByCompanyIdDto>().ReverseMap();
+            CreateMap<ActionPlanStatusEntity, GetActionPlanStatussByCompanyIdDto>().ReverseMap();
+
+            //ActionPlanPriority
+            CreateMap<ActionPlanPriorityEntity, CreateActionPlanPriorityDto>().ReverseMap();
+            CreateMap<ActionPlanPriorityEntity, UpdateActionPlanPriorityDto>().ReverseMap();
+            CreateMap<ActionPlanPriorityEntity, GetActionPlanPriorityByIdDto>().ReverseMap();
+            CreateMap<ActionPlanPriorityEntity, GetAllActionPlanPrioritiesByCompanyIdDto>().ReverseMap();
+            CreateMap<ActionPlanPriorityEntity, GetActionPlanPrioritiesByCompanyIdDto>().ReverseMap();
+
+            //ActionPlan
+            CreateMap<ActionPlanEntity, CreateActionPlanDto>().ReverseMap();
+            CreateMap<ActionPlanEntity, UpdateActionPlanDto>().ReverseMap();
+            CreateMap<ActionPlanEntity, GetActionPlanByIdDto>().ReverseMap();
+            CreateMap<ActionPlanEntity, GetActionPlansByBreachIdDto>().ReverseMap();
+            CreateMap<ActionPlanPriorityEntity, GetActionPlansByBreachIdActionPlanPriorityDto>().ReverseMap();
+            CreateMap<ActionPlanStatusEntity, GetActionPlansByBreachIdActionPlanStatusDto>().ReverseMap();
+            CreateMap<ResponsibleEntity, GetActionPlansByBreachIdResponsibleDto>().ReverseMap();
+
+            CreateMap<EvaluationEntity, GetRisksIdentificationCurrentEvaluationDto>().ReverseMap();
+
+            CreateMap<BreachEntity, GetRisksIdentificationDto>().ReverseMap();
+            CreateMap<BreachSeverityEntity, GetRisksIdentificationBreachSeverityDto>().ReverseMap();
+            CreateMap<ControlEntity, GetRisksIdentificationControlDto>().ReverseMap();
+            CreateMap<RequirementEntity, GetRisksIdentificationRequirementDto>().ReverseMap();
+
+            CreateMap<DefaultRiskEntity, GetRisksIdentificationDefaultRiskDto>().ReverseMap();
 
         }
     }
