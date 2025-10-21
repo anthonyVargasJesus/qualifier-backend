@@ -19,7 +19,7 @@ namespace Qualifier.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class MenuController : ControllerBase
     {
         [HttpGet("Role")]
@@ -47,17 +47,17 @@ namespace Qualifier.Api.Controllers
         [HttpGet("All")]
         public async Task<IActionResult> GetAll([FromServices] IGetAllMenusByCompanyIdQuery query)
         {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
+            //var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId = 1;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+            //bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
 
-            Notification notification = new Notification();
-            if (!success)
-                notification.addError("El usuario no está asociado a institución");
+            //Notification notification = new Notification();
+            //if (!success)
+            //    notification.addError("El usuario no está asociado a institución");
 
-            if (notification.hasErrors())
-                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+            //if (notification.hasErrors())
+            //    return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
 
             var res = await query.Execute(companyId);
             if (res.GetType() == typeof(BaseErrorResponseDto))

@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Qualifier.Common.Application.Dto;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using Qualifier.Common.Api;
-using Qualifier.Common.Application.NotificationPattern;
-using Qualifier.Common.Application.Service;
+using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.Personal.Queries.GetPersonalsByCompanyId;
-using Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId;
 using Qualifier.Application.Database.Risk.Commands.CreateRisk;
 using Qualifier.Application.Database.Risk.Commands.DeleteRisk;
 using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
+using Qualifier.Application.Database.Risk.Commands.UpdateRiskState;
 using Qualifier.Application.Database.Risk.Queries.GetRiskById;
+using Qualifier.Application.Database.Risk.Queries.GetRiskMonitoring;
+using Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId;
+using Qualifier.Common.Api;
+using Qualifier.Common.Application.Dto;
+using Qualifier.Common.Application.NotificationPattern;
+using Qualifier.Common.Application.Service;
 
 
 namespace Qualifier.Api.Controllers
@@ -21,7 +23,7 @@ namespace Qualifier.Api.Controllers
     public class RiskController : ControllerBase
     {
         [HttpGet()]
-        public async Task<IActionResult> Get(int skip, int pageSize, int evaluationId, string? search, [FromServices] IGetRisksByEvaluationIdQuery query)
+        public async Task<IActionResult> Get(int skip, int pageSize, int riskStatusId, string? search, [FromServices] IGetRisksByEvaluationIdQuery query)
         {
             Notification notification = new Notification();
 
@@ -31,7 +33,7 @@ namespace Qualifier.Api.Controllers
             if (search == null)
                 search = string.Empty;
 
-            var res = await query.Execute(skip, pageSize, search, evaluationId);
+            var res = await query.Execute(skip, pageSize, search, riskStatusId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
@@ -124,6 +126,41 @@ namespace Qualifier.Api.Controllers
                 });
         }
 
+        [HttpGet("GetMonitoring")]
+        public async Task<IActionResult> GetMonitoring(int skip, int pageSize, string? search, [FromServices] IGetRiskMonitoringQuery query)
+        {
+            Notification notification = new Notification();
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            if (search == null)
+                search = string.Empty;
+
+            var res = await query.Execute(skip, pageSize, search);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
+
+        [HttpPut("status")]
+        public async Task<IActionResult> PutStatus(int riskId, int riskStatusId, [FromServices] IUpdateRiskStateCommand command)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int userId;
+
+            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+
+            var res = await command.Execute(riskId, riskStatusId, userId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new
+                {
+                    data = res
+                });
+        }
 
     }
 }

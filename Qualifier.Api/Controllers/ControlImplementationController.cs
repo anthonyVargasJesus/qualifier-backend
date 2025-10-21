@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.ControlImplementation.Commands.CreateControlImplementation;
 using Qualifier.Application.Database.ControlImplementation.Commands.UpdateControlImplementation;
 using Qualifier.Application.Database.ControlImplementation.Queries.GetControlImplementationById;
+using Qualifier.Application.Database.ControlImplementation.Queries.GetControlImplementationsByRiskId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
+using Qualifier.Common.Application.NotificationPattern;
+using Qualifier.Common.Application.Service;
 
 namespace Qualifier.Api.Controllers
 {
@@ -77,6 +80,31 @@ namespace Qualifier.Api.Controllers
                 {
                     data = res
                 });
+        }
+
+        [HttpGet()]
+        public async Task<IActionResult> GetControlImplementationsByRiskId(int skip, int pageSize, string? search, int riskId, [FromServices] IGetControlImplementationsByRiskIdQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId;
+
+            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken != null ? accessToken : ""), out companyId);
+
+            Notification notification = new Notification();
+            if (!success)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            if (search == null)
+                search = string.Empty;
+
+            var res = await query.Execute(skip, pageSize, search, riskId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
         }
 
 

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Qualifier.Api;
+using Qualifier.Api.Infrastructure.Qualifier.Persistence;
 using Qualifier.Application;
 using Qualifier.Common;
 using Qualifier.Domain;
-using Qualifier.External;
-using Qualifier.Persistence;
+
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +17,6 @@ builder.Services
     .AddCommon()
     .AddApplication(builder.Configuration)
     .AddDomain()
-    .AddExternal(builder.Configuration)
     .AddPersistence(builder.Configuration);
 
 builder.Services.AddControllers();

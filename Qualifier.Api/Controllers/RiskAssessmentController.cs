@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAssessment;
+using Qualifier.Application.Database.RiskAssessment.Commands.DeleteRiskAssessment;
 using Qualifier.Application.Database.RiskAssessment.Commands.UpdateRiskAssessment;
 using Qualifier.Application.Database.RiskAssessment.Queries.GetRiskAssessmentById;
 using Qualifier.Common.Api;
@@ -78,6 +79,27 @@ namespace Qualifier.Api.Controllers
                 });
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id, [FromServices] IDeleteRiskAssessmentCommand command)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int userIdValue;
+
+            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken != null ? accessToken : ""), out userIdValue);
+
+            int userId = 0;
+            if (success)
+                userId = userIdValue;
+
+            var res = await command.Execute(id, userId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new
+                {
+                    data = res
+                });
+        }
 
     }
 }

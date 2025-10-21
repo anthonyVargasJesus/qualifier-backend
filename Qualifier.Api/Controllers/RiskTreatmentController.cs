@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.RiskTreatment.Commands.CreateRiskTreatment;
+using Qualifier.Application.Database.RiskTreatment.Commands.DeleteRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Commands.UpdateRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Queries.GetRiskTreatmentById;
 using Qualifier.Common.Api;
@@ -68,6 +69,28 @@ namespace Qualifier.Api.Controllers
                 model.updateUserId = userId;
 
             var res = await updateRiskTreatmentCommand.Execute(model, id);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new
+                {
+                    data = res
+                });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id, [FromServices] IDeleteRiskTreatmentCommand command)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int userIdValue;
+
+            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken != null ? accessToken : ""), out userIdValue);
+
+            int userId = 0;
+            if (success)
+                userId = userIdValue;
+
+            var res = await command.Execute(id, userId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

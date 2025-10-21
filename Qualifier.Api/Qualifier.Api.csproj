@@ -8,15 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FirebaseAdmin" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.20">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="NPOI" Version="2.7.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qualifier.Application\Qualifier.Application.csproj" />
-    <ProjectReference Include="..\Qualifier.Common\Qualifier.Common.csproj" />
-    <ProjectReference Include="..\Qualifier.External\Qualifier.External.csproj" />
-    <ProjectReference Include="..\Qualifier.Persistence\Qualifier.Persistence.csproj" />
+    <Folder Include="Common\Domain\Helpers\" />
   </ItemGroup>
 
 </Project>

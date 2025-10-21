@@ -42,7 +42,12 @@ namespace Qualifier.Api.Controllers
             if (search == null)
                 search = string.Empty;
 
-            var res = await query.Execute(skip, pageSize, search, evaluationId);
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            int companyId;
+            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+
+            var res = await query.Execute(skip, pageSize, search, evaluationId,companyId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
