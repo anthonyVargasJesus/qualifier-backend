@@ -1,0 +1,4 @@
+[build]
+builder = "Dockerfile"
+dockerfilePath = "Qualifier.Api/Dockerfile"
+buildContext = "."
