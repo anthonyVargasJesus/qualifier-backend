@@ -83,8 +83,9 @@ namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.DeleteOptio
                 return baseResponseCommandDto;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
                 return BaseApplication.getExceptionErrorResponse();
             }
         }

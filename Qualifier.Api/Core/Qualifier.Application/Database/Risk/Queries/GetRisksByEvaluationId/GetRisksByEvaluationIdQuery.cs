@@ -59,16 +59,6 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                                       join menace in _databaseService.Menace on risk.menace equals menace
                                       join vulnerability in _databaseService.Vulnerability on risk.vulnerability equals vulnerability
 
-                                      join assessment in _databaseService.RiskAssessment
-                                        .Where(a => a.isDeleted == null || a.isDeleted == false)
-                                      on risk.riskId equals assessment.riskId into riskAssessmentJoin
-                                      from riskAssessment in riskAssessmentJoin.DefaultIfEmpty() // LEFT JOIN
-
-                                      join treatment in _databaseService.RiskTreatment
-                                        .Where(a => a.isDeleted == null || a.isDeleted == false)
-                                      on risk.riskId equals treatment.riskId into riskTreatmentJoin
-                                      from riskTreatment in riskTreatmentJoin.DefaultIfEmpty() // LEFT JOIN
-
                                       where ((risk.isDeleted == null || risk.isDeleted == false) && risk.evaluationId == evaluationId
                                       && risk.riskStatusId == riskStatusId)
                                       && (risk.name.ToUpper().Contains(search.ToUpper()))
@@ -88,8 +78,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                                           {
                                               name = vulnerability.name,
                                           },
-                                          riskAssessmentId = (riskAssessment == null) ? 0 : riskAssessment.riskAssessmentId,
-                                          riskTreatmentId = (riskTreatment == null) ? 0 : riskTreatment.riskTreatmentId,
+                                       
                                       })
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();
@@ -110,7 +99,8 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                 {
                     var associatedControls = controls.Where(c => c.riskId == risk.riskId).ToList();
 
-                    var total = associatedControls.Count;
+               
+     var total = associatedControls.Count;
                     var implemented = associatedControls.Count(c => c.isImplemented == true);
                     var pending = total - implemented;
 
@@ -123,7 +113,6 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                         risk.controlSummary = "Sin controles";
                     }
                 }
-
                 GetRisksByEvaluationIdResponse<GetRisksByEvaluationIdDto> baseResponseDto = new GetRisksByEvaluationIdResponse<GetRisksByEvaluationIdDto>();
                 baseResponseDto.data = _mapper.Map<List<GetRisksByEvaluationIdDto>>(risks);
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, evaluationId, riskStatusId), pageSize);

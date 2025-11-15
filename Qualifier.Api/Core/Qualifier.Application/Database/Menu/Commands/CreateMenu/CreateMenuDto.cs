@@ -4,7 +4,6 @@ namespace Qualifier.Application.Database.Menu.Commands.CreateMenu
 {
     public class CreateMenuDto
     {
-        public int menuId { get; set; }
         public string name { get; set; }
         public string? image { get; set; }
         public int? companyId { get; set; }
