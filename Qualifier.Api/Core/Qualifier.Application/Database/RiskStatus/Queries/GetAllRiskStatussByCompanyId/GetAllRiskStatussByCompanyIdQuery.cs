@@ -37,9 +37,10 @@ namespace Qualifier.Application.Database.RiskStatus.Queries.GetAllRiskStatussByC
                 baseResponseDto.data = _mapper.Map<List<GetAllRiskStatussByCompanyIdDto>>(entities);
                 return baseResponseDto;
             }
-            catch (Exception)
+            catch (Exception EX)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw EX;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

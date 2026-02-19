@@ -33,10 +33,9 @@ namespace Qualifier.Application.Database.Standard.Commands.DeleteStandard
                 return baseResponseCommandDto;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-              //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

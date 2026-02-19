@@ -46,7 +46,7 @@ namespace Qualifier.Application.Database.ValuationInActive.Queries.GetValuationI
             }
             catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

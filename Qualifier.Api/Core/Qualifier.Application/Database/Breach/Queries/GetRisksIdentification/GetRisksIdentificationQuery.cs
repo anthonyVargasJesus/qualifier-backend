@@ -206,10 +206,9 @@ namespace Qualifier.Application.Database.Breach.Queries.GetRisksIdentification
                 return response;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

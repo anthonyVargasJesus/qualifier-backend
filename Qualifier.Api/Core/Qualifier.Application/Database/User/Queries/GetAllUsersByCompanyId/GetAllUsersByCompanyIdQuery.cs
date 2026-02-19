@@ -42,10 +42,9 @@ namespace Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId
                 baseResponseDto.data = _mapper.Map<List<GetAllUsersByCompanyIdDto>>(entities);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -4,17 +4,17 @@ namespace Qualifier.Application.Database.DefaultSection.Commands.UpdateDefaultSe
 {
     public class UpdateDefaultSectionDto
     {
-        public int defaultSectionId { get; set; }
-        public int numeration { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
-        public int level { get; set; }
-        public int parentId { get; set; }
+        public int? defaultSectionId { get; set; }
+        public int? numeration { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
+        public int? level { get; set; }
+        public int? parentId { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)
         {
-            if (defaultSectionId == null)
+            if (defaultSectionId == null && defaultSectionId <= 0)
                 notification.addError("El defaultSectionId es obligatorio");
 
             if (numeration == null)

@@ -81,10 +81,9 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskById
 
                 return riskDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

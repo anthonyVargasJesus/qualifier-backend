@@ -35,7 +35,7 @@ namespace Qualifier.Application.Database.Control.Commands.CreateControl
             }
             catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

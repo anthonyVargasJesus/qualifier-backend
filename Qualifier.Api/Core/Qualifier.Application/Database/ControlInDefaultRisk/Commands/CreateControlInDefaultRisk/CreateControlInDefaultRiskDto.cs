@@ -4,19 +4,19 @@ namespace Qualifier.Application.Database.ControlInDefaultRisk.Commands.CreateCon
 {
     public class CreateControlInDefaultRiskDto
     {
-        public int controlInDefaultRiskId { get; set; }
-        public int defaultRiskId { get; set; }
-        public int controlId { get; set; }
+        public int? controlInDefaultRiskId { get; set; }
+        public int? defaultRiskId { get; set; }
+        public int? controlId { get; set; }
         public bool? isActive { get; set; }
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)
         {
-            if (defaultRiskId == null)
+            if (defaultRiskId == null && defaultRiskId <= 0)
                 notification.addError("El defaultRiskId es obligatorio");
 
-            if (controlId == null)
+            if (controlId == null && controlId <= 0)
                 notification.addError("El controlId es obligatorio");
 
         }

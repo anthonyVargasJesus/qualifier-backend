@@ -4,14 +4,14 @@ namespace Qualifier.Application.Database.DefaultSection.Commands.CreateDefaultSe
 {
     public class CreateDefaultSectionDto
     {
-        public int defaultSectionId { get; set; }
-        public int numeration { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
-        public int level { get; set; }
-        public int parentId { get; set; }
-        public int documentTypeId { get; set; }
-        public int companyId { get; set; }
+        public int? defaultSectionId { get; set; }
+        public int? numeration { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
+        public int? level { get; set; }
+        public int? parentId { get; set; }
+        public int? documentTypeId { get; set; }
+        public int? companyId { get; set; }
         public int? creationUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)
@@ -25,10 +25,10 @@ namespace Qualifier.Application.Database.DefaultSection.Commands.CreateDefaultSe
             if (level == null)
                 notification.addError("El level es obligatorio");
 
-            if (documentTypeId == null)
+            if (documentTypeId == null && documentTypeId <= 0)
                 notification.addError("El documentTypeId es obligatorio");
 
-            if (companyId == null)
+            if (companyId == null && companyId <= 0)
                 notification.addError("El companyId es obligatorio");
 
         }

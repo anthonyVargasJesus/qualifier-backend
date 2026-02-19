@@ -43,7 +43,7 @@ namespace Qualifier.Application.Database.RiskStatus.Queries.GetRiskStatussByComp
             }
             catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

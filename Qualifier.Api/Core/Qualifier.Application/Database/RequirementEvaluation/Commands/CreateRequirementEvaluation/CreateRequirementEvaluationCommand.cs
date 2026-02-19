@@ -16,7 +16,8 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
         private readonly IMapper _mapper;
         private readonly IEvaluationRepository _evaluationRepository;
 
-        public CreateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IEvaluationRepository evaluationRepository)
+        public CreateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper, 
+            IEvaluationRepository evaluationRepository)
         {
             _databaseService = databaseService;
             _mapper = mapper;
@@ -66,10 +67,9 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

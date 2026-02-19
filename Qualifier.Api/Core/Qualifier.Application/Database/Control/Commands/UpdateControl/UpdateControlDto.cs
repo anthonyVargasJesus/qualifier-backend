@@ -5,8 +5,8 @@ namespace Qualifier.Application.Database.Control.Commands.UpdateControl
     public class UpdateControlDto
     {
         public int? number { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
         public int? controlGroupId { get; set; }
         public int? updateUserId { get; set; }
 
@@ -18,7 +18,7 @@ namespace Qualifier.Application.Database.Control.Commands.UpdateControl
             if (name == null)
                 notification.addError("El name es obligatorio");
 
-            if (controlGroupId == null)
+            if (controlGroupId == null && controlGroupId <= 0)
                 notification.addError("El controlGroupId es obligatorio");
 
         }

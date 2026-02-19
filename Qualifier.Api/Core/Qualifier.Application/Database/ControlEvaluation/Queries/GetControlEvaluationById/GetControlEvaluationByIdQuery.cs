@@ -53,10 +53,9 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
 
                 return _mapper.Map<GetControlEvaluationByIdDto>(entity);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

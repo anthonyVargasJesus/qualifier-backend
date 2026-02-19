@@ -10,8 +10,8 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.UpdateRe
         public int? maturityLevelId { get; set; }
         public decimal? value { get; set; }
         public int? responsibleId { get; set; }
-        public string justification { get; set; }
-        public string improvementActions { get; set; }
+        public string? justification { get; set; }
+        public string? improvementActions { get; set; }
         public int? updateUserId { get; set; }
         public int companyId { get; set; }
         public List<UpdateRequirementEvaluationReferenceDocumentationDto>? referenceDocumentations { get; set; }

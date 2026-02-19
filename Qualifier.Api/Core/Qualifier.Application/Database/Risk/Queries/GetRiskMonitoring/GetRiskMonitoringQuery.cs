@@ -158,10 +158,9 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskMonitoring
                 return baseResponseDto;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

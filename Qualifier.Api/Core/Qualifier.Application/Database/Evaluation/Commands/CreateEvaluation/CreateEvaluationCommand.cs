@@ -40,7 +40,7 @@ namespace Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation
                             return BaseApplication.getApplicationErrorResponseWithTitle(notification2.errors, title);
                     }
 
-                using (TransactionScope scope = new TransactionScope())
+                using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     var entity = _mapper.Map<EvaluationEntity>(model);
                     entity.startDate = DateTime.SpecifyKind(entity.startDate, DateTimeKind.Utc);
@@ -78,9 +78,9 @@ namespace Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

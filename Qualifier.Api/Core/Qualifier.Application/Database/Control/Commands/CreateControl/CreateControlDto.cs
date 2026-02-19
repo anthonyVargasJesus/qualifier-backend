@@ -5,8 +5,8 @@ namespace Qualifier.Application.Database.Control.Commands.CreateControl
     public class CreateControlDto
     {
         public int? number { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
         public int? controlGroupId { get; set; }
         public int? standardId { get; set; }
         public int? creationUserId { get; set; }
@@ -19,10 +19,10 @@ namespace Qualifier.Application.Database.Control.Commands.CreateControl
             if (name == null)
                 notification.addError("El name es obligatorio");
 
-            if (controlGroupId == null)
+            if (controlGroupId == null && controlGroupId <= 0)
                 notification.addError("El controlGroupId es obligatorio");
 
-            if (standardId == null)
+            if (standardId == null && standardId <= 0)
                 notification.addError("El standardId es obligatorio");
 
         }

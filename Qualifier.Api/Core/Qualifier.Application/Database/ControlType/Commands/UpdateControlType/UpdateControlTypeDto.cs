@@ -4,14 +4,14 @@ namespace Qualifier.Application.Database.ControlType.Commands.UpdateControlType
 {
     public class UpdateControlTypeDto
     {
-        public int controlTypeId { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
-        public string abbreviation { get; set; }
+        public int? controlTypeId { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
+        public string? abbreviation { get; set; }
         public decimal? factor { get; set; }
-        public decimal minimum { get; set; }
+        public decimal? minimum { get; set; }
         public decimal? maximum { get; set; }
-        public string color { get; set; }
+        public string? color { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

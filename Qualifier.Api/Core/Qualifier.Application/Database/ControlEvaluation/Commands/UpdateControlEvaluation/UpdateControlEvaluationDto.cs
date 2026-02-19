@@ -5,13 +5,13 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.UpdateContro
 {
     public class UpdateControlEvaluationDto
     {
-        public long controlEvaluationId { get; set; }
-        public int controlId { get; set; }
-        public int maturityLevelId { get; set; }
-        public decimal value { get; set; }
-        public int responsibleId { get; set; }
-        public string justification { get; set; }
-        public string improvementActions { get; set; }
+        public long? controlEvaluationId { get; set; }
+        public int? controlId { get; set; }
+        public int? maturityLevelId { get; set; }
+        public decimal? value { get; set; }
+        public int? responsibleId { get; set; }
+        public string? justification { get; set; }
+        public string? improvementActions { get; set; }
         public string? controlDescription { get; set; }
         public string? controlType { get; set; }
         public int? updateUserId { get; set; }
@@ -19,19 +19,19 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.UpdateContro
         public List<UpdateControlEvaluationReferenceDocumentationDto>? referenceDocumentations { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {
-            if (controlEvaluationId == null)
+            if (controlEvaluationId == null && controlEvaluationId <= 0)
                 notification.addError("El controlEvaluationId es obligatorio");
 
-            if (controlId == null)
+            if (controlId == null && controlId <= 0)
                 notification.addError("El controlId es obligatorio");
 
-            if (maturityLevelId == null)
+            if (maturityLevelId == null && maturityLevelId <= 0)
                 notification.addError("El maturityLevelId es obligatorio");
 
             if (value == null)
                 notification.addError("El value es obligatorio");
 
-            if (responsibleId == null)
+            if (responsibleId == null && responsibleId <= 0)
                 notification.addError("El responsibleId es obligatorio");
 
             if (justification == null)

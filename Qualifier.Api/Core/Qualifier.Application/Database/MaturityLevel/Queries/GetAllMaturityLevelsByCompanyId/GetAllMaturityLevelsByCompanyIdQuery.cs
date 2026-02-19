@@ -37,10 +37,9 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLev
                 baseResponseDto.data = _mapper.Map<List<GetAllMaturityLevelsByCompanyIdDto>>(entities.OrderByDescending(x => x.value).ToList());
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

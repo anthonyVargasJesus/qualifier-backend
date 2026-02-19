@@ -4,8 +4,8 @@ namespace Qualifier.Application.Database.ConfidentialityLevel.Commands.UpdateCon
 {
     public class UpdateConfidentialityLevelDto
     {
-        public int confidentialityLevelId { get; set; }
-        public string name { get; set; }
+        public int? confidentialityLevelId { get; set; }
+        public string? name { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

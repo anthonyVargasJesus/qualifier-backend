@@ -38,7 +38,7 @@ namespace Qualifier.Application.Database.RiskStatus.Commands.UpdateRiskStatus
             }
             catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

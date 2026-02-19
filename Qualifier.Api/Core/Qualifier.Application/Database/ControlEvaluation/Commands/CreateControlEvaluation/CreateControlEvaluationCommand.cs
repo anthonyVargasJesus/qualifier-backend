@@ -60,10 +60,9 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 
@@ -146,7 +145,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
                     description = model.justification ?? "El control no cumple con el nivel de madurez esperado.",
                     breachSeverityId = severity.Value,
                     breachStatusId = BREACH_STATUS_OPEN,
-                    responsibleId = model.responsibleId,
+                    responsibleId = model.responsibleId.Value,
                     numerationToShow = numerationToShow,
                     evidenceDescription = model.improvementActions,
                     companyId = model.companyId,

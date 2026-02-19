@@ -14,7 +14,6 @@ namespace Qualifier.Application.Database.Section.Commands.CreateSection
         public int? versionId { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
-
         public void requiredFieldsValidation(Notification notification)
         {
             if (numeration == null)

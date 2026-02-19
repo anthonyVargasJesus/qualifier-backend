@@ -90,10 +90,9 @@ namespace Qualifier.Application.Database.User.Commands.Login
 
                 return _mapper.Map<LoginUserLoginDto>(login);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-             //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -28,10 +28,9 @@ namespace Qualifier.Application.Database.Risk.Commands.UpdateRiskState
                 await _riskRepository.UpdateRiskStatusId(id, riskStatusId, updateUserId);
                 return riskStatusId;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

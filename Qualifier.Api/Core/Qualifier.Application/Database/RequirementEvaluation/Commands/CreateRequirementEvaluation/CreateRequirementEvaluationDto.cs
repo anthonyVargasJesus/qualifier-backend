@@ -11,7 +11,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
         public decimal? value { get; set; }
         public int? responsibleId { get; set; }
         public string? justification { get; set; }
-        public string improvementActions { get; set; }
+        public string? improvementActions { get; set; }
         public int standardId { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }

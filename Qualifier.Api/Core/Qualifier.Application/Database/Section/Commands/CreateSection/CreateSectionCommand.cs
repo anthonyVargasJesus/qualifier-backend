@@ -35,7 +35,7 @@ namespace Qualifier.Application.Database.Section.Commands.CreateSection
             }
             catch (Exception)
             {
-              return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -8,9 +8,40 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
     {
         public ActiveTypeConfiguration(EntityTypeBuilder<ActiveTypeEntity> entityBuilder)
         {
-            entityBuilder.ToTable("ActiveType");
-            entityBuilder.HasKey(x => x.activeTypeId);
-            entityBuilder.Property(x => x.activeTypeId).IsRequired();
+            //entityBuilder.ToTable("ActiveType");
+            //entityBuilder.HasKey(x => x.activeTypeId);
+            //entityBuilder.Property(x => x.activeTypeId).IsRequired();
+            entityBuilder.ToTable("MAE_ACTIVE_TYPE");
+
+            entityBuilder.HasKey(e => e.activeTypeId)
+                .HasName("CST_MAE_ACTIVE_TYPE_PK");
+
+            entityBuilder.Property(e => e.activeTypeId)
+                .HasColumnName("N_ACTIVE_TYPE_ID_PK")
+                .ValueGeneratedOnAdd()
+                .IsRequired();
+
+            entityBuilder.Property(e => e.name)
+                .HasColumnName("C_NAME")
+                .IsRequired();
+
+            entityBuilder.Property(e => e.companyId)
+                .HasColumnName("N_COMPANY_ID_FK");
+
+            entityBuilder.Property(e => e.creationDate)
+                .HasColumnName("D_CREATION_DATE");
+
+            entityBuilder.Property(e => e.updateDate)
+                .HasColumnName("D_UPDATE_DATE");
+
+            entityBuilder.Property(e => e.creationUserId)
+                .HasColumnName("N_CREATION_USER_ID");
+
+            entityBuilder.Property(e => e.updateUserId)
+                .HasColumnName("N_UPDATE_USER_ID");
+
+            entityBuilder.Property(e => e.isDeleted)
+                .HasColumnName("N_IS_DELETED");
         }
     }
 }

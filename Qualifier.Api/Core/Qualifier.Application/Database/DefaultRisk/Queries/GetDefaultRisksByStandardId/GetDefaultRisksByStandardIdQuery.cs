@@ -50,10 +50,9 @@ namespace Qualifier.Application.Database.DefaultRisk.Queries.GetDefaultRisksBySt
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, standardId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

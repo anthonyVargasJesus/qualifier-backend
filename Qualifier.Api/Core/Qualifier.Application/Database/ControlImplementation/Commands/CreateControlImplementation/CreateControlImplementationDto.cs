@@ -7,9 +7,9 @@ namespace Qualifier.Application.Database.ControlImplementation.Commands.CreateCo
         public int controlImplementationId { get; set; }
         public int? riskId { get; set; }
         public string activities { get; set; }
-        public DateTime startDate { get; set; }
+        public DateTime? startDate { get; set; }
         public DateTime? verificationDate { get; set; }
-        public int responsibleId { get; set; }
+        public int? responsibleId { get; set; }
         public string? observation { get; set; }
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }
@@ -23,7 +23,7 @@ namespace Qualifier.Application.Database.ControlImplementation.Commands.CreateCo
             if (startDate == null)
                 notification.addError("El startDate es obligatorio");
 
-            if (responsibleId == null)
+            if (responsibleId == null && responsibleId <= 0)
                 notification.addError("El responsibleId es obligatorio");
 
         }

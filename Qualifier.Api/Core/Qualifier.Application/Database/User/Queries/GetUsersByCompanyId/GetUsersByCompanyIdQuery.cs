@@ -51,10 +51,9 @@ namespace Qualifier.Application.Database.User.Queries.GetUsersByCompanyId
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, companyId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

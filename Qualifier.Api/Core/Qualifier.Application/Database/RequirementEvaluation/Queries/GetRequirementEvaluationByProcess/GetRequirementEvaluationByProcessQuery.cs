@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Qualifier.Common.Application.Dto;
+using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
 
 
@@ -126,10 +127,9 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
 
                 return response;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -73,8 +73,10 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
                                           }).FirstOrDefaultAsync();
 
                 var entityDto = _mapper.Map<GetCurrentEvaluationDto>(entity);
+                if (currentScope != null)
                 entityDto.currentScope = _mapper.Map<GetCurrentScopeDto>(currentScope);
-                entityDto.currentPolicy = _mapper.Map<GetCurrentPolicyDto>(currentPolicy);
+                if (currentPolicy != null)
+                    entityDto.currentPolicy = _mapper.Map<GetCurrentPolicyDto>(currentPolicy);
 
                 return entityDto;
 

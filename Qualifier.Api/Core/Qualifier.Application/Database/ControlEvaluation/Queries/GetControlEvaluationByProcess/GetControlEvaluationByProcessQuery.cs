@@ -21,7 +21,8 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
             try
             {
                 var groups = await (from item in _databaseService.ControlGroup
-                                    where ((item.isDeleted == null || item.isDeleted == false) && item.standardId == standardId)
+                                    where ((item.isDeleted == null || item.isDeleted == false) 
+                                    && item.standardId == standardId)
                                     select new ControlGroupEntity
                                     {
                                         controlGroupId = item.controlGroupId,
@@ -31,7 +32,8 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                                     .ToListAsync();
 
                 var controls = await (from item in _databaseService.Control
-                                      where ((item.isDeleted == null || item.isDeleted == false) && item.standardId == standardId)
+                                      where ((item.isDeleted == null || item.isDeleted == false) 
+                                      && item.standardId == standardId)
                                       select new ControlEntity
                                       {
                                           controlId = item.controlId,
@@ -321,6 +323,54 @@ CreateMaturityLegend(List<ControlGroupEntity> groups)
             }
         }
 
+
+        private const decimal OPTIMIZED_VALUE = 5.00m;
+        private const decimal PREDICTABLE_VALUE = 4.00m;
+        private const decimal ESTABLISHED_VALUE = 3.00m;
+        private const decimal MANAGED_VALUE = 2.00m;
+        private const decimal INITIAL_VALUE = 1.00m;
+        private const decimal NOT_IMPLEMENTED_VALUE = 1.00m;
+        private const decimal NOT_APPLICABLE_VALUE = 0.00m;
+
+        private static readonly HashSet<decimal> FulfilledValues = new()
+{
+    MANAGED_VALUE,
+    ESTABLISHED_VALUE,
+    PREDICTABLE_VALUE,
+    OPTIMIZED_VALUE
+};
+
+        private static readonly HashSet<decimal> NotFulfilledValues = new()
+{
+    INITIAL_VALUE,
+    NOT_IMPLEMENTED_VALUE,
+    NOT_APPLICABLE_VALUE
+};
+
+        private void SetControlEvaluationState(ControlEvaluationEntity item)
+        {
+            if (item?.maturityLevel == null)
+            {
+                item.state = "Pendiente";
+                return;
+            }
+
+            var maturityValue = item.maturityLevel.value;
+
+            item.state = GetState(maturityValue);
+            item.percentage = (item.value / OPTIMIZED_VALUE) * 100;
+        }
+
+        private string GetState(decimal maturityValue)
+        {
+            if (FulfilledValues.Contains(maturityValue))
+                return "Cumplido";
+
+            if (NotFulfilledValues.Contains(maturityValue))
+                return "No cumplido";
+
+            return "Pendiente";
+        }
 
 
     }

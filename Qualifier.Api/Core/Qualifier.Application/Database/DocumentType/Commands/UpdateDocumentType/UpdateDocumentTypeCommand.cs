@@ -36,10 +36,9 @@ namespace Qualifier.Application.Database.DocumentType.Commands.UpdateDocumentTyp
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

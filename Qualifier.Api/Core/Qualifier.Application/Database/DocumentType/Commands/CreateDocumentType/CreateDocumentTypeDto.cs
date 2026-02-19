@@ -4,9 +4,9 @@ namespace Qualifier.Application.Database.DocumentType.Commands.CreateDocumentTyp
 {
     public class CreateDocumentTypeDto
     {
-        public int documentTypeId { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public int? documentTypeId { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
 

@@ -4,9 +4,9 @@ namespace Qualifier.Application.Database.DocumentType.Commands.UpdateDocumentTyp
 {
     public class UpdateDocumentTypeDto
     {
-        public int documentTypeId { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public int? documentTypeId { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

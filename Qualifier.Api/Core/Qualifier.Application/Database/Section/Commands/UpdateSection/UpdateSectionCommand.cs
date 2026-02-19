@@ -35,10 +35,9 @@ namespace Qualifier.Application.Database.Section.Commands.UpdateSection
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

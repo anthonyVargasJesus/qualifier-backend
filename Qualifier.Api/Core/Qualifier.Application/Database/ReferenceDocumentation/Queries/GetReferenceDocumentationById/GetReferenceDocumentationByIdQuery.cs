@@ -35,10 +35,9 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
 
                 return _mapper.Map<GetReferenceDocumentationByIdDto>(entity);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

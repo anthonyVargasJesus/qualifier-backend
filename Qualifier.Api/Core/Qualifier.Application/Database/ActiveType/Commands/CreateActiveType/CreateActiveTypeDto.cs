@@ -4,7 +4,7 @@ namespace Qualifier.Application.Database.ActiveType.Commands.CreateActiveType
 {
     public class CreateActiveTypeDto
     {
-        public string name { get; set; }
+        public string? name { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
 

@@ -37,85 +37,85 @@ namespace Qualifier.Application.Database.Documentation.Commands.CreateDocumentat
                     await _databaseService.Documentation.AddAsync(entity);
                     await _databaseService.SaveAsync();
 
-                    var defaultSections = await (from defaultSection in _databaseService.DefaultSection
-                                                 where ((defaultSection.isDeleted == null || defaultSection.isDeleted == false)
-                                                 && defaultSection.documentTypeId == model.documentTypeId)
-                                                 select new DefaultSectionEntity
-                                                 {
-                                                     defaultSectionId = defaultSection.defaultSectionId,
-                                                     numeration = defaultSection.numeration,
-                                                     name = defaultSection.name,
-                                                     level = defaultSection.level,
-                                                     parentId = defaultSection.parentId,
-                                                     description = defaultSection.description,
-                                                 }).ToListAsync();
+                    //var defaultSections = await (from defaultSection in _databaseService.DefaultSection
+                    //                             where ((defaultSection.isDeleted == null || defaultSection.isDeleted == false)
+                    //                             && defaultSection.documentTypeId == model.documentTypeId)
+                    //                             select new DefaultSectionEntity
+                    //                             {
+                    //                                 defaultSectionId = defaultSection.defaultSectionId,
+                    //                                 numeration = defaultSection.numeration,
+                    //                                 name = defaultSection.name,
+                    //                                 level = defaultSection.level,
+                    //                                 parentId = defaultSection.parentId,
+                    //                                 description = defaultSection.description,
+                    //                             }).ToListAsync();
 
 
-                    //ingreso los de primer level
-                    const int FIRST_LEVEL = 1;
+                    ////ingreso los de primer level
+                    //const int FIRST_LEVEL = 1;
 
-                    foreach (var defaultSection in defaultSections.Where(x => x.level == FIRST_LEVEL).ToList())
-                    {
+                    //foreach (var defaultSection in defaultSections.Where(x => x.level == FIRST_LEVEL).ToList())
+                    //{
 
-                        var section = new SectionEntity
-                        {
-                            numeration = defaultSection.numeration,
-                            name = defaultSection.name,
-                            level = defaultSection.level,
-                            parentId = 0,
-                            //versionId = entity.versionId,
-                            documentationId = entity.documentationId,
-                            companyId = entity.companyId,
-                            description = defaultSection.description,
-                        };
+                    //    var section = new SectionEntity
+                    //    {
+                    //        numeration = defaultSection.numeration,
+                    //        name = defaultSection.name,
+                    //        level = defaultSection.level,
+                    //        parentId = 0,
+                    //        //versionId = entity.versionId,
+                    //        documentationId = entity.documentationId,
+                    //        companyId = entity.companyId,
+                    //        description = defaultSection.description,
+                    //    };
 
-                        section.creationDate = DateTime.UtcNow;
-                        section.creationUserId = model.creationUserId;
-                        await _databaseService.Section.AddAsync(section);
-                        await _databaseService.SaveAsync();
-                    }
+                    //    section.creationDate = DateTime.UtcNow;
+                    //    section.creationUserId = model.creationUserId;
+                    //    await _databaseService.Section.AddAsync(section);
+                    //    await _databaseService.SaveAsync();
+                    //}
 
 
-                    //traigo las secciones de nivel 1
-                    var sections = await (from section in _databaseService.Section
-                                          where ((section.isDeleted == null || section.isDeleted == false)
-                                          && section.documentationId == entity.documentationId && section.level == FIRST_LEVEL)
-                                          select new SectionEntity
-                                          {
-                                              sectionId = section.sectionId,
-                                              numeration = section.numeration,
-                                              name = section.name,
-                                              description = (section.description == null) ? "" : section.description,
-                                              level = section.level,
-                                              parentId = section.parentId,
-                                          })
-                      .OrderBy(x => x.numeration)
-                      .ToListAsync();
+                    ////traigo las secciones de nivel 1
+                    //var sections = await (from section in _databaseService.Section
+                    //                      where ((section.isDeleted == null || section.isDeleted == false)
+                    //                      && section.documentationId == entity.documentationId && section.level == FIRST_LEVEL)
+                    //                      select new SectionEntity
+                    //                      {
+                    //                          sectionId = section.sectionId,
+                    //                          numeration = section.numeration,
+                    //                          name = section.name,
+                    //                          description = (section.description == null) ? "" : section.description,
+                    //                          level = section.level,
+                    //                          parentId = section.parentId,
+                    //                      })
+                    //  .OrderBy(x => x.numeration)
+                    //  .ToListAsync();
 
-                    //ingresando las de segundo nivel
-                    const int SECOND_LEVEL = 2;
-                    foreach (var defaultSection in defaultSections.Where(x => x.level == SECOND_LEVEL).ToList())
-                    {
-                        var parent = getParent(defaultSections, defaultSection.parentId);
+                    ////ingresando las de segundo nivel
+                    //const int SECOND_LEVEL = 2;
+                    //foreach (var defaultSection in defaultSections.Where(x => x.level == SECOND_LEVEL).ToList())
+                    //{
+                    //    var parent = getParent(defaultSections, defaultSection.parentId);
 
-                        var section = new SectionEntity
-                        {
-                            numeration = defaultSection.numeration,
-                            name = defaultSection.name,
-                            level = defaultSection.level,
-                            parentId = getId(sections, parent.level, parent.name),
-                            //versionId = entity.versionId,
-                            documentationId = entity.documentationId,
-                            companyId = entity.companyId,
-                            description = defaultSection.description,
-                        };
+                    //    var section = new SectionEntity
+                    //    {
+                    //        numeration = defaultSection.numeration,
+                    //        name = defaultSection.name,
+                    //        level = defaultSection.level,
+                    //        parentId = getId(sections, parent.level, parent.name),
+                    //        //versionId = entity.versionId,
+                    //        documentationId = entity.documentationId,
+                    //        companyId = entity.companyId,
+                    //        description = defaultSection.description,
+                    //    };
 
-                        section.creationDate = DateTime.UtcNow;
-                        section.creationUserId = model.creationUserId;
-                        await _databaseService.Section.AddAsync(section);
-                        await _databaseService.SaveAsync();
+                    //    section.creationDate = DateTime.UtcNow;
+                    //    section.creationUserId = model.creationUserId;
+                    //    await _databaseService.Section.AddAsync(section);
+                    //    await _databaseService.SaveAsync();
 
-                    }
+                    //}
 
                     scope.Complete();
                 }

@@ -59,10 +59,9 @@ namespace Qualifier.Application.Database.OptionInMenuInRole.Commands.CreateOptio
 
                 return model;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+              return BaseApplication.getExceptionErrorResponse();
             }
         }
 

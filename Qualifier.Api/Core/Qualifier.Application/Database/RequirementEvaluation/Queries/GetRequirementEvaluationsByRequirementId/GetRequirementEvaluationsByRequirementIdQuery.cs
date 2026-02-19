@@ -59,10 +59,9 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(requirementId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

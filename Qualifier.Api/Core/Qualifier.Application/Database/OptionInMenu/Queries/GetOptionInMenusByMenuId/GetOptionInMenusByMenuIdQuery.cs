@@ -45,10 +45,9 @@ namespace Qualifier.Application.Database.OptionInMenu.Queries.GetOptionInMenusBy
                 baseResponseDto.pagination = Pagination.GetPagination(await getTotal(search, menuId), pageSize);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

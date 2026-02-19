@@ -72,10 +72,9 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                 return ms;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-              //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
         //an

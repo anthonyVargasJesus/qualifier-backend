@@ -4,12 +4,12 @@ namespace Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActio
 {
     public class CreateActionPlanPriorityDto
     {
-        public int actionPlanPriorityId { get; set; }
-        public string name { get; set; } = string.Empty;
-        public string description { get; set; } = string.Empty;
-        public string abbreviation { get; set; } = string.Empty;
-        public decimal value { get; set; }
-        public string color { get; set; } = string.Empty;
+        public int? actionPlanPriorityId { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
+        public string? abbreviation { get; set; }
+        public decimal? value { get; set; }
+        public string? color { get; set; }
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }
 
@@ -24,7 +24,7 @@ namespace Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActio
             if (abbreviation == null)
                 notification.addError("El abbreviation es obligatorio");
 
-            if (value == 0)
+            if (value == null & value <=0)
                 notification.addError("El value no puede ser 0");
 
             if (color == null)

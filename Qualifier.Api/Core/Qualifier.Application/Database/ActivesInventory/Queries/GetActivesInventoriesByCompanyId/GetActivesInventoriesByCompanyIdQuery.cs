@@ -85,7 +85,7 @@ namespace Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInve
             }
             catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

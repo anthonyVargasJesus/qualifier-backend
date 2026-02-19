@@ -4,11 +4,11 @@ namespace Qualifier.Application.Database.ControlImplementation.Commands.UpdateCo
 {
     public class UpdateControlImplementationDto
     {
-        public int controlImplementationId { get; set; }
-        public string activities { get; set; }
-        public DateTime startDate { get; set; }
+        public int? controlImplementationId { get; set; }
+        public string? activities { get; set; }
+        public DateTime? startDate { get; set; }
         public DateTime? verificationDate { get; set; }
-        public int responsibleId { get; set; }
+        public int? responsibleId { get; set; }
         public string? observation { get; set; }
         public int? updateUserId { get; set; }
         public bool? isImplemented { get; set; }
@@ -21,7 +21,7 @@ namespace Qualifier.Application.Database.ControlImplementation.Commands.UpdateCo
             if (startDate == null)
                 notification.addError("El startDate es obligatorio");
 
-            if (responsibleId == null)
+            if (responsibleId == null && responsibleId <= 0)
                 notification.addError("El responsibleId es obligatorio");
 
         }

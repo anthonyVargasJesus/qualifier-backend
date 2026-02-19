@@ -40,7 +40,7 @@ namespace Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsBy
             }
             catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

@@ -32,10 +32,9 @@ namespace Qualifier.Application.Database.BreachStatus.Queries.GetAllBreachStatus
                 baseResponseDto.data = _mapper.Map<List<GetAllBreachStatussByCompanyIdDto>>(entities);
                 return baseResponseDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 

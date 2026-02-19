@@ -15,7 +15,8 @@ namespace Qualifier.Domain.Entities
         public int? versionId { get; set; }
         public int companyId { get; set; }
         public DocumentationEntity documentation { get; set; }
-        public VersionEntity version { get; set; }
+ 
+        public VersionEntity? version { get; set; }
         [NotMapped]
         public List<SectionEntity> children { get; set; }
     }

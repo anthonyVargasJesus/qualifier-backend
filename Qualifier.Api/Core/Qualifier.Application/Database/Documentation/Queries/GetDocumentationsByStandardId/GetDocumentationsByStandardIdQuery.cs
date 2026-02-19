@@ -40,7 +40,7 @@ namespace Qualifier.Application.Database.Documentation.Queries.GetDocumentations
             }
             catch (Exception)
             {
-                return BaseApplication.getExceptionErrorResponse();
+             return BaseApplication.getExceptionErrorResponse();
             }
         }
 
