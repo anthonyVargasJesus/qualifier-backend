@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Qualifier.Api.Core.Qualifier.Application.Database.User.Commands.UpdateImage;
+using Qualifier.Api.Core.Qualifier.Application.Database.User.Commands.UpdateUserImage;
 using Qualifier.Application.Database.User.Commands.CreateUser;
 using Qualifier.Application.Database.User.Commands.DeleteUser;
 using Qualifier.Application.Database.User.Commands.UpdateUser;
-using Qualifier.Application.Database.User.Queries.GetUserById;
-using Qualifier.Application.Database.User.Queries.GetUsersByCompanyId;
 using Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId;
 using Qualifier.Application.Database.User.Queries.GetMenus;
+using Qualifier.Application.Database.User.Queries.GetUserById;
+using Qualifier.Application.Database.User.Queries.GetUsersByCompanyId;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
@@ -164,6 +166,20 @@ namespace Qualifier.Api.Controllers
                 userId = userIdValue;
 
             var res = await deleteUserCommand.Execute(id, userId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new
+                {
+                    data = res
+                });
+
+        }
+
+        [HttpPut("image/{id}")]
+        public async Task<IActionResult> updateImage([FromBody] UpdateUserImageDto model, int id, [FromServices] IUpdateUserImageCommand deleteUserCommand)
+        {
+            var res = await deleteUserCommand.Execute(id, model);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

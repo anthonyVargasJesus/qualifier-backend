@@ -718,6 +718,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<UserEntity, GetUserByIdDto>().ReverseMap();
             CreateMap<UserEntity, GetAllUsersByCompanyIdDto>().ReverseMap();
             CreateMap<UserEntity, GetUsersByCompanyIdDto>().ReverseMap();
+            CreateMap<UserStateEntity, GetUsersByCompanyIdUserStateDto>().ReverseMap();
 
             //RoleInUser
             CreateMap<RoleInUserEntity, CreateRoleInUserDto>().ReverseMap();

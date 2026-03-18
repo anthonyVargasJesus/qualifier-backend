@@ -19,14 +19,16 @@ namespace Qualifier.Application.Database.User.Commands.Login
         private readonly IMapper _mapper;
         private readonly ILoginService _loginService;
         private readonly IConfiguration _configuration;
+        private readonly IUserRepository _userRepository;
 
         public LoginUserCommand(IDatabaseService databaseService, IMapper mapper, ILoginService loginService,
-            IConfiguration configuration)
+            IConfiguration configuration, IUserRepository userRepository)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _loginService = loginService;
             _configuration = configuration;
+            _userRepository = userRepository;
         }
         public async Task<Object> Execute(LoginUserLoginTryDto loginTryDto)
         {
@@ -87,6 +89,8 @@ namespace Qualifier.Application.Database.User.Commands.Login
 
                 login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, (login.name == null) ? "" : login.name 
                     , getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, entity.standardId, standardName);
+
+                await _userRepository.UpdateLastAccess(entity.userId);
 
                 return _mapper.Map<LoginUserLoginDto>(login);
             }

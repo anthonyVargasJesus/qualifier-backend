@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Qualifier.Api.Core.Qualifier.Application.Database.User.Commands.UpdateImage;
 using Qualifier.Application.Configuration;
 using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.DeleteActionPlan;
@@ -749,6 +750,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetUserByIdQuery, GetUserByIdQuery>();
             services.AddTransient<IGetAllUsersByCompanyIdQuery, GetAllUsersByCompanyIdQuery>();
             services.AddTransient<IGetUsersByCompanyIdQuery, GetUsersByCompanyIdQuery>();
+            services.AddTransient<IUpdateUserImageCommand, UpdateUserImageCommand>();
 
             //RoleInUser
             services.AddTransient<ICreateRoleInUserCommand, CreateRoleInUserCommand>();

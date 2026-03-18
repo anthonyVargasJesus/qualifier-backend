@@ -99,6 +99,9 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
                   .HasColumnName("N_STANDARD_ID")
                   .IsRequired();
 
+            entity.Property(e => e.lastAccess)
+        .HasColumnName("D_LAST_ACCESS");
+
             // Relaciones FK
             entity.HasOne(e => e.userState)
                   .WithMany()

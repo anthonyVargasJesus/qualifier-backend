@@ -45,6 +45,26 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdateLastAccess(int id)
+        {
+            var entity = new UserEntity();
+            entity.userId = id;
+            entity.lastAccess = DateTime.UtcNow;
+            var entry = _context.Attach(entity);
+            entry.Property(x => x.lastAccess).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateImage(int id, string image)
+        {
+            var entity = new UserEntity();
+            entity.userId = id;
+            entity.image = image;
+            var entry = _context.Attach(entity);
+            entry.Property(x => x.image).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
 

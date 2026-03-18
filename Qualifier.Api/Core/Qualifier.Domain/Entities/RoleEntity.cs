@@ -14,5 +14,7 @@ namespace Qualifier.Domain.Entities
         public ICollection<RoleInUserEntity> roleInUsers { get; set; }
         [NotMapped]
         public ICollection<MenuInRoleEntity> menuInRoles { get; set; }
+        [NotMapped]
+        public int userId { get; set; }
     }
 }

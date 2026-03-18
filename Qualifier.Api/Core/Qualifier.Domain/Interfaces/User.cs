@@ -6,6 +6,8 @@ namespace Qualifier.Domain.Interfaces
     {
         Task Delete(int id, int updateUserId);
         Task Update(int id, UserEntity entity);
+        Task UpdateLastAccess(int id);
+        Task UpdateImage(int id, string image);
     }
 }
 

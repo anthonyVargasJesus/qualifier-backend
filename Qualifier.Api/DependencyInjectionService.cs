@@ -13,7 +13,7 @@ namespace Qualifier.Api
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Servicios del módulo Integración con el Sistema de Administración y Seguridad de Aplicaciones (SASA) versión base",
+                    Title = "Servicios del módulo Integración con el Sistema de Administración y Seguridad de Aplicaciones (SASA) versión beta",
                     Description = "Administración de APIs"
                 });
 
