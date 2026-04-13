@@ -5,8 +5,8 @@ namespace Qualifier.Application.Database.Standard.Commands.UpdateStandard
     public class UpdateStandardDto
     {
         public int standardId { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public string name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
         public int parentId { get; set; }
         public int companyId { get; set; }
         public int? updateUserId { get; set; }

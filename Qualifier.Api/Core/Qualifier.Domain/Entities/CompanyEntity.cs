@@ -5,7 +5,7 @@ namespace Qualifier.Domain.Entities
     public class CompanyEntity : BaseEntity
     {
         public int companyId { get; set; }
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
         public string? abbreviation { get; set; }
         public string? slogan { get; set; }
         public string? logo { get; set; }

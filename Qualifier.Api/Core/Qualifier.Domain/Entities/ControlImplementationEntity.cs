@@ -6,14 +6,14 @@ namespace Qualifier.Domain.Entities
     {
         public int controlImplementationId { get; set; }
         public int riskId { get; set; }
-        public string activities { get; set; }
+        public string activities { get; set; } = string.Empty;
         public DateTime startDate { get; set; }
         public DateTime? verificationDate { get; set; }
         public int responsibleId { get; set; }
         public string? observation { get; set; }
         public int? companyId { get; set; }
         public RiskEntity? risk { get; set; }
-        public ResponsibleEntity responsible { get; set; }
+        public ResponsibleEntity? responsible { get; set; }  
         public bool? isImplemented { get; set; }
         public bool? isEffective { get; set; }
     }

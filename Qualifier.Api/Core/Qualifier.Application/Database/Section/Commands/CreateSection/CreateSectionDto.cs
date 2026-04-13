@@ -5,14 +5,14 @@ namespace Qualifier.Application.Database.Section.Commands.CreateSection
     public class CreateSectionDto
     {
         public int sectionId { get; set; }
-        public int numeration { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
-        public int level { get; set; }
-        public int parentId { get; set; }
+        public int? numeration { get; set; }
+        public string name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
+        public int? level { get; set; }
+        public int? parentId { get; set; }
         public int documentationId { get; set; }
         public int? versionId { get; set; }
-        public int companyId { get; set; }
+        public int? companyId { get; set; }
         public int? creationUserId { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {

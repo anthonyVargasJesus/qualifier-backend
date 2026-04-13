@@ -5,8 +5,8 @@ namespace Qualifier.Application.Database.UserState.Commands.UpdateUserState
     public class UpdateUserStateDto
     {
         public int userStateId { get; set; }
-        public string name { get; set; }
-        public int value { get; set; }
+        public string name { get; set; } = string.Empty;
+        public int? value { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

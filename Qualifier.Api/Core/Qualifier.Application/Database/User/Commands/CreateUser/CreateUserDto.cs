@@ -5,15 +5,15 @@ namespace Qualifier.Application.Database.User.Commands.CreateUser
     public class CreateUserDto
     {
         public int userId { get; set; }
-        public string name { get; set; }
-        public string? middleName { get; set; }
-        public string firstName { get; set; }
+        public string name { get; set; } = string.Empty;
+        public string? middleName { get; set; } 
+        public string firstName { get; set; } = string.Empty;
         public string? lastName { get; set; }
-        public string email { get; set; }
+        public string email { get; set; } = string.Empty;
         public string? phone { get; set; }
         public string? password { get; set; }
-        public int userStateId { get; set; }
-        public string documentNumber { get; set; }
+        public int? userStateId { get; set; }
+        public string documentNumber { get; set; } = string.Empty;
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }
         public int? standardId { get; set; }

@@ -177,7 +177,8 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpPut("image/{id}")]
-        public async Task<IActionResult> updateImage([FromBody] UpdateUserImageDto model, int id, [FromServices] IUpdateUserImageCommand deleteUserCommand)
+        public async Task<IActionResult> updateImage([FromBody] UpdateUserImageDto model, int id, 
+            [FromServices] IUpdateUserImageCommand deleteUserCommand)
         {
             var res = await deleteUserCommand.Execute(id, model);
             if (res.GetType() == typeof(BaseErrorResponseDto))

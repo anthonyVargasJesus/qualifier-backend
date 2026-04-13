@@ -122,9 +122,6 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                     requirements = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements)
                 };
 
-                //BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto> baseResponseDto = new BaseResponseDto<GetRequirementEvaluationsByProcessRequirementDto>();
-                //baseResponseDto.data = _mapper.Map<List<GetRequirementEvaluationsByProcessRequirementDto>>(standardEntity.requirements);
-
                 return response;
             }
             catch (Exception)
@@ -195,8 +192,6 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             else
                 item.auditorStatusText = "Estado desconocido";
         }
-
-
 
         List<GetRequirementEvaluationsByProcessLegendDto> CreateLegend(List<RequirementEntity> requirements)
         {

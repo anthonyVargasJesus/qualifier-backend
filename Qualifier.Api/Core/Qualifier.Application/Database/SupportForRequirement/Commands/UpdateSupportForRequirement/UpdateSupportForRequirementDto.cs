@@ -5,8 +5,8 @@ namespace Qualifier.Application.Database.SupportForRequirement.Commands.UpdateSu
     public class UpdateSupportForRequirementDto
     {
         public int supportForRequirementId { get; set; }
-        public int documentationId { get; set; }
-        public int requirementId { get; set; }
+        public int? documentationId { get; set; }
+        public int? requirementId { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

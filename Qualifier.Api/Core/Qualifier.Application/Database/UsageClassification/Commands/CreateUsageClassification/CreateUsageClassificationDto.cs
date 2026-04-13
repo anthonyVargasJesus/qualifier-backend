@@ -5,7 +5,7 @@ namespace Qualifier.Application.Database.UsageClassification.Commands.CreateUsag
     public class CreateUsageClassificationDto
     {
         public int usageClassificationId { get; set; }
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
 

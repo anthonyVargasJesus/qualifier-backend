@@ -5,7 +5,7 @@ namespace Qualifier.Application.Database.UsageClassification.Commands.UpdateUsag
     public class UpdateUsageClassificationDto
     {
         public int usageClassificationId { get; set; }
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

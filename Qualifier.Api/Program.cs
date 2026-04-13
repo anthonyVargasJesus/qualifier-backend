@@ -118,22 +118,22 @@ builder.Services.AddCors(op =>
 });
 
 
-// Agregar SignalR
-builder.Services.AddSignalR(options =>
-{
-    // ⏱ cuánto tiempo espera el cliente antes de marcar timeout
-    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+//// Agregar SignalR
+//builder.Services.AddSignalR(options =>
+//{
+//    // ⏱ cuánto tiempo espera el cliente antes de marcar timeout
+//    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
 
-    // 📡 cada cuánto el servidor envía un "ping" automático
-    options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+//    // 📡 cada cuánto el servidor envía un "ping" automático
+//    options.KeepAliveInterval = TimeSpan.FromSeconds(10);
 
-    // (opcional) tamaño máximo de mensajes si envías payloads grandes
-    options.MaximumReceiveMessageSize = 1024 * 1024; // 1 MB
-})
-.AddJsonProtocol(options =>
-{
-    options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-});
+//    // (opcional) tamaño máximo de mensajes si envías payloads grandes
+//    options.MaximumReceiveMessageSize = 1024 * 1024; // 1 MB
+//})
+//.AddJsonProtocol(options =>
+//{
+//    options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+//});
 
 var app = builder.Build();
 

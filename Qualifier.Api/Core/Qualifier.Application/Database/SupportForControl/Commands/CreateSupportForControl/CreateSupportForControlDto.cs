@@ -5,10 +5,10 @@ namespace Qualifier.Application.Database.SupportForControl.Commands.CreateSuppor
     public class CreateSupportForControlDto
     {
         public int supportForControlId { get; set; }
-        public int documentationId { get; set; }
-        public int controlId { get; set; }
-        public int standardId { get; set; }
-        public int companyId { get; set; }
+        public int? documentationId { get; set; }
+        public int? controlId { get; set; }
+        public int? standardId { get; set; }
+        public int? companyId { get; set; }
         public int? creationUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

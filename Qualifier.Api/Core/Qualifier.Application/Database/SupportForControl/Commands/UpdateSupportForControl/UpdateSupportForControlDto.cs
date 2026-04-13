@@ -5,8 +5,8 @@ namespace Qualifier.Application.Database.SupportForControl.Commands.UpdateSuppor
     public class UpdateSupportForControlDto
     {
         public int supportForControlId { get; set; }
-        public int documentationId { get; set; }
-        public int controlId { get; set; }
+        public int? documentationId { get; set; }
+        public int? controlId { get; set; }
         public int standardId { get; set; }
         public int? updateUserId { get; set; }
 

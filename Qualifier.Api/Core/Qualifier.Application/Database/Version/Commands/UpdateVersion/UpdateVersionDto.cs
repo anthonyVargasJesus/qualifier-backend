@@ -5,15 +5,15 @@ namespace Qualifier.Application.Database.Version.Commands.UpdateVersion
     public class UpdateVersionDto
     {
         public int versionId { get; set; }
-        public decimal number { get; set; }
-        public string code { get; set; }
-        public string name { get; set; }
-        public int confidentialityLevelId { get; set; }
-        public int documentationId { get; set; }
-        public DateTime date { get; set; }
-        public bool isCurrent { get; set; }
-        public string fileName { get; set; }
-        public string description { get; set; }
+        public decimal? number { get; set; }
+        public string code { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public int? confidentialityLevelId { get; set; }
+        public int? documentationId { get; set; }
+        public DateTime? date { get; set; }
+        public bool? isCurrent { get; set; }
+        public string fileName { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)
@@ -43,5 +43,3 @@ namespace Qualifier.Application.Database.Version.Commands.UpdateVersion
 
     }
 }
-//Version
-//CreateMap<VersionEntity, UpdateVersionDto>().ReverseMap();

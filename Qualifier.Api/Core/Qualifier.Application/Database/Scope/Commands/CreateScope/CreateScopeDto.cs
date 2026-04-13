@@ -5,9 +5,9 @@ namespace Qualifier.Application.Database.Scope.Commands.CreateScope
     public class CreateScopeDto
     {
         public int scopeId { get; set; }
-        public bool isCurrent { get; set; }
-        public DateTime date { get; set; }
-        public string name { get; set; }
+        public bool? isCurrent { get; set; }
+        public DateTime? date { get; set; }
+        public string name { get; set; } = string.Empty;
         public string? description { get; set; }
         public int? standardId { get; set; }
         public int? companyId { get; set; }

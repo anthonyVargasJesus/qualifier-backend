@@ -4,9 +4,9 @@ namespace Qualifier.Application.Database.Subprocess.Commands.CreateSubprocess
 {
     public class CreateSubprocessDto
     {
-        public string code { get; set; }
-        public string name { get; set; }
-        public int macroprocessId { get; set; }
+        public string code { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public int? macroprocessId { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
 

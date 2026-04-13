@@ -5,8 +5,8 @@ namespace Qualifier.Application.Database.UserState.Commands.CreateUserState
     public class CreateUserStateDto
     {
         public int userStateId { get; set; }
-        public string name { get; set; }
-        public int value { get; set; }
+        public string name { get; set; } = string.Empty;
+        public int? value { get; set; }
         public int? companyId { get; set; }
         public int? creationUserId { get; set; }
 

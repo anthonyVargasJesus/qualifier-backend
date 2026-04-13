@@ -9,8 +9,8 @@ namespace Qualifier.Domain.Entities
         public int controlId { get; set; }
         public bool? isActive { get; set; }
         public int? companyId { get; set; }
-        public DefaultRiskEntity defaultRisk { get; set; }
-        public ControlEntity control { get; set; }
+        public DefaultRiskEntity? defaultRisk { get; set; }
+        public ControlEntity? control { get; set; }
     }
 }
 

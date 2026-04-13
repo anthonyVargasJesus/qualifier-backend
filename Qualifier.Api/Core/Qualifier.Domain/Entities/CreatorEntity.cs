@@ -10,9 +10,9 @@ namespace Qualifier.Domain.Entities
         public int versionId { get; set; }
         public int documentationId { get; set; }
         public int companyId { get; set; }
-        public PersonalEntity personal { get; set; }
-        public ResponsibleEntity responsible { get; set; }
-        public VersionEntity version { get; set; }
+        public PersonalEntity? personal { get; set; }
+        public ResponsibleEntity? responsible { get; set; }
+        public VersionEntity? version { get; set; }
     }
 }
 

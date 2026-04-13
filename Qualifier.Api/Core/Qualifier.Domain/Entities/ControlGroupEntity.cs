@@ -7,16 +7,16 @@ namespace Qualifier.Domain.Entities
     {
         public int controlGroupId { get; set; }
         public int number { get; set; }
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
         public string? description { get; set; }
         public int? standardId { get; set; }
         public int? companyId { get; set; }
 
         [NotMapped]
-        public List<ControlEntity> controls { get; set; }
+        public List<ControlEntity>? controls { get; set; }
 
         [NotMapped]
-        public List<MaturityLevelEntity> maturityLevels { get; set; }
+        public List<MaturityLevelEntity>? maturityLevels { get; set; }
         [NotMapped]
         public decimal value { get; set; }
         [NotMapped]

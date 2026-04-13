@@ -21,39 +21,75 @@ namespace Qualifier.Domain.Entities
         [NotMapped]
         public List<RequirementEntity> parentRequirements { get; set; }
 
-
         [NotMapped]
         public List<ControlGroupEntity> controlsGroups { get; set; }
 
+        //public void setRequirementsWithChildren(List<RequirementEntity> allRequirements)
+        //{
+        //    const int FIRST_LEVEL = 1;
+        //    const int SECOND_LEVEL = 2;
+        //    const int THIRD_LEVEL = 3;
+        //    const int FOURTH_LEVEL = 4;
+
+        //    requirements = allRequirements.Where(x => x.level == FIRST_LEVEL).OrderBy(x => x.numeration).ToList();
+
+        //    foreach (var requirement in requirements)
+        //        if (hasChildren(allRequirements, requirement.requirementId, SECOND_LEVEL))
+        //        {
+        //            requirement.children = getChildren(allRequirements, requirement.requirementId, SECOND_LEVEL).OrderBy(x => x.numeration).ToList();
+
+        //            foreach (var item in requirement.children)
+        //                if (hasChildren(allRequirements, item.requirementId, THIRD_LEVEL))
+        //                {
+        //                    item.children = getChildren(allRequirements, item.requirementId, THIRD_LEVEL).OrderBy(x => x.numeration).ToList();
+        //                    foreach (var item2 in item.children)
+        //                    {
+        //                        if (hasChildren(allRequirements, item2.requirementId, FOURTH_LEVEL))
+        //                        {
+        //                            item2.children = getChildren(allRequirements, item2.requirementId, FOURTH_LEVEL).OrderBy(x => x.numeration).ToList();
+        //                        }
+        //                    }
+        //                }
+
+        //        }
+        //    setNumeration(requirements);
+        //}
         public void setRequirementsWithChildren(List<RequirementEntity> allRequirements)
         {
-            const int FIRST_LEVEL = 1;
-            const int SECOND_LEVEL = 2;
-            const int THIRD_LEVEL = 3;
-            const int FOURTH_LEVEL = 4;
+            // 1. Filtramos los nodos raíz (Nivel 1)
+            requirements = allRequirements
+                .Where(x => x.level == 1)
+                .OrderBy(x => x.numeration)
+                .ToList();
 
-            requirements = allRequirements.Where(x => x.level == FIRST_LEVEL).OrderBy(x => x.numeration).ToList();
+            // 2. Procesamos cada raíz de forma recursiva
+            foreach (var req in requirements)
+            {
+                BuildTree(req, allRequirements);
+            }
 
-            foreach (var requirement in requirements)
-                if (hasChildren(allRequirements, requirement.requirementId, SECOND_LEVEL))
-                {
-                    requirement.children = getChildren(allRequirements, requirement.requirementId, SECOND_LEVEL).OrderBy(x => x.numeration).ToList();
-
-                    foreach (var item in requirement.children)
-                        if (hasChildren(allRequirements, item.requirementId, THIRD_LEVEL))
-                        {
-                            item.children = getChildren(allRequirements, item.requirementId, THIRD_LEVEL).OrderBy(x => x.numeration).ToList();
-                            foreach (var item2 in item.children)
-                            {
-                                if (hasChildren(allRequirements, item2.requirementId, FOURTH_LEVEL))
-                                {
-                                    item2.children = getChildren(allRequirements, item2.requirementId, FOURTH_LEVEL).OrderBy(x => x.numeration).ToList();
-                                }
-                            }
-                        }
-                            
-                }
+            // 3. Tu lógica de numeración final
             setNumeration(requirements);
+        }
+
+        private void BuildTree(RequirementEntity parent, List<RequirementEntity> allRequirements)
+        {
+            // Buscamos los hijos: elementos cuyo nivel sea el siguiente y pertenezcan a este padre
+            var children = allRequirements
+                .Where(x => x.parentId == parent.requirementId && x.level == parent.level + 1)
+                .OrderBy(x => x.numeration)
+                .ToList();
+
+            if (children.Any())
+            {
+                parent.children = children;
+
+                // Llamada recursiva: para cada hijo, buscar sus propios hijos
+                foreach (var child in children)
+                {
+                    BuildTree(child, allRequirements);
+                }
+            }
         }
 
         public string getNumerationToShow(int requirementId)
@@ -80,60 +116,23 @@ namespace Qualifier.Domain.Entities
             }
             return numerationToShow;
         }
-
-
         private bool hasChildren(List<RequirementEntity> allRequirements, int idRequirement, int level)
         {
             return allRequirements.Count(x => x.parentId == idRequirement && x.level == level) > 0;
         }
-
         private List<RequirementEntity> getChildren(List<RequirementEntity> allRequirements, int idRequirement, int level)
         {
             var entities = allRequirements.Where(x => x.parentId == idRequirement && x.level == level).ToList();
             return entities;
         }
-
-        //private void setNumeration(List<RequirementEntity> localRequirements)
-        //{
-        //    foreach (RequirementEntity item in localRequirements)
-        //    {
-        //        if (item.letter != null)
-        //            item.numerationToShow = item.letter != "" ? item.letter : item.numeration.ToString();
-
-        //        if (item.children != null)
-        //            foreach (var child1 in item.children)
-        //            {
-        //                if (child1.letter != null)
-        //                    child1.numerationToShow = child1.letter != "" ? child1.letter : (item.numeration + "." + child1.numeration);
-
-        //                if (child1.children != null)
-        //                    foreach (var child2 in child1.children)
-        //                    {
-        //                        if (child2.letter != null)
-        //                            child2.numerationToShow = child2.letter != "" ? child2.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration);
-
-        //                        if (child2.children != null)
-        //                        {
-        //                            foreach (var child3 in child2.children)
-        //                            {
-        //                                if (child3.letter != null)
-        //                                    child3.numerationToShow = child3.letter != "" ? child3.letter : (item.numeration + "." + child1.numeration + "." + child2.numeration + "." + child3.numeration);
-        //                            }
-        //                        }
-        //                    }
-        //            }
-        //    }
-        //}
-
-        private void setNumeration(List<RequirementEntity> requirements, string parentNumeration = "", string parentBreadcrumb = "")
+        private void setNumeration(List<RequirementEntity> requirements, string parentNumeration = "",
+            string parentBreadcrumb = "")
         {
             foreach (var item in requirements)
             {
                 // Determinar numeración del item actual
                 if (!string.IsNullOrEmpty(item.letter))
-                {
                     item.numerationToShow = item.letter;
-                }
                 else
                 {
                     item.numerationToShow = string.IsNullOrEmpty(parentNumeration)
@@ -148,14 +147,12 @@ namespace Qualifier.Domain.Entities
 
                 // Si tiene hijos, llamar recursivamente pasando numeration y breadcrumb acumulados
                 if (item.children != null && item.children.Any())
-                {
                     setNumeration(item.children, item.numerationToShow, item.breadcrumbToShow);
-                }
+                
             }
         }
-
-
-        public void setControlsWithChildren(List<ControlGroupEntity> allControlGroups, List<ControlEntity> allControls)
+        public void setControlsWithChildren(List<ControlGroupEntity> allControlGroups,
+            List<ControlEntity> allControls)
         {
             controlsGroups = allControlGroups;
             foreach (var group in allControlGroups)
@@ -176,9 +173,6 @@ namespace Qualifier.Domain.Entities
             }
             return numerationToShow;
         }
-
-
-
         public void setEvaluationsToRequirements(List<RequirementEvaluationEntity> evaluations)
         {
             foreach (RequirementEntity item in requirements)
@@ -246,7 +240,6 @@ namespace Qualifier.Domain.Entities
                     }
             }
         }
-
         private RequirementEvaluationEntity getDefaultRequierementeEvaluation(RequirementEntity requirement)
         {
             return new RequirementEvaluationEntity
@@ -263,7 +256,6 @@ namespace Qualifier.Domain.Entities
                 },
             };
         }
-
         private void setNumerationToEvaluations(List<RequirementEvaluationEntity> requirementEvaluations, string numerationToShow, string? breadcrumbToShow)
         {
             foreach (var item in requirementEvaluations)
@@ -274,8 +266,6 @@ namespace Qualifier.Domain.Entities
                 }
                    
         }
-
-
         public void setTotalValuesToRequirements(List<RequirementEvaluationEntity> evaluations, List<MaturityLevelEntity> generalMaturityLevels)
         {
 
@@ -330,8 +320,6 @@ namespace Qualifier.Domain.Entities
             }
 
         }
-
-
         public void setTotalValueInMaturityLevels(List<MaturityLevelEntity> maturityLevels)
         {
             foreach (MaturityLevelEntity item in maturityLevels)
@@ -345,14 +333,12 @@ namespace Qualifier.Domain.Entities
                 item.value = totalValue;
             }
         }
-
         public void setPercentInMaturityLevels(List<MaturityLevelEntity> maturityLevels, decimal totalValuexEvaluation)
         {
             foreach (var item in maturityLevels)
                 if (totalValuexEvaluation > 0)
                     item.percent = Math.Round((item.value * 100) / totalValuexEvaluation, 2);
         }
-
         public decimal getTotalValuexEvaluation()
         {
             decimal totalValuexEvaluation = 0;
@@ -366,7 +352,6 @@ namespace Qualifier.Domain.Entities
             }
             return totalValuexEvaluation;
         }
-
         public void setIndicators(List<IndicatorEntity> indicators)
         {
             const decimal FACTOR = 5;
@@ -389,7 +374,6 @@ namespace Qualifier.Domain.Entities
                 requirement.setIndicator(indicators, result);
             }
         }
-
         public List<PieDashboardRequirement> getPieChartDashboard(List<MaturityLevelEntity> maturityLevels)
         {
             List<PieDashboardRequirement> pieDashboardRequirements = new List<PieDashboardRequirement>();
@@ -402,8 +386,6 @@ namespace Qualifier.Domain.Entities
             }
             return pieDashboardRequirements;
         }
-
-
         public List<BartVerticalDashboardRequirement> getBarChartDashboard()
         {
             List<BartVerticalDashboardRequirement> barVerticalDashboardRequirements = new List<BartVerticalDashboardRequirement>();
@@ -426,7 +408,6 @@ namespace Qualifier.Domain.Entities
             }
             return barVerticalDashboardRequirements;
         }
-
         public List<string> getColors(List<MaturityLevelEntity> maturityLevels)
         {
             List<string> colors = new List<string>();
@@ -434,7 +415,6 @@ namespace Qualifier.Domain.Entities
                 colors.Add((item.color == null) ? "" : item.color);
             return colors;
         }
-
         public void setTotalValuesToControls(List<ControlEvaluationEntity> evaluations, List<MaturityLevelEntity> generalMaturityLevels)
         {
 
@@ -469,7 +449,6 @@ namespace Qualifier.Domain.Entities
                 controlGroup.maturityLevels = maturityLevelsxControl;
             }
         }
-
         public void setTotalValueControlsInMaturityLevels(List<MaturityLevelEntity> maturityLevels)
         {
             foreach (MaturityLevelEntity item in maturityLevels)
@@ -483,7 +462,6 @@ namespace Qualifier.Domain.Entities
                 item.value = totalValue;
             }
         }
-
         public decimal getTotalControlValuexEvaluation()
         {
             decimal totalValuexEvaluation = 0;
@@ -497,7 +475,6 @@ namespace Qualifier.Domain.Entities
             }
             return totalValuexEvaluation;
         }
-
         public void setControlIndicators(List<IndicatorEntity> indicators)
         {
             const decimal FACTOR = 5;
@@ -520,15 +497,12 @@ namespace Qualifier.Domain.Entities
                 controlGroup.setIndicator(indicators, result);
             }
         }
-
         public void setPercentControlsInMaturityLevels(List<MaturityLevelEntity> maturityLevels, decimal totalValuexEvaluation)
         {
             foreach (var item in maturityLevels)
                 if (totalValuexEvaluation > 0)
                     item.percent = Math.Round((item.value * 100) / totalValuexEvaluation, 2);
         }
-
-
         public List<PieControlDashboardControlGroup> getPieControlChartDashboard(List<MaturityLevelEntity> maturityLevels)
         {
             List<PieControlDashboardControlGroup> pieDashboardControlGroups = new List<PieControlDashboardControlGroup>();
@@ -541,8 +515,6 @@ namespace Qualifier.Domain.Entities
             }
             return pieDashboardControlGroups;
         }
-
-
         public List<BartVerticalControlDashboard> getControlBarChartDashboard()
         {
             List<BartVerticalControlDashboard> barVerticalDashboardRequirements = new List<BartVerticalControlDashboard>();
@@ -565,15 +537,12 @@ namespace Qualifier.Domain.Entities
             }
             return barVerticalDashboardRequirements;
         }
-
-
-        public void setReferenceDocumentationToEvaluations(List<RequirementEvaluationEntity> evaluations, List<ReferenceDocumentationEntity> referenceDocumentations)
+        public void setReferenceDocumentationToEvaluations(List<RequirementEvaluationEntity> evaluations, 
+            List<ReferenceDocumentationEntity> referenceDocumentations)
         {
             foreach (RequirementEvaluationEntity item in evaluations)
                 item.referenceDocumentations = referenceDocumentations.Where(x => x.requirementEvaluationId == item.requirementEvaluationId).ToList();
         }
-
-
 
     }
 }

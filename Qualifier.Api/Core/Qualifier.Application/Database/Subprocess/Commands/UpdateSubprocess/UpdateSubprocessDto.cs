@@ -5,9 +5,9 @@ namespace Qualifier.Application.Database.Subprocess.Commands.UpdateSubprocess
     public class UpdateSubprocessDto
     {
         public int subprocessId { get; set; }
-        public string code { get; set; }
-        public string name { get; set; }
-        public int macroprocessId { get; set; }
+        public string code { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public int? macroprocessId { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

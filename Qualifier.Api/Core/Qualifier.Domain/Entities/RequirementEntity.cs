@@ -64,11 +64,6 @@ namespace Qualifier.Domain.Entities
         }
 
 
-        //public decimal CalculateIndicator()
-        //{
-
-        //}
-
     }
 }
 

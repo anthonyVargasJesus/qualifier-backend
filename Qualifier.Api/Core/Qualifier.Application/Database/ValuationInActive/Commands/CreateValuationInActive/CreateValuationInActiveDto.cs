@@ -4,9 +4,9 @@ namespace Qualifier.Application.Database.ValuationInActive.Commands.CreateValuat
 {
     public class CreateValuationInActiveDto
     {
-        public int valuationInActiveId { get; set; }
-        public int activesInventoryId { get; set; }
-        public int impactValuationId { get; set; }
+        public int? valuationInActiveId { get; set; }
+        public int? activesInventoryId { get; set; }
+        public int? impactValuationId { get; set; }
         public decimal value { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
