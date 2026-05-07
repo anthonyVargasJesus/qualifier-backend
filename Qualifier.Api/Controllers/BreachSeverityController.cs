@@ -1,42 +1,22 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompanyId;
 using Qualifier.Application.Database.BreachSeverity.Queries.GetAllBreachSeveritiesByCompanyId;
-using Qualifier.Common.Api;
-using Qualifier.Common.Application.Dto;
-using Qualifier.Common.Application.NotificationPattern;
-using Qualifier.Common.Application.Service;
 
-namespace Qualifier.Api.Controllers
+namespace Qualifier.Api.Controllers;
+
+[Route("api/[controller]")]
+[Authorize]
+public class BreachSeverityController(
+    IGetAllBreachSeveritiesByCompanyIdQuery getAllQuery
+) : ApiBaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class BreachSeverityController : ControllerBase
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll()
     {
-        [HttpGet("All")]
-        public async Task<IActionResult> GetAll([FromServices] IGetAllBreachSeveritiesByCompanyIdQuery query)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
+        if (CompanyId == 0)
+            return CompanyRequiredError();
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-
-            Notification notification = new Notification();
-            if (!success)
-                notification.addError("El usuario no está asociado a institución");
-
-            if (notification.hasErrors())
-                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
-
-            var res = await query.Execute(companyId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(res);
-        }
-
+        var res = await getAllQuery.Execute(CompanyId);
+        return ProcessResponse(res);
     }
 }

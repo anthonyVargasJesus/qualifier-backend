@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPlanPriority;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -34,7 +35,14 @@ namespace Qualifier.Application.Database.ActionPlanStatus.Commands.UpdateActionP
 
                 await _actionPlanStatusRepository.Update(id, _mapper.Map<ActionPlanStatusEntity>(model));
 
-                return model;
+                var updatedEntity = await _databaseService.ActionPlanStatus
+                                            .AsNoTracking()
+                                            .FirstOrDefaultAsync(item =>
+                                            item.actionPlanStatusId == id &&
+                                            !(item.isDeleted ?? false));
+
+                return _mapper.Map<UpdateActionPlanStatusDto>(updatedEntity);
+
             }
             catch (Exception)
             {

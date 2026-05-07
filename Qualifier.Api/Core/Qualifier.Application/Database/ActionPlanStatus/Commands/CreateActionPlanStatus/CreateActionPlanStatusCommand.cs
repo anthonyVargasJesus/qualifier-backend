@@ -1,4 +1,5 @@
 using AutoMapper;
+using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -31,7 +32,9 @@ namespace Qualifier.Application.Database.ActionPlanStatus.Commands.CreateActionP
                 entity.creationUserId = model.creationUserId;
                 await _databaseService.ActionPlanStatus.AddAsync(entity);
                 await _databaseService.SaveAsync();
-                return model;
+
+                return _mapper.Map<CreateActionPlanStatusDto>(entity);
+
             }
             catch (Exception)
             {

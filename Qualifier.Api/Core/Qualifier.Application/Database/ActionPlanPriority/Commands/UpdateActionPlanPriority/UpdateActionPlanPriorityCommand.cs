@@ -34,7 +34,13 @@ namespace Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActio
 
                 await _actionPlanPriorityRepository.Update(id, _mapper.Map<ActionPlanPriorityEntity>(model));
 
-                return model;
+                var updatedEntity = await _databaseService.ActionPlanPriority
+              .AsNoTracking()
+              .FirstOrDefaultAsync(item =>
+                  item.actionPlanPriorityId == id &&
+                  !(item.isDeleted ?? false));
+
+                return _mapper.Map<UpdateActionPlanPriorityDto>(updatedEntity);
             }
             catch (Exception)
             {

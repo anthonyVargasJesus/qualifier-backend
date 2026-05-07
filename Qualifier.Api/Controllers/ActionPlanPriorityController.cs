@@ -1,163 +1,75 @@
-using Microsoft.AspNetCore.Authentication;
+using System.ComponentModel.Design;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Qualifier.Api.Controllers;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.DeleteActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPrioritiesByCompanyId;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
-using Qualifier.Common.Api;
-using Qualifier.Common.Application.Dto;
-using Qualifier.Common.Application.NotificationPattern;
-using Qualifier.Common.Application.Service;
 
+namespace qualifier.Api.Controllers;
 
-namespace qualifier.Api.Controllers
+[Route("api/[controller]")]
+[Authorize]
+public class ActionPlanPriorityController(
+    IGetAllActionPlanPrioritiesByCompanyIdQuery getAllQuery,
+    IGetActionPlanPrioritiesByCompanyIdQuery getPagedQuery,
+    IGetActionPlanPriorityByIdQuery getByIdQuery,
+    ICreateActionPlanPriorityCommand createCommand,
+    IUpdateActionPlanPriorityCommand updateCommand,
+    IDeleteActionPlanPriorityCommand deleteCommand
+) : ApiBaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class ActionPlanPriorityController : ControllerBase
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll()
     {
+        if (CompanyId == 0) return CompanyRequiredError();
 
-        [HttpGet("All")]
-        public async Task<IActionResult> GetAllActionPlanPrioritiesByCompanyId([FromServices] IGetAllActionPlanPrioritiesByCompanyIdQuery query)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
+        var res = await getAllQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken != null ? accessToken : ""), out companyId);
+    [HttpGet]
+    public async Task<IActionResult> Get(int skip, int pageSize, string? search)
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
 
-            Notification notification = new Notification();
-            if (!success)
-                notification.addError("El usuario no está asociado a institución");
+        var res = await getPagedQuery.Execute(skip, pageSize, search ?? string.Empty, CompanyId);
+        return ProcessResponse(res);
+    }
 
-            if (notification.hasErrors())
-                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var res = await getByIdQuery.Execute(id);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-            var res = await query.Execute(companyId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(res);
-        }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateActionPlanPriorityDto model)
+    {
+        model.creationUserId = UserId;
+        model.companyId = CompanyId;
 
+        var res = await createCommand.Execute(model);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-        [HttpGet()]
-        public async Task<IActionResult> GetActionPlanPrioritiesByCompanyId(int skip, int pageSize, string? search, [FromServices] IGetActionPlanPrioritiesByCompanyIdQuery query)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId;
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateActionPlanPriorityDto model)
+    {
+        model.updateUserId = UserId;
 
-            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken != null ? accessToken : ""), out companyId);
+        var res = await updateCommand.Execute(model, id);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-            Notification notification = new Notification();
-            if (!success)
-                notification.addError("El usuario no está asociado a institución");
-
-            if (notification.hasErrors())
-                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
-
-            if (search == null)
-                search = string.Empty;
-
-            var res = await query.Execute(skip, pageSize, search, companyId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(res);
-        }
-
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, [FromServices] IGetActionPlanPriorityByIdQuery query)
-        {
-            var res = await query.Execute(id);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-
-        [HttpPost()]
-        public async Task<IActionResult> Create([FromBody] CreateActionPlanPriorityDto model, [FromServices] ICreateActionPlanPriorityCommand command)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken != null ? accessToken : ""), out userId);
-
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken != null ? accessToken : ""), out companyId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
-                model.companyId = companyId;
-
-            var res = await command.Execute(model);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] UpdateActionPlanPriorityDto model, int id, [FromServices] IUpdateActionPlanPriorityCommand command)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken != null ? accessToken : ""), out userId);
-
-            if (success)
-                model.updateUserId = userId;
-
-            var res = await command.Execute(model, id);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, [FromServices] IDeleteActionPlanPriorityCommand command)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken != null ? accessToken : ""), out userIdValue);
-
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
-
-            var res = await command.Execute(id, userId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var res = await deleteCommand.Execute(id, UserId);
+        return ProcessResponse(res, wrapWithData: true);
     }
 }
-
-

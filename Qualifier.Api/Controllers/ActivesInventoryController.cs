@@ -1,160 +1,73 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.ActivesInventory.Commands.CreateActivesInventory;
 using Qualifier.Application.Database.ActivesInventory.Commands.DeleteActivesInventory;
 using Qualifier.Application.Database.ActivesInventory.Commands.UpdateActivesInventory;
-using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoryById;
-using Qualifier.Common.Application.Dto;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using Qualifier.Common.Api;
-using Qualifier.Common.Application.NotificationPattern;
-using Qualifier.Common.Application.Service;
-using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
-using Qualifier.Application.Database.ActiveType.Queries.GetAllActiveTypesByCompanyId;
 using Qualifier.Application.Database.ActivesInventory.Queries.GetAllActivesInventoriesByCompanyId;
-using Qualifier.Api.Helpers;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoriesByCompanyId;
+using Qualifier.Application.Database.ActivesInventory.Queries.GetActivesInventoryById;
 
+namespace Qualifier.Api.Controllers;
 
-
-namespace Qualifier.Api.Controllers
+[Route("api/[controller]")]
+[Authorize]
+public class ActivesInventoryController(
+    IGetAllActivesInventoriesByCompanyIdQuery getAllQuery,
+    IGetActivesInventoriesByCompanyIdQuery getPagedQuery,
+    IGetActivesInventoryByIdQuery getByIdQuery,
+    ICreateActivesInventoryCommand createCommand,
+    IUpdateActivesInventoryCommand updateCommand,
+    IDeleteActivesInventoryCommand deleteCommand
+) : ApiBaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class ActivesInventoryController : ControllerBase
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll()
     {
-        [HttpGet("All")]
-        public async Task<IActionResult> GetAll([FromServices] IGetAllActivesInventoriesByCompanyIdQuery query)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
+        if (CompanyId == 0) return CompanyRequiredError();
 
-            Notification notification = new Notification();
-            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
-                notification.addError("El usuario no está asociado a institución");
+        var res = await getAllQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
 
-            if (notification.hasErrors())
-                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+    [HttpGet]
+    public async Task<IActionResult> Get(int skip, int pageSize, string? search)
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
 
-            var res = await query.Execute(companyId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(res);
-        }
+        var res = await getPagedQuery.Execute(skip, pageSize, search ?? string.Empty, CompanyId);
+        return ProcessResponse(res);
+    }
 
-        [HttpGet()]
-        public async Task<IActionResult> Get(int skip, int pageSize, string? search, 
-            [FromServices] IGetActivesInventoriesByCompanyIdQuery query)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var res = await getByIdQuery.Execute(id);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-            Notification notification = new Notification();
-            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
-                notification.addError("El usuario no está asociado a institución");
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateActivesInventoryDto model)
+    {
+        model.creationUserId = UserId;
+        model.companyId = CompanyId;
 
-            if (notification.hasErrors())
-                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+        var res = await createCommand.Execute(model);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-            if (search == null)
-                search = string.Empty;
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateActivesInventoryDto model)
+    {
+        model.updateUserId = UserId;
 
-            var res = await query.Execute(skip, pageSize, search, companyId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(res);
-        }
+        var res = await updateCommand.Execute(model, id);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, [FromServices] IGetActivesInventoryByIdQuery getActivesInventoryByIdQuery)
-        {
-            var res = await getActivesInventoryByIdQuery.Execute(id);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-        [HttpPost()]
-        public async Task<IActionResult> Create([FromBody] CreateActivesInventoryDto model, 
-            [FromServices] ICreateActivesInventoryCommand createActivesInventoryCommand)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
-
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
-                model.companyId = companyId;
-
-            var res = await createActivesInventoryCommand.Execute(model);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] UpdateActivesInventoryDto model, int id, 
-            [FromServices] IUpdateActivesInventoryCommand updateActivesInventoryCommand)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
-
-            if (success)
-                model.updateUserId = userId;
-
-            var res = await updateActivesInventoryCommand.Execute(model, id);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> delete(int id, [FromServices] IDeleteActivesInventoryCommand deleteActivesInventoryCommand)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userIdValue);
-
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
-
-            var res = await deleteActivesInventoryCommand.Execute(id, userId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-
-        }
-
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var res = await deleteCommand.Execute(id, UserId);
+        return ProcessResponse(res, wrapWithData: true);
     }
 }

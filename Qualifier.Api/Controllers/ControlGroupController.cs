@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.ControlGroup.Commands.CreateControlGroup;
 using Qualifier.Application.Database.ControlGroup.Commands.DeleteControlGroup;
@@ -6,129 +6,64 @@ using Qualifier.Application.Database.ControlGroup.Commands.UpdateControlGroup;
 using Qualifier.Application.Database.ControlGroup.Queries.GetAllControlGroupsByStandardId;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupById;
 using Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsByStandardId;
-using Qualifier.Common.Api;
-using Qualifier.Common.Application.Dto;
 
+namespace Qualifier.Api.Controllers;
 
-namespace Qualifier.Api.Controllers
+[Route("api/[controller]")]
+[Authorize]
+public class ControlGroupController(
+    IGetAllControlGroupsByStandardIdQuery getAllQuery,
+    IGetControlGroupsByStandardIdQuery getPagedQuery,
+    IGetControlGroupByIdQuery getByIdQuery,
+    ICreateControlGroupCommand createCommand,
+    IUpdateControlGroupCommand updateCommand,
+    IDeleteControlGroupCommand deleteCommand
+) : ApiBaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ControlGroupController : ControllerBase
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll(int standardId)
     {
+        var res = await getAllQuery.Execute(standardId);
+        return ProcessResponse(res);
+    }
 
-        [HttpGet("All")]
-        public async Task<IActionResult> GetAll(int standardId, [FromServices] IGetAllControlGroupsByStandardIdQuery query)
-        {
-         
-            var res = await query.Execute(standardId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(res);
-        }
+    [HttpGet]
+    public async Task<IActionResult> Get(int skip, int pageSize, string? search, int standardId)
+    {
+        var res = await getPagedQuery.Execute(skip, pageSize, search ?? string.Empty, standardId);
+        return ProcessResponse(res);
+    }
 
-        [HttpGet()]
-        public async Task<IActionResult> Get(int skip, int pageSize, string? search, int standardId, [FromServices] IGetControlGroupsByStandardIdQuery query)
-        {
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var res = await getByIdQuery.Execute(id);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-            if (search == null)
-                search = string.Empty;
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateControlGroupDto model)
+    {
+        model.creationUserId = UserId;
+        model.companyId = CompanyId;
 
-            var res = await query.Execute(skip, pageSize, search, standardId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(res);
-        }
+        var res = await createCommand.Execute(model);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateControlGroupDto model)
+    {
+        model.updateUserId = UserId;
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, [FromServices] IGetControlGroupByIdQuery getControlGroupByIdQuery)
-        {
-            var res = await getControlGroupByIdQuery.Execute(id);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
+        var res = await updateCommand.Execute(model, id);
+        return ProcessResponse(res, wrapWithData: true);
+    }
 
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-        [HttpPost()]
-        public async Task<IActionResult> Create([FromBody] CreateControlGroupDto model, [FromServices] ICreateControlGroupCommand createControlGroupCommand)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
-
-            int companyId;
-            bool success2 = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
-
-            if (success)
-                model.creationUserId = userId;
-
-            if (success2)
-                model.companyId = companyId;
-
-            var res = await createControlGroupCommand.Execute(model);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] UpdateControlGroupDto model, int id, [FromServices] IUpdateControlGroupCommand updateControlGroupCommand)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userId;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
-
-            if (success)
-                model.updateUserId = userId;
-
-            var res = await updateControlGroupCommand.Execute(model, id);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-        }
-
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> delete(int id, [FromServices] IDeleteControlGroupCommand deleteControlGroupCommand)
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            int userIdValue;
-
-            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userIdValue);
-
-            int userId = 0;
-            if (success)
-                userId = userIdValue;
-
-            var res = await deleteControlGroupCommand.Execute(id, userId);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
-                return BadRequest(res);
-            else
-                return Ok(new
-                {
-                    data = res
-                });
-
-        }
-
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var res = await deleteCommand.Execute(id, UserId);
+        return ProcessResponse(res, wrapWithData: true);
     }
 }

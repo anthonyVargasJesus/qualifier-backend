@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPlanPriority;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -13,7 +14,8 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
         private readonly IMapper _mapper;
         private readonly IActionPlanRepository _actionPlanRepository;
 
-        public UpdateActionPlanCommand(IDatabaseService databaseService, IMapper mapper, IActionPlanRepository actionPlanRepository)
+        public UpdateActionPlanCommand(IDatabaseService databaseService, IMapper mapper, 
+                                       IActionPlanRepository actionPlanRepository)
         {
             _databaseService = databaseService;
             _mapper = mapper;
@@ -34,7 +36,13 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
 
                 await _actionPlanRepository.Update(id, _mapper.Map<ActionPlanEntity>(model));
 
-                return model;
+                var updatedEntity = await _databaseService.ActionPlan
+                                         .AsNoTracking()
+                                         .FirstOrDefaultAsync(item =>
+                                             item.actionPlanId == id &&
+                                             !(item.isDeleted ?? false));
+
+                return _mapper.Map<UpdateActionPlanDto>(updatedEntity);
             }
             catch (Exception)
             {
