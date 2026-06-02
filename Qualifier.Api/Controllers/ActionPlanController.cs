@@ -4,6 +4,7 @@ using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.DeleteActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
 
 namespace Qualifier.Api.Controllers;
@@ -14,11 +15,21 @@ namespace Qualifier.Api.Controllers;
 public class ActionPlanController(
     IGetActionPlansByBreachIdQuery getPagedQuery,
     IGetActionPlanByIdQuery getByIdQuery,
+    IGetActionPlanProgressQuery getProgressQuery,
     ICreateActionPlanCommand createCommand,
     IUpdateActionPlanCommand updateCommand,
     IDeleteActionPlanCommand deleteCommand
 ) : ApiBaseController
 {
+    [HttpGet("progress")]
+    public async Task<IActionResult> GetProgress()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+
+        var res = await getProgressQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
     [HttpGet]
     public async Task<IActionResult> Get(int skip, int pageSize, string? search, int breachId)
     {

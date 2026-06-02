@@ -8,6 +8,7 @@ using Qualifier.Application.Database.User.Commands.DeleteUser;
 using Qualifier.Application.Database.User.Commands.UpdateUser;
 using Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId;
 using Qualifier.Application.Database.User.Queries.GetMenus;
+using Qualifier.Application.Database.User.Queries.GetUserActivity;
 using Qualifier.Application.Database.User.Queries.GetUserById;
 using Qualifier.Application.Database.User.Queries.GetUsersByCompanyId;
 using Qualifier.Common.Api;
@@ -22,6 +23,28 @@ namespace Qualifier.Api.Controllers
     //[Authorize]
     public class UserController : ControllerBase
     {
+
+        [HttpGet("activity")]
+        public async Task<IActionResult> GetActivity([FromServices] IGetUserActivityQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId;
+
+            bool success = int.TryParse(JwtTokenProvider.GetCompanyIdFromToken(accessToken), out companyId);
+
+            Notification notification = new Notification();
+            if (!success)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            var res = await query.Execute(companyId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(res);
+        }
 
         [HttpGet("menus/{userId}")]
         public async Task<IActionResult> GetMenusAsync([FromServices] IGetMenusQuery query)

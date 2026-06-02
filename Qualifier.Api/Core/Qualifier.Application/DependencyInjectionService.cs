@@ -7,6 +7,7 @@ using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.DeleteActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.DeleteActionPlanPriority;
@@ -367,6 +368,7 @@ using Qualifier.Application.Database.User.Commands.Login;
 using Qualifier.Application.Database.User.Commands.UpdateUser;
 using Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId;
 using Qualifier.Application.Database.User.Queries.GetMenus;
+using Qualifier.Application.Database.User.Queries.GetUserActivity;
 using Qualifier.Application.Database.User.Queries.GetUserById;
 using Qualifier.Application.Database.User.Queries.GetUsersByCompanyId;
 using Qualifier.Application.Database.UserState.Commands.CreateUserState;
@@ -751,6 +753,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetAllUsersByCompanyIdQuery, GetAllUsersByCompanyIdQuery>();
             services.AddTransient<IGetUsersByCompanyIdQuery, GetUsersByCompanyIdQuery>();
             services.AddTransient<IUpdateUserImageCommand, UpdateUserImageCommand>();
+            services.AddTransient<IGetUserActivityQuery, GetUserActivityQuery>();
 
             //RoleInUser
             services.AddTransient<ICreateRoleInUserCommand, CreateRoleInUserCommand>();
@@ -949,6 +952,7 @@ namespace Qualifier.Application
             services.AddTransient<IDeleteActionPlanCommand, DeleteActionPlanCommand>();
             services.AddTransient<IGetActionPlanByIdQuery, GetActionPlanByIdQuery>();
             services.AddTransient<IGetActionPlansByBreachIdQuery, GetActionPlansByBreachIdQuery>();
+            services.AddTransient<IGetActionPlanProgressQuery, GetActionPlanProgressQuery>();
 
             services.AddTransient<IGetRisksIdentificationQuery, GetRisksIdentificationQuery>();
 
