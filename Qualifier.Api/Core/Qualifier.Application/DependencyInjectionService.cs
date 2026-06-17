@@ -49,6 +49,7 @@ using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
+using Qualifier.Application.Database.Breach.Queries.GetBreachSeverityReport;
 using Qualifier.Application.Database.Breach.Queries.GetRisksIdentification;
 using Qualifier.Application.Database.BreachSeverity.Queries.GetAllBreachSeveritiesByCompanyId;
 using Qualifier.Application.Database.BreachStatus.Queries.GetAllBreachStatussByCompanyId;
@@ -132,6 +133,7 @@ using Qualifier.Application.Database.DocumentType.Queries.GetAllDocumentTypesByC
 using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypeById;
 using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypesByCompanyId;
 using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
+using Qualifier.Application.Database.Evaluation.Queries.GetComplianceEvolution;
 using Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
@@ -496,6 +498,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetControlsDashboardQuery, GetControlsDashboardQuery>();
             services.AddTransient<IGetAllEvaluationsByCompanyIdQuery, GetAllEvaluationsByCompanyIdQuery>();
             services.AddTransient<IGetCurrentEvaluationQuery, GetCurrentEvaluationQuery>();
+            services.AddTransient<IGetComplianceEvolutionQuery, GetComplianceEvolutionQuery>();
 
             //RequirementEvaluation
             services.AddTransient<ICreateRequirementEvaluationCommand, CreateRequirementEvaluationCommand>();
@@ -955,6 +958,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetActionPlanProgressQuery, GetActionPlanProgressQuery>();
 
             services.AddTransient<IGetRisksIdentificationQuery, GetRisksIdentificationQuery>();
+            services.AddTransient<IGetBreachSeverityReportQuery, GetBreachSeverityReportQuery>();
 
             //RiskStatus
             services.AddTransient<ICreateRiskStatusCommand, CreateRiskStatusCommand>();

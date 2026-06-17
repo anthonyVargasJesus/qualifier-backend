@@ -5,6 +5,7 @@ using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
+using Qualifier.Application.Database.Breach.Queries.GetBreachSeverityReport;
 using Qualifier.Application.Database.Breach.Queries.GetRisksIdentification;
 
 namespace Qualifier.Api.Controllers;
@@ -15,11 +16,20 @@ public class BreachController(
     IGetRisksIdentificationQuery risksIdentificationQuery,
     IGetBreachsByEvaluationIdQuery getByEvaluationQuery,
     IGetBreachByIdQuery getByIdQuery,
+    IGetBreachSeverityReportQuery severityReportQuery,
     ICreateBreachCommand createCommand,
     IUpdateBreachCommand updateCommand,
     IDeleteBreachCommand deleteCommand
 ) : ApiBaseController
 {
+    [HttpGet("severity-report")]
+    public async Task<IActionResult> GetSeverityReport()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+        var res = await severityReportQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
     [HttpGet("RisksIdentification")]
     public async Task<IActionResult> GetRisksIdentification(int skip, int pageSize, string? search)
     {

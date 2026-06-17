@@ -7,6 +7,7 @@ using Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
 using Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetComplianceEvolution;
 using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
@@ -236,6 +237,26 @@ namespace Qualifier.Api.Controllers
                     data = res
                 });
 
+        }
+
+        [HttpGet("compliance-evolution")]
+        public async Task<IActionResult> GetComplianceEvolution([FromServices] IGetComplianceEvolutionQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
+
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            var res = await query.Execute(companyId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new { data = res });
         }
 
         [HttpGet("PendingDocumentation")]
