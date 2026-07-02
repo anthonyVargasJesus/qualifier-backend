@@ -58,6 +58,10 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                 var risks = await (from risk in _databaseService.Risk
                                       join menace in _databaseService.Menace on risk.menace equals menace
                                       join vulnerability in _databaseService.Vulnerability on risk.vulnerability equals vulnerability
+                                      join ra in _databaseService.RiskAssessment on risk.riskId equals ra.riskId into _ra
+                                      from riskAssessment in _ra.Where(x => x.isDeleted == null || x.isDeleted == false).DefaultIfEmpty()
+                                      join rt in _databaseService.RiskTreatment on risk.riskId equals rt.riskId into _rt
+                                      from riskTreatment in _rt.Where(x => x.isDeleted == null || x.isDeleted == false).DefaultIfEmpty()
 
                                       where ((risk.isDeleted == null || risk.isDeleted == false) && risk.evaluationId == evaluationId
                                       && risk.riskStatusId == riskStatusId)
@@ -70,6 +74,8 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                                           activesInventoryNumber = risk.activesInventoryNumber,
                                           activesInventoryName = risk.activesInventoryName,
                                           evaluationId = evaluationId,
+                                          riskAssessmentId = riskAssessment != null ? riskAssessment.riskAssessmentId : 0,
+                                          riskTreatmentId = riskTreatment != null ? riskTreatment.riskTreatmentId : 0,
                                           menace = new MenaceEntity
                                           {
                                               name = menace.name,
@@ -78,7 +84,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId
                                           {
                                               name = vulnerability.name,
                                           },
-                                       
+
                                       })
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();

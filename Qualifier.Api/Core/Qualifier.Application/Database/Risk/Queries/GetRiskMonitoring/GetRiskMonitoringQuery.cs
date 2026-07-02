@@ -31,7 +31,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskMonitoring
                 if (currentEvaluation != null)
                     evaluationId = currentEvaluation.evaluationId;
 
-                const int STATUS_IN_MONITORING_ID = 5;
+                const int STATUS_IN_MONITORING_ID = 4;
 
                 var risks = await (from risk in _databaseService.Risk
                                    join menace in _databaseService.Menace on risk.menaceId equals menace.menaceId
@@ -166,7 +166,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskMonitoring
 
         public async Task<int> getTotal(string search, int evaluationId)
         {
-            const int IN_TREATMENT_STATUS_ID = 4;
+            const int STATUS_IN_MONITORING_ID = 4;
 
             var total = await (from risk in _databaseService.Risk
                                join menace in _databaseService.Menace on risk.menaceId equals menace.menaceId
@@ -191,7 +191,7 @@ namespace Qualifier.Application.Database.Risk.Queries.GetRiskMonitoring
 
                                where ((risk.isDeleted == null || risk.isDeleted == false)
                                       && risk.evaluationId == evaluationId
-                                      && risk.riskStatusId == IN_TREATMENT_STATUS_ID)
+                                      && risk.riskStatusId == STATUS_IN_MONITORING_ID)
                                      && risk.name.ToUpper().Contains(search.ToUpper())
 
                                select new RiskEntity

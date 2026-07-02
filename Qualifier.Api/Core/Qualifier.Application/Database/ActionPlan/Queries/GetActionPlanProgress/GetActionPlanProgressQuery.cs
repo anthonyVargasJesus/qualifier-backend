@@ -77,7 +77,8 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgres
                     };
 
                 var today = DateTime.UtcNow.Date;
-                var maxStatusValue = plans.Max(p => p.actionPlanStatus!.value);
+                bool IsCompleted(ActionPlanStatusEntity status) =>
+                    status.abbreviation == "COMP" || status.abbreviation == "CERR";
 
                 var responsibleGroups = plans
                     .GroupBy(p => new { p.responsibleId, name = p.responsible!.name })
@@ -85,9 +86,9 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgres
                     .Select(g =>
                     {
                         var plansInGroup = g.ToList();
-                        var completed = plansInGroup.Count(p => p.actionPlanStatus!.value == maxStatusValue);
+                        var completed = plansInGroup.Count(p => IsCompleted(p.actionPlanStatus!));
                         var overdue = plansInGroup.Count(p =>
-                            p.dueDate.Date < today && p.actionPlanStatus!.value != maxStatusValue);
+                            p.dueDate.Date < today && !IsCompleted(p.actionPlanStatus!));
                         var total = plansInGroup.Count;
 
                         var statusBreakdown = plansInGroup

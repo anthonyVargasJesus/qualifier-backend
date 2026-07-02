@@ -19,7 +19,9 @@ namespace Qualifier.Api.Controllers
         public async Task<IActionResult> Get(int id, [FromServices] IGetRiskAssessmentByIdQuery getRiskAssessmentByIdQuery)
         {
             var res = await getRiskAssessmentByIdQuery.Execute(id);
-            if (res.GetType() == typeof(BaseErrorResponseDto))
+            if (res == null)
+                return NotFound();
+            else if (res.GetType() == typeof(BaseErrorResponseDto))
 
                 return BadRequest(res);
             else
