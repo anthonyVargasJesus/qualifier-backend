@@ -95,6 +95,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
                 .Where(m => m.maturityLevelId == entity.maturityLevelId)
                 .FirstOrDefaultAsync();
 
+
             int? severity = maturityLevel?.name switch
             {
                 "Parcial" => SEVERITY_MEDIUM,
