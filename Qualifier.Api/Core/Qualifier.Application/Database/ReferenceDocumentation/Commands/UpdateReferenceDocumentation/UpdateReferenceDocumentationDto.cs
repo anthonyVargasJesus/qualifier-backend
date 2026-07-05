@@ -9,6 +9,7 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Commands.UpdateR
         public string url { get; set; }
         public string? description { get; set; }
         public int? documentationId { get; set; }
+        public bool? isObsolete { get; set; }
         public int? updateUserId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)

@@ -10,6 +10,7 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
         public int? requirementEvaluationId { get; set; }
         public int? controlEvaluationId { get; set; }
         public int? evaluationId { get; set; }
+        public bool isObsolete { get; set; }
 
     }
 }

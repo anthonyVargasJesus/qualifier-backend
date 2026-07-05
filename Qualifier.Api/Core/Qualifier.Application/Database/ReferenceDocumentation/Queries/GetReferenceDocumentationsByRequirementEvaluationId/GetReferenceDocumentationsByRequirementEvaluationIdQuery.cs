@@ -37,6 +37,7 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
                                           fileSizeBytes = referenceDocumentation.fileSizeBytes,
                                           creationDate = referenceDocumentation.creationDate,
                                           creationUserEmail = user == null ? null : user.email,
+                                          isObsolete = referenceDocumentation.isObsolete,
                                           documentation = documentation == null ? null : new DocumentationEntity
                                           {
                                               name = documentation.name,

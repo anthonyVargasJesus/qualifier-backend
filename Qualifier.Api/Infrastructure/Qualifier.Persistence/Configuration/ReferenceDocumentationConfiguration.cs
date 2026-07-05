@@ -68,6 +68,9 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
 
             entityBuilder.Property(e => e.url)
                          .HasColumnName("C_URL");
+
+            entityBuilder.Property(e => e.isObsolete)
+                         .HasColumnName("N_IS_OBSOLETE");
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
         public long? fileSizeBytes { get; set; }
         public DateTime? creationDate { get; set; }
         public string? creationUserEmail { get; set; }
+        public bool isObsolete { get; set; }
         public GetReferenceDocumentationsByRequirementEvaluationIdDocumentationDto? documentation { get; set; }
     }
     public class GetReferenceDocumentationsByRequirementEvaluationIdDocumentationDto

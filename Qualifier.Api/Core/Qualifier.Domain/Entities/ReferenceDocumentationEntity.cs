@@ -21,6 +21,9 @@ namespace Qualifier.Domain.Entities
         public string? evidenceType { get; set; }
         // Tamaño en bytes del archivo subido a Firebase Storage; null para evidencias de tipo enlace.
         public long? fileSizeBytes { get; set; }
+        // Marca manual (no automática por fecha): el responsable la marca cuando la evidencia
+        // ya no aplica (ej. una política reemplazada), sin necesidad de borrarla.
+        public bool isObsolete { get; set; }
         public DocumentationEntity documentation { get; set; }
         public RequirementEvaluationEntity requirementEvaluation { get; set; }
         [NotMapped]
