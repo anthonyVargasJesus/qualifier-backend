@@ -5,19 +5,18 @@ namespace Qualifier.Application.Firebase
 {
     public static class FirebaseManager
     {
-        // La credencial de la cuenta de servicio NUNCA debe vivir en el código fuente.
-        //
-        // Configura la variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON con el contenido
-        // completo del JSON de la cuenta de servicio (en local, vía launchSettings.json/tu
-        // shell; en Railway, como variable de entorno del servicio).
-        public static void configCredentials()
+        // La credencial de la cuenta de servicio NUNCA debe vivir en el código fuente NI en
+        // launchSettings.json (ese archivo se commitea a git). El caller la resuelve vía
+        // IConfiguration["FIREBASE_SERVICE_ACCOUNT_JSON"], que en local toma el valor de
+        // "dotnet user-secrets" (fuera del repo) y en Railway, de la variable de entorno real
+        // del servicio — misma clave, sin duplicar lógica acá.
+        public static void configCredentials(string? json)
         {
             if (FirebaseApp.DefaultInstance != null) return;
 
-            var json = Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON");
             if (string.IsNullOrWhiteSpace(json))
                 throw new InvalidOperationException(
-                    "Falta la variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON con la credencial de la cuenta de servicio de Firebase.");
+                    "Falta configurar FIREBASE_SERVICE_ACCOUNT_JSON (user-secret en local, variable de entorno en Railway) con la credencial de la cuenta de servicio de Firebase.");
 
             FirebaseApp.Create(new AppOptions
             {

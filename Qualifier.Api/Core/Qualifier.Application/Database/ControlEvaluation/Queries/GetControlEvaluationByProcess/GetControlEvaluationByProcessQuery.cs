@@ -59,7 +59,12 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                 var evaluations = await (from controlEvaluation in _databaseService.ControlEvaluation
                                          join control in _databaseService.Control on controlEvaluation.control equals control
                                          join maturityLevel in _databaseService.MaturityLevel on controlEvaluation.maturityLevel equals maturityLevel
-                                         join responsible in _databaseService.Responsible on controlEvaluation.responsible equals responsible
+                                         // LEFT JOIN (no INNER): la app móvil no obliga a elegir responsable y guarda
+                                         // 0 cuando el control no tiene uno por defecto configurado; con INNER JOIN esa
+                                         // fila desaparecía en silencio de este listado (y del de Angular) aunque
+                                         // estuviera guardada en la base de datos.
+                                         join responsible in _databaseService.Responsible on controlEvaluation.responsible equals responsible into responsibleJoin
+                                         from responsible in responsibleJoin.DefaultIfEmpty()
                                          where ((controlEvaluation.isDeleted == null || controlEvaluation.isDeleted == false)
                                          && controlEvaluation.evaluationId == evaluationId)
                                          select new ControlEvaluationEntity
@@ -83,7 +88,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                                                  color = maturityLevel.color,
                                                  value = maturityLevel.value,
                                              },
-                                             responsible = new ResponsibleEntity
+                                             responsible = responsible == null ? null : new ResponsibleEntity
                                              {
                                                  name = responsible.name,
                                              },

@@ -34,7 +34,7 @@ namespace Qualifier.Application.Database.User.Commands.Login
         {
             try
             {
-                FirebaseManager.configCredentials();
+                FirebaseManager.configCredentials(_configuration["FIREBASE_SERVICE_ACCOUNT_JSON"]);
 
                 FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance
                     .VerifyIdTokenAsync(loginTryDto.tokenFirebase);
@@ -94,9 +94,10 @@ namespace Qualifier.Application.Database.User.Commands.Login
 
                 return _mapper.Map<LoginUserLoginDto>(login);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-             return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+             //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

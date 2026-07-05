@@ -77,8 +77,13 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                 var evaluations = await (from requirementEvaluation in _databaseService.RequirementEvaluation
                                          join requirement in _databaseService.Requirement on requirementEvaluation.requirement equals requirement
                                          join maturityLevel in _databaseService.MaturityLevel on requirementEvaluation.maturityLevel equals maturityLevel
-                                         join responsible in _databaseService.Responsible on requirementEvaluation.responsible equals responsible
-                                         where ((requirementEvaluation.isDeleted == null || requirementEvaluation.isDeleted == false) 
+                                         // LEFT JOIN (no INNER): la app móvil no obliga a elegir responsable y guarda
+                                         // 0 cuando el requisito no tiene uno por defecto configurado; con INNER JOIN
+                                         // esa fila desaparecía en silencio de este listado (y del de Angular) aunque
+                                         // estuviera guardada en la base de datos.
+                                         join responsible in _databaseService.Responsible on requirementEvaluation.responsible equals responsible into responsibleJoin
+                                         from responsible in responsibleJoin.DefaultIfEmpty()
+                                         where ((requirementEvaluation.isDeleted == null || requirementEvaluation.isDeleted == false)
                                          && requirementEvaluation.evaluationId == evaluationId)
                                          select new RequirementEvaluationEntity
                                          {
@@ -100,7 +105,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                                  color = maturityLevel.color,
                                                  value = maturityLevel.value,
                                              },
-                                             responsible = new ResponsibleEntity
+                                             responsible = responsible == null ? null : new ResponsibleEntity
                                              {
                                                  name = responsible.name,
                                              },
