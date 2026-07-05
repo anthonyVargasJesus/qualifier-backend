@@ -58,14 +58,27 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
         {
             if (entity.userId == null || entity.userId <= 0) return;
 
-            var user = await _databaseService.User.FirstOrDefaultAsync(u => u.userId == entity.userId);
-            if (user == null || string.IsNullOrWhiteSpace(user.fcmToken)) return;
+            // Proyección, no la entidad completa: UserEntity trae navigation properties
+            // (standard/userState) sin configurar explícitamente en UserConfiguration, lo que
+            // hace que EF Core genere shadow FKs inexistentes (ej. "StandardEntitystandardId")
+            // y la consulta truene si se carga la entidad entera.
+            var fcmToken = await _databaseService.User
+                .Where(u => u.userId == entity.userId)
+                .Select(u => u.fcmToken)
+                .FirstOrDefaultAsync();
+            if (string.IsNullOrWhiteSpace(fcmToken)) return;
 
-            var breach = await _databaseService.Breach.FirstOrDefaultAsync(b => b.breachId == entity.breachId);
+            // Idem: BreachConfiguration tampoco configura sus navigation properties
+            // (evaluation/breachSeverity/breachStatus/responsible/requirement/control), misma
+            // proyección para evitar el mismo error de shadow FKs.
+            var breachNumerationToShow = await _databaseService.Breach
+                .Where(b => b.breachId == entity.breachId)
+                .Select(b => b.numerationToShow)
+                .FirstOrDefaultAsync();
             var priority = await _databaseService.ActionPlanPriority
                 .FirstOrDefaultAsync(p => p.actionPlanPriorityId == entity.actionPlanPriorityId);
 
-            var breachCode = breach?.numerationToShow ?? entity.breachId.ToString();
+            var breachCode = breachNumerationToShow ?? entity.breachId.ToString();
             var priorityName = priority?.name ?? "";
 
             const string title = "Nueva acción de cumplimiento asignada";
@@ -73,7 +86,7 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
                 + (string.IsNullOrEmpty(priorityName) ? "" : $" Prioridad {priorityName}.");
 
             await _pushNotificationService.SendAsync(
-                user.fcmToken!,
+                fcmToken!,
                 title,
                 body,
                 new Dictionary<string, string>
