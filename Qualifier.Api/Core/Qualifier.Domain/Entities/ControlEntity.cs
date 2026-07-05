@@ -12,6 +12,11 @@ namespace Qualifier.Domain.Entities
         public int controlGroupId { get; set; }
         public int standardId { get; set; }
         public int companyId { get; set; }
+        // Responsable sugerido para precargar ControlEvaluation.responsibleId cuando se evalúa
+        // este control por primera vez en un ciclo nuevo (no reemplaza el responsable guardado
+        // por evaluación, solo lo precarga).
+        public int? defaultResponsibleId { get; set; }
+        public ResponsibleEntity? defaultResponsible { get; set; }
         public ControlGroupEntity? controlGroup { get; set; }
         public StandardEntity? standard { get; set; }
         public ICollection<ControlEvaluationEntity>? controlEvaluations { get; set; }
@@ -33,6 +38,9 @@ namespace Qualifier.Domain.Entities
             {
                 controlEvaluationId = 0,
                 controlId = controlId,
+                // Precarga el responsable por defecto del control (si se configuró uno); sigue
+                // siendo editable y solo se guarda de verdad en el primer POST de esta evaluación.
+                responsibleId = defaultResponsibleId ?? 0,
                 control = new ControlEntity
                 {
                     controlId = controlId,

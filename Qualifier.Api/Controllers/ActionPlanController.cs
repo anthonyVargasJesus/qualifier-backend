@@ -6,6 +6,7 @@ using Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUserId;
 
 namespace Qualifier.Api.Controllers;
 
@@ -16,6 +17,7 @@ public class ActionPlanController(
     IGetActionPlansByBreachIdQuery getPagedQuery,
     IGetActionPlanByIdQuery getByIdQuery,
     IGetActionPlanProgressQuery getProgressQuery,
+    IGetActionPlansByUserIdQuery getByUserQuery,
     ICreateActionPlanCommand createCommand,
     IUpdateActionPlanCommand updateCommand,
     IDeleteActionPlanCommand deleteCommand
@@ -27,6 +29,15 @@ public class ActionPlanController(
         if (CompanyId == 0) return CompanyRequiredError();
 
         var res = await getProgressQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Tareas asignadas al usuario logeado (JWT) para la evaluación indicada — no recibe userId
+    // del cliente, siempre son "mis" acciones, no las de otro usuario.
+    [HttpGet("byUser")]
+    public async Task<IActionResult> GetByUser(int evaluationId)
+    {
+        var res = await getByUserQuery.Execute(UserId, evaluationId);
         return ProcessResponse(res);
     }
 

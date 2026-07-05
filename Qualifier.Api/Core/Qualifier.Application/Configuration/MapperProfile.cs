@@ -237,6 +237,8 @@ using Qualifier.Application.Database.RiskStatus.Commands.UpdateRiskStatus;
 using Qualifier.Application.Database.RiskStatus.Queries.GetAllRiskStatussByCompanyId;
 using Qualifier.Application.Database.RiskStatus.Queries.GetRiskStatusById;
 using Qualifier.Application.Database.RiskStatus.Queries.GetRiskStatussByCompanyId;
+using Qualifier.Application.Database.UserControlGroup.Queries.GetUserControlGroupsByUserId;
+using Qualifier.Application.Database.UserRequirementFamily.Queries.GetUserRequirementFamiliesByUserId;
 using Qualifier.Application.Database.RiskTreatment.Commands.CreateRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Commands.UpdateRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Queries.GetRiskTreatmentById;
@@ -949,7 +951,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<ActionPlanEntity, GetActionPlansByBreachIdDto>().ReverseMap();
             CreateMap<ActionPlanPriorityEntity, GetActionPlansByBreachIdActionPlanPriorityDto>().ReverseMap();
             CreateMap<ActionPlanStatusEntity, GetActionPlansByBreachIdActionPlanStatusDto>().ReverseMap();
-            CreateMap<ResponsibleEntity, GetActionPlansByBreachIdResponsibleDto>().ReverseMap();
+            CreateMap<UserEntity, GetActionPlansByBreachIdUserDto>().ReverseMap();
 
             CreateMap<EvaluationEntity, GetRisksIdentificationCurrentEvaluationDto>().ReverseMap();
 
@@ -973,6 +975,12 @@ namespace Qualifier.Application.Configuration
             CreateMap<RiskEntity, GetControlImplementationsByRiskIdRiskDto>().ReverseMap();
 
             CreateMap<RiskEntity, GetRiskMonitoringRiskDto>().ReverseMap();
+
+            //UserControlGroup
+            CreateMap<UserControlGroupEntity, GetUserControlGroupsByUserIdDto>().ReverseMap();
+
+            //UserRequirementFamily
+            CreateMap<UserRequirementFamilyEntity, GetUserRequirementFamiliesByUserIdDto>().ReverseMap();
 
         }
     }

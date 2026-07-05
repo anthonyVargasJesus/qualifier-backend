@@ -31,8 +31,13 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
                          .HasColumnName("C_DESCRIPTION");
 
             entityBuilder.Property(e => e.documentationId)
-                         .HasColumnName("N_DOCUMENTATION_ID_FK")
-                         .IsRequired();
+                         .HasColumnName("N_DOCUMENTATION_ID_FK");
+
+            entityBuilder.Property(e => e.evidenceType)
+                         .HasColumnName("C_EVIDENCE_TYPE");
+
+            entityBuilder.Property(e => e.fileSizeBytes)
+                         .HasColumnName("N_FILE_SIZE_BYTES");
 
             entityBuilder.Property(e => e.requirementEvaluationId)
                          .HasColumnName("N_REQUIREMENT_EVALUATION_ID_FK");

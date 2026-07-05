@@ -8,6 +8,7 @@ namespace Qualifier.Application.Database.Control.Queries.GetControlById
         public string description { get; set; }
         public int controlGroupId { get; set; }
         public int standardId { get; set; }
+        public int? defaultResponsibleId { get; set; }
 
     }
 }

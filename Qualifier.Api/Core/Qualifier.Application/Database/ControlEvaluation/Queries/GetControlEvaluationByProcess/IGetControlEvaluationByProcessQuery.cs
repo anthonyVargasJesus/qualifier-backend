@@ -8,6 +8,6 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
 {
     public interface IGetControlEvaluationByProcessQuery
     {
-        Task<Object> Execute(int standardId, int evaluationId);
+        Task<Object> Execute(int standardId, int evaluationId, int userId = 0, bool scopeToUser = false);
     }
 }

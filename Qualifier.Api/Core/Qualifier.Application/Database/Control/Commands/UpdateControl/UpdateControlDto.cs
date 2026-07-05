@@ -9,6 +9,7 @@ namespace Qualifier.Application.Database.Control.Commands.UpdateControl
         public string? description { get; set; }
         public int? controlGroupId { get; set; }
         public int? updateUserId { get; set; }
+        public int? defaultResponsibleId { get; set; }
 
         public void requiredFieldsValidation(Notification notification)
         {

@@ -16,13 +16,25 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
             _mapper = mapper;
         }
 
-        public async Task<Object> Execute(int standardId, int evaluationId)
+        public async Task<Object> Execute(int standardId, int evaluationId, int userId = 0, bool scopeToUser = false)
         {
             try
             {
+                // scopeToUser solo lo activa /gap/panel — las pantallas viejas (control-evaluation)
+                // siguen mandando el default (false) y ven todos los grupos, como hoy.
+                List<int>? assignedGroupIds = null;
+                if (scopeToUser)
+                {
+                    assignedGroupIds = await (from x in _databaseService.UserControlGroup
+                                              where (x.isDeleted == null || x.isDeleted == false)
+                                              && x.userId == userId && x.standardId == standardId
+                                              select x.controlGroupId).ToListAsync();
+                }
+
                 var groups = await (from item in _databaseService.ControlGroup
-                                    where ((item.isDeleted == null || item.isDeleted == false) 
-                                    && item.standardId == standardId)
+                                    where ((item.isDeleted == null || item.isDeleted == false)
+                                    && item.standardId == standardId
+                                    && (assignedGroupIds == null || assignedGroupIds.Contains(item.controlGroupId)))
                                     select new ControlGroupEntity
                                     {
                                         controlGroupId = item.controlGroupId,
@@ -40,6 +52,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                                           controlGroupId = item.controlGroupId,
                                           number = item.number,
                                           name = item.name,
+                                          defaultResponsibleId = item.defaultResponsibleId,
                                       }).OrderBy(x => x.number)
                                   .ToListAsync();
 
@@ -100,7 +113,15 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                 foreach (var group in groups)
                     foreach (var control in group.controls)
                         foreach (var item in control.controlEvaluations)
+                        {
                             setEvaluationState(item);
+                            // item.control es una copia separada construida en la proyección de
+                            // evaluations (arriba); setControlsWithGroup calculó numerationToShow
+                            // sobre la lista "controls", no sobre esa copia, así que hay que
+                            // propagarlo acá para que se vea en la pantalla de evaluación.
+                            if (item.control != null)
+                                item.control.numerationToShow = control.numerationToShow;
+                        }
 
                 var legend = CreateLegend(groups);
                 var maturityLegend = CreateMaturityLegend(groups);

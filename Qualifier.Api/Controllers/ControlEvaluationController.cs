@@ -19,9 +19,9 @@ public class ControlEvaluationController(
 ) : ApiBaseController
 {
     [HttpGet("all")]
-    public async Task<IActionResult> GetAll(int standardId, int evaluationId)
+    public async Task<IActionResult> GetAll(int standardId, int evaluationId, bool scopeToUser = false)
     {
-        var res = await getByProcessQuery.Execute(standardId, evaluationId);
+        var res = await getByProcessQuery.Execute(standardId, evaluationId, UserId, scopeToUser);
         return ProcessResponse(res);
     }
 

@@ -12,6 +12,7 @@ namespace Qualifier.Application.Database.Requirement.Commands.UpdateRequirement
         public bool isEvaluable { get; set; }
         public int? updateUserId { get; set; }
         public string letter { get; set; }
+        public int? defaultResponsibleId { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {
             if (numeration == null)

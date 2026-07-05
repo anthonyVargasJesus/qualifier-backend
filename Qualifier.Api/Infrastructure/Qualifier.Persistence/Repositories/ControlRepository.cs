@@ -21,6 +21,7 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Repositories
             entry.Property(x => x.name).IsModified = true;
             entry.Property(x => x.description).IsModified = true;
             entry.Property(x => x.controlGroupId).IsModified = true;
+            entry.Property(x => x.defaultResponsibleId).IsModified = true;
             entry.Property(x => x.updateDate).IsModified = true;
             entry.Property(x => x.updateUserId).IsModified = true;
             await _context.SaveChangesAsync();

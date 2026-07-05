@@ -56,6 +56,13 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
             entityBuilder.Property(e => e.isDeleted)
                          .HasColumnName("N_IS_DELETED");
 
+            entityBuilder.Property(e => e.defaultResponsibleId)
+                         .HasColumnName("N_DEFAULT_RESPONSIBLE_ID_FK");
+
+            entityBuilder.HasOne(x => x.defaultResponsible)
+            .WithMany()
+            .HasForeignKey(x => x.defaultResponsibleId);
+
         }
     }
 }

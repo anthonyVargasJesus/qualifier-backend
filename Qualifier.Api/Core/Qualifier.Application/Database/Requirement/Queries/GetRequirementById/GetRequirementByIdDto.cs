@@ -11,6 +11,7 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementById
         public int parentId { get; set; }
         public bool isEvaluable { get; set; }
         public string letter { get; set; }
+        public int? defaultResponsibleId { get; set; }
     }
 }
 

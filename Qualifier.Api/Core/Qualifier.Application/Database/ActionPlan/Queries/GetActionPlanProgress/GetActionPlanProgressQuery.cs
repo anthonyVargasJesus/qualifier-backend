@@ -37,8 +37,9 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgres
                                        on ap.actionPlanStatusId equals status.actionPlanStatusId
                                    join priority in _databaseService.ActionPlanPriority
                                        on ap.actionPlanPriorityId equals priority.actionPlanPriorityId
-                                   join responsible in _databaseService.Responsible
-                                       on ap.responsibleId equals responsible.responsibleId
+                                   join user in _databaseService.User
+                                       on ap.userId equals user.userId into userJoin
+                                   from user in userJoin.DefaultIfEmpty()
                                    where (ap.isDeleted == null || ap.isDeleted == false)
                                          && ap.companyId == companyId
                                          && ap.evaluationId == currentEvaluation.evaluationId
@@ -46,10 +47,13 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgres
                                    {
                                        actionPlanId = ap.actionPlanId,
                                        dueDate = ap.dueDate,
-                                       responsibleId = ap.responsibleId,
+                                       userId = ap.userId,
                                        actionPlanStatusId = ap.actionPlanStatusId,
                                        actionPlanPriorityId = ap.actionPlanPriorityId,
-                                       responsible = new ResponsibleEntity { name = responsible.name },
+                                       // El DTO sigue llamándose "responsible*" (no lo renombro) para
+                                       // no tocar el frontend de este dashboard; el dato ahora sale
+                                       // del usuario real asignado, no del catálogo de cargos.
+                                       user = new UserEntity { name = user == null ? "Sin asignar" : (user.name ?? "") + " " + (user.firstName ?? "") },
                                        actionPlanStatus = new ActionPlanStatusEntity
                                        {
                                            name = status.name,
@@ -81,7 +85,7 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgres
                     status.abbreviation == "COMP" || status.abbreviation == "CERR";
 
                 var responsibleGroups = plans
-                    .GroupBy(p => new { p.responsibleId, name = p.responsible!.name })
+                    .GroupBy(p => new { p.userId, name = p.user!.name })
                     .OrderBy(g => g.Key.name)
                     .Select(g =>
                     {
@@ -109,7 +113,7 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgres
 
                         return new GetActionPlanProgressResponsibleDto
                         {
-                            responsibleId = g.Key.responsibleId,
+                            responsibleId = g.Key.userId ?? 0,
                             responsibleName = g.Key.name,
                             total = total,
                             completed = completed,

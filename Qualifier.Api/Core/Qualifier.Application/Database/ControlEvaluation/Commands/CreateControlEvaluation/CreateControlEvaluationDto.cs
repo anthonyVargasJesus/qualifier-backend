@@ -4,6 +4,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
 {
     public class CreateControlEvaluationDto
     {
+        public long controlEvaluationId { get; set; }
         public int? evaluationId { get; set; }
         public int? controlId { get; set; }
         public int? maturityLevelId { get; set; }

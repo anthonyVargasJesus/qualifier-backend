@@ -83,6 +83,8 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Database
         public DbSet<ActionPlanPriorityEntity> ActionPlanPriority { get; set; }
         public DbSet<ActionPlanEntity> ActionPlan { get; set; }
         public DbSet<RiskStatusEntity> RiskStatus { get; set; }
+        public DbSet<UserControlGroupEntity> UserControlGroup { get; set; }
+        public DbSet<UserRequirementFamilyEntity> UserRequirementFamily { get; set; }
         public async Task<bool> SaveAsync()
         {
 
@@ -167,6 +169,8 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Database
             new ActionPlanPriorityConfiguration(modelBuilder.Entity<ActionPlanPriorityEntity>());
             new ActionPlanConfiguration(modelBuilder.Entity<ActionPlanEntity>());
             new RiskStatusConfiguration(modelBuilder.Entity<RiskStatusEntity>());
+            new UserControlGroupConfiguration(modelBuilder.Entity<UserControlGroupEntity>());
+            new UserRequirementFamilyConfiguration(modelBuilder.Entity<UserRequirementFamilyEntity>());
 
         }
 

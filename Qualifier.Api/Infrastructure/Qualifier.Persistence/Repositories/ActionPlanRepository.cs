@@ -22,7 +22,7 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Repositories
             var entry = _context.Attach(entity);
             entry.Property(x => x.title).IsModified = true;
             entry.Property(x => x.description).IsModified = true;
-            entry.Property(x => x.responsibleId).IsModified = true;
+            entry.Property(x => x.userId).IsModified = true;
             entry.Property(x => x.startDate).IsModified = true;
             entry.Property(x => x.dueDate).IsModified = true;
             entry.Property(x => x.actionPlanStatusId).IsModified = true;

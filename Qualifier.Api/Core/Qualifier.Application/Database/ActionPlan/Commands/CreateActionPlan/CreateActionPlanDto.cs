@@ -10,7 +10,7 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
         public int? standardId { get; set; }
         public string? title { get; set; }
         public string? description { get; set; }
-        public int? responsibleId { get; set; }
+        public int? userId { get; set; }
         public DateTime? startDate { get; set; }
         public DateTime? dueDate { get; set; }
         public int? actionPlanPriorityId { get; set; }
@@ -31,8 +31,8 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
             if (string.IsNullOrWhiteSpace(title))
                 notification.addError("El title es obligatorio");
 
-            if (responsibleId == null || responsibleId <= 0)
-                notification.addError("El responsibleId no puede ser 0");
+            if (userId == null || userId <= 0)
+                notification.addError("El userId no puede ser 0");
 
             if (startDate == null)
                 notification.addError("El startDate es obligatorio");

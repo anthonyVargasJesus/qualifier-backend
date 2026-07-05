@@ -37,6 +37,10 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
                     await _databaseService.SaveAsync();
 
                     long controlEvaluationId = entity.controlEvaluationId;
+                    // Sin esto, el frontend recibe de vuelta el mismo id=0 que mandó y nunca se
+                    // entera de que ya existe una fila real; el próximo guardado volvería a crear
+                    // otra en vez de actualizar la que se acaba de insertar.
+                    model.controlEvaluationId = controlEvaluationId;
 
                     if (model.referenceDocumentations != null)
                         foreach (var item in model.referenceDocumentations)

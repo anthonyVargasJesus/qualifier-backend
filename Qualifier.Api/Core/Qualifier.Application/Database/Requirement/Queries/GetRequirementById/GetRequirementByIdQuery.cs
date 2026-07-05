@@ -31,7 +31,8 @@ namespace Qualifier.Application.Database.Requirement.Queries.GetRequirementById
                                         level = item.level,
                                         parentId = item.parentId,
                                         isEvaluable = item.isEvaluable,
-                                        letter = item.letter == null?"": item.letter
+                                        letter = item.letter == null?"": item.letter,
+                                        defaultResponsibleId = item.defaultResponsibleId
                                     }).FirstOrDefaultAsync();
 
                 return _mapper.Map<GetRequirementByIdDto>(entity);

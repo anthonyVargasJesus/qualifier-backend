@@ -29,7 +29,7 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById
                                         standardId = item.standardId,
                                         title = item.title,
                                         description = item.description,
-                                        responsibleId = item.responsibleId,
+                                        userId = item.userId,
                                         startDate = item.startDate,
                                         dueDate = item.dueDate,
                                         actionPlanStatusId = item.actionPlanStatusId,

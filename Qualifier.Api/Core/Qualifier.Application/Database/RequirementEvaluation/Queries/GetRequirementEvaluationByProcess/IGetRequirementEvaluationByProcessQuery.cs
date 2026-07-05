@@ -8,6 +8,6 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
 {
     public interface IGetRequirementEvaluationByProcessQuery
     {
-        Task<Object> Execute(int standardId, int evaluationId, string search);
+        Task<Object> Execute(int standardId, int evaluationId, string search, int userId = 0, bool scopeToUser = false);
     }
 }

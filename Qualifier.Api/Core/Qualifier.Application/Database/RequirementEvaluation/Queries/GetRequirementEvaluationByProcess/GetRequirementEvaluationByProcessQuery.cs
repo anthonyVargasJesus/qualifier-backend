@@ -17,10 +17,21 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             _mapper = mapper;
         }
 
-        public async Task<Object> Execute(int standardId, int evaluationId, string search)
+        public async Task<Object> Execute(int standardId, int evaluationId, string search, int userId = 0, bool scopeToUser = false)
         {
             try
             {
+                // scopeToUser solo lo activa /gap/panel — las pantallas viejas (requirement-
+                // evaluation) siguen mandando el default (false) y ven todas las familias, como hoy.
+                List<int>? assignedFamilyIds = null;
+                if (scopeToUser)
+                {
+                    assignedFamilyIds = await (from x in _databaseService.UserRequirementFamily
+                                               where (x.isDeleted == null || x.isDeleted == false)
+                                               && x.userId == userId && x.standardId == standardId
+                                               select x.requirementId).ToListAsync();
+                }
+
                 var entities = await (from requirement in _databaseService.Requirement
                                       join parent in _databaseService.Requirement
                                       on requirement.parentId equals parent.requirementId into parentJoin
@@ -37,6 +48,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                           level = requirement.level,
                                           parentId = requirement.parentId,
                                           letter = (requirement.letter == null) ? "" : requirement.letter,
+                                          defaultResponsibleId = requirement.defaultResponsibleId,
                                           requirement = parent == null ? null : new RequirementEntity
                                           {
                                               numeration = parent.numeration,
@@ -46,8 +58,21 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                           }
                                       }).ToListAsync();
 
+                // Filtra familias completas (nivel 1, ej. "4. Contexto de la organización") que no
+                // estén asignadas al usuario — se quita solo la raíz; setRequirementsWithChildren
+                // arma las raíces a partir de "entities", así que sus hijos quedan automáticamente
+                // inalcanzables (nunca se los busca porque su padre no está entre las raíces).
+                if (assignedFamilyIds != null)
+                    entities = entities.Where(e => e.level != 1 || assignedFamilyIds.Contains(e.requirementId)).ToList();
+
                 var standardEntity = new StandardEntity();
                 standardEntity.setRequirementsWithChildren(entities);
+
+                // El árbol de gap/panel debe mostrar la jerarquía numérica completa (4.1.1.1,
+                // 4.1.1.2, ...) en vez de la letra (a, b, c) que usa StandardEntity.setNumeration()
+                // para otras pantallas (Excel, dashboard, títulos de brecha). Se sobreescribe acá,
+                // solo para esta consulta, para no cambiar la numeración en esos otros lugares.
+                OverrideNumerationToShowWithHierarchy(standardEntity.requirements);
 
                 var evaluations = await (from requirementEvaluation in _databaseService.RequirementEvaluation
                                          join requirement in _databaseService.Requirement on requirementEvaluation.requirement equals requirement
@@ -130,6 +155,19 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
             }
         }
 
+
+        private void OverrideNumerationToShowWithHierarchy(List<RequirementEntity> items, string parentNumeration = "")
+        {
+            foreach (var item in items)
+            {
+                item.numerationToShow = string.IsNullOrEmpty(parentNumeration)
+                    ? item.numeration.ToString()
+                    : parentNumeration + "." + item.numeration;
+
+                if (item.children != null && item.children.Any())
+                    OverrideNumerationToShowWithHierarchy(item.children, item.numerationToShow);
+            }
+        }
 
         private static string BuildNumerationToShow(RequirementEntity node)
         {

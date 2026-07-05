@@ -76,6 +76,8 @@ namespace Qualifier.Application.Database
         DbSet<ActionPlanPriorityEntity> ActionPlanPriority { get; set; }
         DbSet<ActionPlanEntity> ActionPlan { get; set; }
         DbSet<RiskStatusEntity> RiskStatus { get; set; }
+        DbSet<UserControlGroupEntity> UserControlGroup { get; set; }
+        DbSet<UserRequirementFamilyEntity> UserRequirementFamily { get; set; }
         Task<bool> SaveAsync();
     }
 }

@@ -23,7 +23,8 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBrea
                 var entities = await (from actionPlan in _databaseService.ActionPlan
                                       join actionPlanPriority in _databaseService.ActionPlanPriority on actionPlan.actionPlanPriorityId equals actionPlanPriority.actionPlanPriorityId
                                       join actionPlanStatus in _databaseService.ActionPlanStatus on actionPlan.actionPlanStatusId equals actionPlanStatus.actionPlanStatusId
-                                      join responsible in _databaseService.Responsible on actionPlan.responsibleId equals responsible.responsibleId
+                                      join user in _databaseService.User on actionPlan.userId equals user.userId into userJoin
+                                      from user in userJoin.DefaultIfEmpty()
                                       where ((actionPlan.isDeleted == null || actionPlan.isDeleted == false) && actionPlan.breachId == breachId)
                                       && (actionPlan.title.ToUpper().Contains(search.ToUpper()))
                                       select new ActionPlanEntity
@@ -34,7 +35,7 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBrea
                                           standardId = actionPlan.standardId,
                                           title = actionPlan.title,
                                           description = actionPlan.description,
-                                          responsibleId = actionPlan.responsibleId,
+                                          userId = actionPlan.userId,
                                           startDate = actionPlan.startDate,
                                           dueDate = actionPlan.dueDate,
                                           actionPlanStatusId = actionPlan.actionPlanStatusId,
@@ -51,9 +52,9 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBrea
                                               abbreviation = actionPlanStatus.abbreviation,
                                               color = actionPlanStatus.color,
                                           },
-                                          responsible = new ResponsibleEntity
+                                          user = user == null ? null : new UserEntity
                                           {
-                                              name = responsible.name,
+                                              name = (user.name ?? "") + " " + (user.firstName ?? ""),
                                           },
                                       })
                 .Skip(skip).Take(pageSize)
@@ -76,7 +77,6 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBrea
             var total = await (from actionPlan in _databaseService.ActionPlan
                                join actionPlanPriority in _databaseService.ActionPlanPriority on actionPlan.actionPlanPriorityId equals actionPlanPriority.actionPlanPriorityId
                                join actionPlanStatus in _databaseService.ActionPlanStatus on actionPlan.actionPlanStatusId equals actionPlanStatus.actionPlanStatusId
-                               join responsible in _databaseService.Responsible on actionPlan.responsibleId equals responsible.responsibleId
                                where ((actionPlan.isDeleted == null || actionPlan.isDeleted == false) && actionPlan.breachId == breachId)
                                && (actionPlan.title.ToUpper().Contains(search.ToUpper()))
                                select new ActionPlanEntity

@@ -29,6 +29,7 @@ namespace Qualifier.Application.Database.Control.Queries.GetControlById
                                         description = item.description,
                                         controlGroupId = item.controlGroupId,
                                         standardId = item.standardId,
+                                        defaultResponsibleId = item.defaultResponsibleId,
                                     }).FirstOrDefaultAsync();
 
                 return _mapper.Map<GetControlByIdDto>(entity);

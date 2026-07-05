@@ -15,6 +15,11 @@ namespace Qualifier.Domain.Entities
         public bool isEvaluable { get; set; }
         public string? letter { get; set; }
         public int companyId { get; set; }
+        // Responsable sugerido para precargar RequirementEvaluation.responsibleId cuando se
+        // evalúa este requisito por primera vez en un ciclo nuevo (no reemplaza el responsable
+        // guardado por evaluación, solo lo precarga).
+        public int? defaultResponsibleId { get; set; }
+        public ResponsibleEntity? defaultResponsible { get; set; }
 
         [NotMapped]
         public RequirementEntity? requirement { get; set; }

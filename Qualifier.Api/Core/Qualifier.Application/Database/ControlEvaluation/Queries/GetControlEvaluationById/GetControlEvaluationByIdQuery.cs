@@ -46,7 +46,8 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                 var arrayReferenceDocumentations = new List<int>();
 
                 foreach (var referenceDocumentation in referenceDocumentations)
-                    arrayReferenceDocumentations.Add(referenceDocumentation.documentationId);
+                    if (referenceDocumentation.documentationId.HasValue)
+                        arrayReferenceDocumentations.Add(referenceDocumentation.documentationId.Value);
 
                 if (entity != null)
                     entity.arrayReferenceDocumentations = arrayReferenceDocumentations;

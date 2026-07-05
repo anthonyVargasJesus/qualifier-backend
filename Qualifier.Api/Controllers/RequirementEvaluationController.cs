@@ -19,9 +19,9 @@ public class RequirementEvaluationController(
 ) : ApiBaseController
 {
     [HttpGet("all")]
-    public async Task<IActionResult> GetAll(int standardId, int evaluationId, string? search)
+    public async Task<IActionResult> GetAll(int standardId, int evaluationId, string? search, bool scopeToUser = false)
     {
-        var res = await getByProcessQuery.Execute(standardId, evaluationId, search ?? string.Empty);
+        var res = await getByProcessQuery.Execute(standardId, evaluationId, search ?? string.Empty, UserId, scopeToUser);
         return ProcessResponse(res);
     }
 

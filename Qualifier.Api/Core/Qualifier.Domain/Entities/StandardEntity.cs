@@ -56,19 +56,19 @@ namespace Qualifier.Domain.Entities
         //}
         public void setRequirementsWithChildren(List<RequirementEntity> allRequirements)
         {
-            // 1. Filtramos los nodos raíz (Nivel 1)
+            // 1. Filtramos los nodos raï¿½z (Nivel 1)
             requirements = allRequirements
                 .Where(x => x.level == 1)
                 .OrderBy(x => x.numeration)
                 .ToList();
 
-            // 2. Procesamos cada raíz de forma recursiva
+            // 2. Procesamos cada raï¿½z de forma recursiva
             foreach (var req in requirements)
             {
                 BuildTree(req, allRequirements);
             }
 
-            // 3. Tu lógica de numeración final
+            // 3. Tu lï¿½gica de numeraciï¿½n final
             setNumeration(requirements);
         }
 
@@ -130,7 +130,7 @@ namespace Qualifier.Domain.Entities
         {
             foreach (var item in requirements)
             {
-                // Determinar numeración del item actual
+                // Determinar numeraciï¿½n del item actual
                 if (!string.IsNullOrEmpty(item.letter))
                     item.numerationToShow = item.letter;
                 else
@@ -249,6 +249,10 @@ namespace Qualifier.Domain.Entities
                 state = "Pendiente",
                 percentage = 0,
                 auditorStatus = 0,
+                // Precarga el responsable por defecto de la clÃ¡usula (si se configurÃ³ uno) para
+                // no obligar a elegirlo de nuevo en cada evaluaciÃ³n; sigue siendo editable y solo
+                // se guarda de verdad cuando se hace el primer POST de esta evaluaciÃ³n.
+                responsibleId = requirement.defaultResponsibleId ?? 0,
                 requirement = new RequirementEntity
                 {
                     requirementId = requirement.requirementId,

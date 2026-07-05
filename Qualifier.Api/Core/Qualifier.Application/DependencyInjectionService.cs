@@ -294,6 +294,11 @@ using Qualifier.Application.Database.RiskStatus.Commands.UpdateRiskStatus;
 using Qualifier.Application.Database.RiskStatus.Queries.GetAllRiskStatussByCompanyId;
 using Qualifier.Application.Database.RiskStatus.Queries.GetRiskStatusById;
 using Qualifier.Application.Database.RiskStatus.Queries.GetRiskStatussByCompanyId;
+using Qualifier.Application.Database.UserControlGroup.Queries.GetUserControlGroupsByUserId;
+using Qualifier.Application.Database.UserControlGroup.Commands.SetUserControlGroups;
+using Qualifier.Application.Database.UserRequirementFamily.Queries.GetUserRequirementFamiliesByUserId;
+using Qualifier.Application.Database.UserRequirementFamily.Commands.SetUserRequirementFamilies;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUserId;
 using Qualifier.Application.Database.RiskTreatment.Commands.CreateRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Commands.DeleteRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Commands.UpdateRiskTreatment;
@@ -765,6 +770,17 @@ namespace Qualifier.Application
             services.AddTransient<IGetRoleInUserByIdQuery, GetRoleInUserByIdQuery>();
             services.AddTransient<IGetAllRoleInUsersByUserIdQuery, GetAllRoleInUsersByUserIdQuery>();
             services.AddTransient<IGetRoleInUsersByUserIdQuery, GetRoleInUsersByUserIdQuery>();
+
+            //UserControlGroup
+            services.AddTransient<IGetUserControlGroupsByUserIdQuery, GetUserControlGroupsByUserIdQuery>();
+            services.AddTransient<ISetUserControlGroupsCommand, SetUserControlGroupsCommand>();
+
+            //UserRequirementFamily
+            services.AddTransient<IGetUserRequirementFamiliesByUserIdQuery, GetUserRequirementFamiliesByUserIdQuery>();
+            services.AddTransient<ISetUserRequirementFamiliesCommand, SetUserRequirementFamiliesCommand>();
+
+            //ActionPlan (por usuario)
+            services.AddTransient<IGetActionPlansByUserIdQuery, GetActionPlansByUserIdQuery>();
 
             //MenaceType
             services.AddTransient<ICreateMenaceTypeCommand, CreateMenaceTypeCommand>();

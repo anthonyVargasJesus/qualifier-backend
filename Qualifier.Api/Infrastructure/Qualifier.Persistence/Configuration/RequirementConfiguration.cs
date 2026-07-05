@@ -66,9 +66,16 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
                          .HasColumnName("C_LETTER")
                          .HasMaxLength(10);
 
+            entityBuilder.Property(e => e.defaultResponsibleId)
+                         .HasColumnName("N_DEFAULT_RESPONSIBLE_ID_FK");
+
             entityBuilder.HasOne(x => x.requirement)
             .WithMany(x => x.requirements)
             .HasForeignKey(x => x.parentId);
+
+            entityBuilder.HasOne(x => x.defaultResponsible)
+            .WithMany()
+            .HasForeignKey(x => x.defaultResponsibleId);
         }
     }
 }

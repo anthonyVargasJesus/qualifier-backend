@@ -6,7 +6,11 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
         public string name { get; set; }
         public string url { get; set; }
         public string description { get; set; }
-        public int documentationId { get; set; }
+        public int? documentationId { get; set; }
+        public string? evidenceType { get; set; }
+        public long? fileSizeBytes { get; set; }
+        public DateTime? creationDate { get; set; }
+        public string? creationUserEmail { get; set; }
         public GetReferenceDocumentationsByControlEvaluationIdDocumentationDto? documentation { get; set; }
     }
     public class GetReferenceDocumentationsByControlEvaluationIdDocumentationDto

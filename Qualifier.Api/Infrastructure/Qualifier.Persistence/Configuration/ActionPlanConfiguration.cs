@@ -49,9 +49,8 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
             entityBuilder.Property(e => e.description)
                          .HasColumnName("C_DESCRIPTION");
 
-            entityBuilder.Property(e => e.responsibleId)
-                         .HasColumnName("N_RESPONSIBLE_ID_FK")
-                         .IsRequired();
+            entityBuilder.Property(e => e.userId)
+                         .HasColumnName("N_USER_ID_FK");
 
             entityBuilder.Property(e => e.startDate)
                          .HasColumnName("D_START_DATE")

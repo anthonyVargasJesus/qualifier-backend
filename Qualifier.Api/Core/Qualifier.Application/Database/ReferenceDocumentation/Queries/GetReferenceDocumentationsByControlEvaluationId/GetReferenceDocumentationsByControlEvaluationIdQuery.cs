@@ -21,7 +21,10 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
             try
             {
                 var entities = await (from referenceDocumentation in _databaseService.ReferenceDocumentation
-                                      join documentation in _databaseService.Documentation on referenceDocumentation.documentation equals documentation
+                                      join documentation in _databaseService.Documentation on referenceDocumentation.documentation equals documentation into documentationJoin
+                                      from documentation in documentationJoin.DefaultIfEmpty()
+                                      join user in _databaseService.User on referenceDocumentation.creationUserId equals user.userId into userJoin
+                                      from user in userJoin.DefaultIfEmpty()
                                       where ((referenceDocumentation.isDeleted == null || referenceDocumentation.isDeleted == false) && referenceDocumentation.controlEvaluationId == controlEvaluationId)
                                       && (referenceDocumentation.name.ToUpper().Contains(search.ToUpper()))
                                       select new ReferenceDocumentationEntity
@@ -30,7 +33,12 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
                                           name = referenceDocumentation.name,
                                           documentationId = referenceDocumentation.documentationId,
                                           url = (referenceDocumentation.url == null) ? "" : referenceDocumentation.url,
-                                          documentation = new DocumentationEntity
+                                          description = referenceDocumentation.description == null ? "" : referenceDocumentation.description,
+                                          evidenceType = referenceDocumentation.evidenceType,
+                                          fileSizeBytes = referenceDocumentation.fileSizeBytes,
+                                          creationDate = referenceDocumentation.creationDate,
+                                          creationUserEmail = user == null ? null : user.email,
+                                          documentation = documentation == null ? null : new DocumentationEntity
                                           {
                                               name = documentation.name,
                                           },
@@ -52,7 +60,6 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Queries.GetRefer
         public async Task<int> getTotal(string search, int controlEvaluationId)
         {
             var total = await (from referenceDocumentation in _databaseService.ReferenceDocumentation
-                               join documentation in _databaseService.Documentation on referenceDocumentation.documentation equals documentation
                                where ((referenceDocumentation.isDeleted == null || referenceDocumentation.isDeleted == false) && referenceDocumentation.controlEvaluationId == controlEvaluationId)
                                && (referenceDocumentation.name.ToUpper().Contains(search.ToUpper()))
                                select new ReferenceDocumentationEntity
