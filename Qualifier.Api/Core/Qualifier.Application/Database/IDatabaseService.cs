@@ -78,6 +78,7 @@ namespace Qualifier.Application.Database
         DbSet<RiskStatusEntity> RiskStatus { get; set; }
         DbSet<UserControlGroupEntity> UserControlGroup { get; set; }
         DbSet<UserRequirementFamilyEntity> UserRequirementFamily { get; set; }
+        DbSet<NotificationEntity> Notification { get; set; }
         Task<bool> SaveAsync();
     }
 }

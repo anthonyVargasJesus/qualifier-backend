@@ -85,6 +85,7 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Database
         public DbSet<RiskStatusEntity> RiskStatus { get; set; }
         public DbSet<UserControlGroupEntity> UserControlGroup { get; set; }
         public DbSet<UserRequirementFamilyEntity> UserRequirementFamily { get; set; }
+        public DbSet<NotificationEntity> Notification { get; set; }
         public async Task<bool> SaveAsync()
         {
 
@@ -171,6 +172,7 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Database
             new RiskStatusConfiguration(modelBuilder.Entity<RiskStatusEntity>());
             new UserControlGroupConfiguration(modelBuilder.Entity<UserControlGroupEntity>());
             new UserRequirementFamilyConfiguration(modelBuilder.Entity<UserRequirementFamilyEntity>());
+            new NotificationConfiguration(modelBuilder.Entity<NotificationEntity>());
 
         }
 

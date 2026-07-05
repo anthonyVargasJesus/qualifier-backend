@@ -764,7 +764,9 @@ namespace Qualifier.Application
             services.AddTransient<IGetUsersByCompanyIdQuery, GetUsersByCompanyIdQuery>();
             services.AddTransient<IUpdateUserImageCommand, UpdateUserImageCommand>();
             services.AddTransient<IUpdateUserFcmTokenCommand, UpdateUserFcmTokenCommand>();
-            services.AddSingleton<IPushNotificationService, PushNotificationService>();
+            // Scoped, no Singleton: ahora depende de IDatabaseService (Scoped) para guardar el
+            // historial de notificaciones; un Singleton no puede depender de un servicio Scoped.
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
             services.AddTransient<IGetUserActivityQuery, GetUserActivityQuery>();
 
             //RoleInUser

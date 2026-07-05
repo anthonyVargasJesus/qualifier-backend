@@ -86,10 +86,15 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
                 + (string.IsNullOrEmpty(priorityName) ? "" : $" Prioridad {priorityName}.");
 
             await _pushNotificationService.SendAsync(
+                entity.userId.Value,
                 fcmToken!,
                 title,
                 body,
-                new Dictionary<string, string>
+                "action_plan_assigned",
+                actionPlanId: entity.actionPlanId,
+                breachId: entity.breachId,
+                companyId: entity.companyId,
+                data: new Dictionary<string, string>
                 {
                     { "type", "action_plan_assigned" },
                     { "actionPlanId", entity.actionPlanId.ToString() },
