@@ -30,10 +30,36 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
 
                 using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    var entity = _mapper.Map<ControlEvaluationEntity>(model);
-                    entity.creationDate = DateTime.UtcNow;
-                    entity.creationUserId = model.creationUserId;
-                    await _databaseService.ControlEvaluation.AddAsync(entity);
+                    // El cliente decide POST vs PUT según lo que tenía cargado en memoria; si ese
+                    // estado quedó desincronizado (reinicio de la app, dos guardados casi
+                    // simultáneos, etc.) y ya existe una fila real para este control+evaluationId,
+                    // se actualiza esa fila en vez de insertar un duplicado (antes esto creaba
+                    // MAE_CONTROL_EVALUATION duplicados para el mismo control).
+                    var entity = await _databaseService.ControlEvaluation
+                        .Where(x => x.controlId == model.controlId && x.evaluationId == model.evaluationId
+                            && (x.isDeleted == null || x.isDeleted == false))
+                        .FirstOrDefaultAsync();
+
+                    bool isNew = entity == null;
+                    if (isNew)
+                    {
+                        entity = _mapper.Map<ControlEvaluationEntity>(model);
+                        entity.creationDate = DateTime.UtcNow;
+                        entity.creationUserId = model.creationUserId;
+                        await _databaseService.ControlEvaluation.AddAsync(entity);
+                    }
+                    else
+                    {
+                        entity.maturityLevelId = model.maturityLevelId ?? entity.maturityLevelId;
+                        entity.value = model.value ?? entity.value;
+                        entity.responsibleId = model.responsibleId ?? entity.responsibleId;
+                        entity.justification = model.justification ?? entity.justification;
+                        entity.improvementActions = model.improvementActions ?? entity.improvementActions;
+                        entity.controlDescription = model.controlDescription ?? entity.controlDescription;
+                        entity.controlType = model.controlType ?? entity.controlType;
+                        entity.updateDate = DateTime.UtcNow;
+                        entity.updateUserId = model.creationUserId;
+                    }
                     await _databaseService.SaveAsync();
 
                     long controlEvaluationId = entity.controlEvaluationId;

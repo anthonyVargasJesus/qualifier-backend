@@ -33,12 +33,36 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
 
                 using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    var entity = _mapper.Map<RequirementEvaluationEntity>(model);
-                    const int PENDING_AUDITOR_STATUS_VALUE = 1;
-                    entity.auditorStatus = PENDING_AUDITOR_STATUS_VALUE;
-                    entity.creationDate = DateTime.UtcNow;
-                    entity.creationUserId = model.creationUserId;
-                    await _databaseService.RequirementEvaluation.AddAsync(entity);
+                    // El cliente decide POST vs PUT según lo que tenía cargado en memoria; si ese
+                    // estado quedó desincronizado (reinicio de la app, dos guardados casi
+                    // simultáneos, etc.) y ya existe una fila real para este requirement+evaluationId,
+                    // se actualiza esa fila en vez de insertar un duplicado (antes esto creaba
+                    // MAE_REQUIREMENT_EVALUATION duplicados para el mismo requisito).
+                    var entity = await _databaseService.RequirementEvaluation
+                        .Where(x => x.requirementId == model.requirementId && x.evaluationId == model.evaluationId
+                            && (x.isDeleted == null || x.isDeleted == false))
+                        .FirstOrDefaultAsync();
+
+                    bool isNew = entity == null;
+                    if (isNew)
+                    {
+                        entity = _mapper.Map<RequirementEvaluationEntity>(model);
+                        const int PENDING_AUDITOR_STATUS_VALUE = 1;
+                        entity.auditorStatus = PENDING_AUDITOR_STATUS_VALUE;
+                        entity.creationDate = DateTime.UtcNow;
+                        entity.creationUserId = model.creationUserId;
+                        await _databaseService.RequirementEvaluation.AddAsync(entity);
+                    }
+                    else
+                    {
+                        entity.maturityLevelId = model.maturityLevelId ?? entity.maturityLevelId;
+                        entity.value = model.value ?? entity.value;
+                        entity.responsibleId = model.responsibleId ?? entity.responsibleId;
+                        entity.justification = model.justification ?? entity.justification;
+                        entity.improvementActions = model.improvementActions ?? entity.improvementActions;
+                        entity.updateDate = DateTime.UtcNow;
+                        entity.updateUserId = model.creationUserId;
+                    }
                     await _databaseService.SaveAsync();
                     long requirementEvaluationId = entity.requirementEvaluationId;
                     // Sin esto, el frontend recibe de vuelta el mismo id=0 que mandó y nunca se
