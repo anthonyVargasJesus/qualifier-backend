@@ -49,10 +49,11 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
 
                 await _actionPlanRepository.Update(id, _mapper.Map<ActionPlanEntity>(model));
 
-                // Proyección, no la entidad completa: ActionPlanConfiguration no configura sus
-                // navigation properties (user/actionPlanStatus/actionPlanPriority), lo que genera
-                // shadow FKs inexistentes (mismo problema que causaba "Failed Request" al crear).
+                // Proyección (no la entidad completa, por el shadow FK de siempre) Y AsNoTracking:
+                // sin esto, esta segunda consulta choca con la entidad que el repositorio ya dejó
+                // trackeada como Modified al hacer el Update de arriba ("already being tracked").
                 var updatedEntity = await _databaseService.ActionPlan
+                    .AsNoTracking()
                     .Where(item => item.actionPlanId == id && !(item.isDeleted ?? false))
                     .Select(a => new ActionPlanEntity
                     {
