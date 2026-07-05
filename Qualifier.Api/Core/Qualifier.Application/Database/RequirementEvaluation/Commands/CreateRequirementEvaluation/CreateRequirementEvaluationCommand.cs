@@ -63,8 +63,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
                     const int EDITION_EVALUATION_STATE_ID = 2;
                     await _evaluationRepository.UpdateState(entity.evaluationId, EDITION_EVALUATION_STATE_ID);
 
-                    if (entity.maturityLevelId == MATURITY_INITIAL || entity.maturityLevelId == MATURITY_NOT_IMPLEMENTED)
-                        await createBreachFromEvaluation(entity, model);
+                    await createBreachFromEvaluation(entity, model);
 
                     scope.Complete();
                 }
@@ -85,10 +84,6 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
 
             return notification;
         }
-
-        // Maturity levels
-        private const int MATURITY_INITIAL = 5;
-        private const int MATURITY_NOT_IMPLEMENTED = 6;
 
         // Breach severities
         private const int SEVERITY_LOW = 1;
@@ -120,12 +115,18 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
             var standardEntity = new StandardEntity();
             standardEntity.setRequirementsWithChildren(requirements);
 
-            int? severity = null;
+            // Por nombre, no por id: el catálogo de maturity levels es editable por el usuario y
+            // sus ids pueden cambiar (ej. al reordenar/recrear niveles); el nombre es lo estable.
+            var maturityLevel = await _databaseService.MaturityLevel
+                .Where(m => m.maturityLevelId == entity.maturityLevelId)
+                .FirstOrDefaultAsync();
 
-            if (entity.maturityLevelId == MATURITY_INITIAL)
-                severity = SEVERITY_MEDIUM;
-            else if (entity.maturityLevelId == MATURITY_NOT_IMPLEMENTED)
-                severity = SEVERITY_HIGH;
+            int? severity = maturityLevel?.name switch
+            {
+                "Parcial" => SEVERITY_MEDIUM,
+                "No cumple" => SEVERITY_HIGH,
+                _ => null,
+            };
 
             if (severity != null)
             {

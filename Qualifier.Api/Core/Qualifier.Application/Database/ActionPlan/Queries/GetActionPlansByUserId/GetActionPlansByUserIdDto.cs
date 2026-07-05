@@ -19,5 +19,11 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUser
         public int actionPlanPriorityId { get; set; }
         public string priorityName { get; set; } = string.Empty;
         public string priorityColor { get; set; } = string.Empty;
+
+        // Resueltos desde Breach.requirementId/controlId contra la evaluación actual, para que el
+        // frontend pueda subir evidencias a la MISMA evaluación que ve el dueño del control en
+        // gap-panel (MAE_BREACH solo guarda requirementId/controlId, no el id de la evaluación).
+        public long? requirementEvaluationId { get; set; }
+        public long? controlEvaluationId { get; set; }
     }
 }

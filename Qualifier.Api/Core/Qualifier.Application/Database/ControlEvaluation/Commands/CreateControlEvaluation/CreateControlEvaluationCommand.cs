@@ -56,8 +56,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
                             await _databaseService.SaveAsync();
                         }
 
-                    if (entity.maturityLevelId == MATURITY_INITIAL || entity.maturityLevelId == MATURITY_NOT_IMPLEMENTED)
-                        await createBreachFromControlEvaluation(entity, model);
+                    await createBreachFromControlEvaluation(entity, model);
 
                     scope.Complete();
                 }
@@ -77,10 +76,6 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
             return notification;
         }
 
-        // Maturity levels
-        private const int MATURITY_INITIAL = 5;
-        private const int MATURITY_NOT_IMPLEMENTED = 6;
-
         // Breach severities
         private const int SEVERITY_LOW = 1;
         private const int SEVERITY_MEDIUM = 2;
@@ -94,6 +89,22 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
     ControlEvaluationEntity entity,
     CreateControlEvaluationDto model)
         {
+            // Por nombre, no por id: el catálogo de maturity levels es editable por el usuario y
+            // sus ids pueden cambiar (ej. al reordenar/recrear niveles); el nombre es lo estable.
+            var maturityLevel = await _databaseService.MaturityLevel
+                .Where(m => m.maturityLevelId == entity.maturityLevelId)
+                .FirstOrDefaultAsync();
+
+            int? severity = maturityLevel?.name switch
+            {
+                "Parcial" => SEVERITY_MEDIUM,
+                "No cumple" => SEVERITY_HIGH,
+                _ => null,
+            };
+
+            if (severity == null)
+                return;
+
             var groups = await (from item in _databaseService.ControlGroup
                                 where ((item.isDeleted == null || item.isDeleted == false) && item.standardId == model.standardId)
                                 select new ControlGroupEntity
@@ -117,14 +128,6 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
 
             setControlsWithGroup(groups, controls);
 
-            int? severity = null;
-
-            if (entity.maturityLevelId == MATURITY_INITIAL)
-                severity = SEVERITY_MEDIUM;
-            else if (entity.maturityLevelId == MATURITY_NOT_IMPLEMENTED)
-                severity = SEVERITY_HIGH;
-
-            if (severity != null)
             {
                 var control = controls
                     .Where(c => c.controlId == entity.controlId)
