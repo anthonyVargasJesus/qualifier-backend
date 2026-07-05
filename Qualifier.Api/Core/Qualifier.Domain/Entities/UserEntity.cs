@@ -18,6 +18,7 @@ namespace Qualifier.Domain.Entities
         public string? image { get; set; }
         public string? userName { get; set; }
         public string? documentNumber { get; set; }
+        public string? fcmToken { get; set; }
         public UserStateEntity userState { get; set; }
         public DateTime? lastAccess { get; set; }
         [NotMapped]

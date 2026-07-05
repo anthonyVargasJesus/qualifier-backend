@@ -8,6 +8,7 @@ namespace Qualifier.Domain.Interfaces
         Task Update(int id, UserEntity entity);
         Task UpdateLastAccess(int id);
         Task UpdateImage(int id, string image);
+        Task UpdateFcmToken(int id, string fcmToken);
     }
 }
 

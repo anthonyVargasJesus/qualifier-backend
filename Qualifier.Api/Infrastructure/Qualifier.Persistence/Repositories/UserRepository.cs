@@ -65,6 +65,16 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdateFcmToken(int id, string fcmToken)
+        {
+            var entity = new UserEntity();
+            entity.userId = id;
+            entity.fcmToken = fcmToken;
+            var entry = _context.Attach(entity);
+            entry.Property(x => x.fcmToken).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
 

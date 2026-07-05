@@ -6,6 +6,7 @@ using Qualifier.Api.Core.Qualifier.Application.Database.User.Commands.UpdateUser
 using Qualifier.Application.Database.User.Commands.CreateUser;
 using Qualifier.Application.Database.User.Commands.DeleteUser;
 using Qualifier.Application.Database.User.Commands.UpdateUser;
+using Qualifier.Application.Database.User.Commands.UpdateUserFcmToken;
 using Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId;
 using Qualifier.Application.Database.User.Queries.GetMenus;
 using Qualifier.Application.Database.User.Queries.GetUserActivity;
@@ -197,6 +198,29 @@ namespace Qualifier.Api.Controllers
                     data = res
                 });
 
+        }
+
+        // Guarda/actualiza el FCM token del usuario logeado (JWT), para poder enviarle push
+        // notifications (ej. cuando se le asigna un plan de acción).
+        [HttpPatch("fcm-token")]
+        public async Task<IActionResult> SaveFcmToken([FromBody] UpdateUserFcmTokenDto model,
+            [FromServices] IUpdateUserFcmTokenCommand command)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int userId;
+
+            bool success = int.TryParse(JwtTokenProvider.GetUserIdFromToken(accessToken), out userId);
+            if (!success)
+                return BadRequest(new { message = "No se pudo identificar al usuario." });
+
+            var res = await command.Execute(userId, model.fcmToken);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new
+                {
+                    data = res
+                });
         }
 
         [HttpPut("image/{id}")]

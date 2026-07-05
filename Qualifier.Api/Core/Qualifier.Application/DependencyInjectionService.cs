@@ -373,7 +373,9 @@ using Qualifier.Application.Database.User.Commands.CreateUser;
 using Qualifier.Application.Database.User.Commands.DeleteUser;
 using Qualifier.Application.Database.User.Commands.Login;
 using Qualifier.Application.Database.User.Commands.UpdateUser;
+using Qualifier.Application.Database.User.Commands.UpdateUserFcmToken;
 using Qualifier.Application.Database.User.Queries.GetAllUsersByCompanyId;
+using Qualifier.Application.Firebase;
 using Qualifier.Application.Database.User.Queries.GetMenus;
 using Qualifier.Application.Database.User.Queries.GetUserActivity;
 using Qualifier.Application.Database.User.Queries.GetUserById;
@@ -761,6 +763,8 @@ namespace Qualifier.Application
             services.AddTransient<IGetAllUsersByCompanyIdQuery, GetAllUsersByCompanyIdQuery>();
             services.AddTransient<IGetUsersByCompanyIdQuery, GetUsersByCompanyIdQuery>();
             services.AddTransient<IUpdateUserImageCommand, UpdateUserImageCommand>();
+            services.AddTransient<IUpdateUserFcmTokenCommand, UpdateUserFcmTokenCommand>();
+            services.AddSingleton<IPushNotificationService, PushNotificationService>();
             services.AddTransient<IGetUserActivityQuery, GetUserActivityQuery>();
 
             //RoleInUser

@@ -102,6 +102,9 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
             entity.Property(e => e.lastAccess)
         .HasColumnName("D_LAST_ACCESS");
 
+            entity.Property(e => e.fcmToken)
+                  .HasColumnName("C_FCM_TOKEN");
+
             // Relaciones FK
             entity.HasOne(e => e.userState)
                   .WithMany()
