@@ -42,6 +42,9 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
             entityBuilder.Property(e => e.companyId)
                          .HasColumnName("N_COMPANY_ID_FK");
 
+            entityBuilder.Property(e => e.isRead)
+                         .HasColumnName("N_IS_READ");
+
             entityBuilder.Property(e => e.creationDate)
                          .HasColumnName("D_CREATION_DATE");
 

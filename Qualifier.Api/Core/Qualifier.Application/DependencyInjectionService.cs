@@ -15,6 +15,9 @@ using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPla
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPrioritiesByCompanyId;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
+using Qualifier.Application.Database.Notifications.Queries.GetNotificationsByUserId;
+using Qualifier.Application.Database.Notifications.Commands.MarkNotificationAsRead;
+using Qualifier.Application.Database.Notifications.Commands.MarkAllNotificationsAsRead;
 using Qualifier.Application.Database.ActionPlanStatus.Commands.CreateActionPlanStatus;
 using Qualifier.Application.Database.ActionPlanStatus.Commands.DeleteActionPlanStatus;
 using Qualifier.Application.Database.ActionPlanStatus.Commands.UpdateActionPlanStatus;
@@ -768,6 +771,11 @@ namespace Qualifier.Application
             // historial de notificaciones; un Singleton no puede depender de un servicio Scoped.
             services.AddScoped<IPushNotificationService, PushNotificationService>();
             services.AddTransient<IGetUserActivityQuery, GetUserActivityQuery>();
+
+            //Notification
+            services.AddTransient<IGetNotificationsByUserIdQuery, GetNotificationsByUserIdQuery>();
+            services.AddTransient<IMarkNotificationAsReadCommand, MarkNotificationAsReadCommand>();
+            services.AddTransient<IMarkAllNotificationsAsReadCommand, MarkAllNotificationsAsReadCommand>();
 
             //RoleInUser
             services.AddTransient<ICreateRoleInUserCommand, CreateRoleInUserCommand>();
