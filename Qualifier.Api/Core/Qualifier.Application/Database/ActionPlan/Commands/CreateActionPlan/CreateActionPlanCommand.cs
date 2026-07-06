@@ -39,6 +39,12 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
                 entity.actionPlanStatusId = STATUS_PENDING;
                 entity.creationDate = DateTime.UtcNow;
                 entity.creationUserId = model.creationUserId;
+                // Flutter manda las fechas sin "Z" (Kind=Unspecified) — Npgsql ahora exige UTC
+                // explícito para "timestamp with time zone". Angular no tenía este problema
+                // porque JSON.stringify de un Date siempre agrega "Z". Mismo fix que ya tenía
+                // ActionPlanRepository.Update para el caso de editar.
+                entity.startDate = DateTime.SpecifyKind(entity.startDate, DateTimeKind.Utc);
+                entity.dueDate = DateTime.SpecifyKind(entity.dueDate, DateTimeKind.Utc);
                 await _databaseService.ActionPlan.AddAsync(entity);
                 await _databaseService.SaveAsync();
 
@@ -46,10 +52,9 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
 
                 return _mapper.Map<CreateActionPlanDto>(entity);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-                //return BaseApplication.getExceptionErrorResponse();
+                return BaseApplication.getExceptionErrorResponse();
             }
         }
 
