@@ -92,8 +92,6 @@ namespace Qualifier.Application.Database.User.Commands.Login
 
                 await _userRepository.UpdateLastAccess(entity.userId);
 
-
-
                 return _mapper.Map<LoginUserLoginDto>(login);
             }
             catch (Exception)

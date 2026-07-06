@@ -46,9 +46,10 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
 
                 return _mapper.Map<CreateActionPlanDto>(entity);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 
