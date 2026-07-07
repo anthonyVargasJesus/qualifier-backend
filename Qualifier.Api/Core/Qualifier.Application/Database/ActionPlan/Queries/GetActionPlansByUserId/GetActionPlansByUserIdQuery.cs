@@ -25,6 +25,10 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUser
                                  join breach in _databaseService.Breach on ap.breachId equals breach.breachId
                                  where (ap.isDeleted == null || ap.isDeleted == false)
                                        && ap.userId == userId && ap.evaluationId == evaluationId
+                                       // Una vez completada, deja de ser una tarea pendiente del
+                                       // responsable — si el dueño del requisito la reabre o
+                                       // reasigna, vuelve a aparecer porque cambia el estado.
+                                       && status.abbreviation != "COMP" && status.abbreviation != "CERR"
                                  orderby ap.dueDate
                                  select new
                                  {
