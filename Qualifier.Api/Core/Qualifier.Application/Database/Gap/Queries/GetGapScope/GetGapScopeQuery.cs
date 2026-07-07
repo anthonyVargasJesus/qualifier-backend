@@ -63,7 +63,12 @@ namespace Qualifier.Application.Database.Gap.Queries.GetGapScope
                     foreach (var evaluation in node.requirementEvaluations)
                     {
                         if (evaluation.requirement != null)
-                            items.Add(new GetGapScopeItemDto { tipo = "requisito", itemId = evaluation.requirement.requirementId });
+                            items.Add(new GetGapScopeItemDto
+                            {
+                                tipo = "requisito",
+                                itemId = evaluation.requirement.requirementId,
+                                maturityLevelId = evaluation.maturityLevelId,
+                            });
                     }
                 }
                 if (node.children != null && node.children.Count > 0)
@@ -78,9 +83,14 @@ namespace Qualifier.Application.Database.Gap.Queries.GetGapScope
                 if (group.controls == null) continue;
                 foreach (var control in group.controls)
                 {
-                    var evaluationCount = control.controlEvaluations?.Count ?? 0;
-                    for (var i = 0; i < evaluationCount; i++)
-                        items.Add(new GetGapScopeItemDto { tipo = "control", itemId = control.controlId });
+                    if (control.controlEvaluations == null) continue;
+                    foreach (var evaluation in control.controlEvaluations)
+                        items.Add(new GetGapScopeItemDto
+                        {
+                            tipo = "control",
+                            itemId = control.controlId,
+                            maturityLevelId = evaluation.maturityLevelId,
+                        });
                 }
             }
         }
