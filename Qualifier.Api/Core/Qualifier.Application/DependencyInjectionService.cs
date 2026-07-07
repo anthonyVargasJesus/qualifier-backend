@@ -15,6 +15,7 @@ using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPla
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPrioritiesByCompanyId;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
+using Qualifier.Application.Database.Gap.Queries.GetGapScope;
 using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.Notifications.Queries.GetNotificationsByUserId;
 using Qualifier.Application.Database.Notifications.Commands.MarkNotificationAsRead;
@@ -775,6 +776,9 @@ namespace Qualifier.Application
 
             //GapDashboard
             services.AddTransient<IGetGapDashboardQuery, GetGapDashboardQuery>();
+
+            //Gap
+            services.AddTransient<IGetGapScopeQuery, GetGapScopeQuery>();
 
             //Notification
             services.AddTransient<IGetNotificationsByUserIdQuery, GetNotificationsByUserIdQuery>();
