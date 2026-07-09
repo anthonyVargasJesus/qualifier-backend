@@ -46,43 +46,48 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
         {
             try
             {
-                // Tanda 1: nada de esto depende de evaluationId, así que arrancan
-                // todas juntas.
-                var evalTask = _getCurrentEvaluationQuery.Execute(0);
-                var maturityTask = _getAllMaturityLevelsByCompanyIdQuery.Execute(companyId);
-                var statusesTask = _getAllActionPlanStatussByCompanyIdQuery.Execute(companyId);
-                var prioritiesTask = _getAllActionPlanPrioritiesByCompanyIdQuery.Execute(companyId);
-                var usersTask = _getAllUsersByCompanyIdQuery.Execute(companyId);
-                await Task.WhenAll(evalTask, maturityTask, statusesTask, prioritiesTask, usersTask);
+                // IDatabaseService (el DbContext de EF Core) está registrado como
+                // Scoped: todas las queries de este request comparten la misma
+                // instancia, que no soporta operaciones concurrentes. Por eso acá
+                // adentro se resuelve todo con await secuencial (no Task.WhenAll) —
+                // la ganancia real de este endpoint es juntar las 7 llamadas HTTP
+                // del cliente en una sola, no paralelizar contra la base de datos.
+                var evalResult = await _getCurrentEvaluationQuery.Execute(0);
+                if (evalResult is BaseErrorResponseDto) return evalResult;
+                if (evalResult is not GetCurrentEvaluationDto evaluation) return BaseApplication.getExceptionErrorResponse();
 
-                if (evalTask.Result is BaseErrorResponseDto) return evalTask.Result;
-                if (evalTask.Result is not GetCurrentEvaluationDto evaluation) return BaseApplication.getExceptionErrorResponse();
-                if (maturityTask.Result is BaseErrorResponseDto) return maturityTask.Result;
-                if (statusesTask.Result is BaseErrorResponseDto) return statusesTask.Result;
-                if (prioritiesTask.Result is BaseErrorResponseDto) return prioritiesTask.Result;
-                if (usersTask.Result is BaseErrorResponseDto) return usersTask.Result;
+                var maturityResult = await _getAllMaturityLevelsByCompanyIdQuery.Execute(companyId);
+                if (maturityResult is BaseErrorResponseDto) return maturityResult;
 
-                // Tanda 2: estas sí necesitan el evaluationId que recién se resolvió.
-                var reqTask = _getRequirementEvaluationByProcessQuery.Execute(standardId, evaluation.evaluationId, string.Empty, userId, scopeToUser);
-                var ctrlTask = _getControlEvaluationByProcessQuery.Execute(standardId, evaluation.evaluationId, userId, scopeToUser);
-                var breachesTask = _getBreachesScopeQuery.Execute(evaluation.evaluationId);
-                await Task.WhenAll(reqTask, ctrlTask, breachesTask);
+                var statusesResult = await _getAllActionPlanStatussByCompanyIdQuery.Execute(companyId);
+                if (statusesResult is BaseErrorResponseDto) return statusesResult;
 
-                if (reqTask.Result is BaseErrorResponseDto) return reqTask.Result;
-                if (ctrlTask.Result is BaseErrorResponseDto) return ctrlTask.Result;
-                if (breachesTask.Result is BaseErrorResponseDto) return breachesTask.Result;
+                var prioritiesResult = await _getAllActionPlanPrioritiesByCompanyIdQuery.Execute(companyId);
+                if (prioritiesResult is BaseErrorResponseDto) return prioritiesResult;
+
+                var usersResult = await _getAllUsersByCompanyIdQuery.Execute(companyId);
+                if (usersResult is BaseErrorResponseDto) return usersResult;
+
+                var reqResult = await _getRequirementEvaluationByProcessQuery.Execute(standardId, evaluation.evaluationId, string.Empty, userId, scopeToUser);
+                if (reqResult is BaseErrorResponseDto) return reqResult;
+
+                var ctrlResult = await _getControlEvaluationByProcessQuery.Execute(standardId, evaluation.evaluationId, userId, scopeToUser);
+                if (ctrlResult is BaseErrorResponseDto) return ctrlResult;
+
+                var breachesResult = await _getBreachesScopeQuery.Execute(evaluation.evaluationId);
+                if (breachesResult is BaseErrorResponseDto) return breachesResult;
 
                 var items = new List<GetGapScopeItemDto>();
-                if (reqTask.Result is GetRequirementEvaluationsByProcessResponseDto reqDto && reqDto.requirements != null)
+                if (reqResult is GetRequirementEvaluationsByProcessResponseDto reqDto && reqDto.requirements != null)
                     CollectRequirementItems(reqDto.requirements, items);
-                if (ctrlTask.Result is GetControlEvaluationsByProcessResponseDto ctrlDto && ctrlDto.groups != null)
+                if (ctrlResult is GetControlEvaluationsByProcessResponseDto ctrlDto && ctrlDto.groups != null)
                     CollectControlItems(ctrlDto.groups, items);
 
-                var breaches = ((BaseResponseDto<Breach.Queries.GetBreachesScope.GetBreachesScopeDto>)breachesTask.Result).data;
-                var maturityLevels = ((BaseResponseDto<GetAllMaturityLevelsByCompanyIdDto>)maturityTask.Result).data;
-                var statuses = ((BaseResponseDto<GetAllActionPlanStatussByCompanyIdDto>)statusesTask.Result).data;
-                var priorities = ((BaseResponseDto<GetAllActionPlanPrioritiesByCompanyIdDto>)prioritiesTask.Result).data;
-                var users = ((BaseResponseDto<GetAllUsersByCompanyIdDto>)usersTask.Result).data;
+                var breaches = ((BaseResponseDto<Breach.Queries.GetBreachesScope.GetBreachesScopeDto>)breachesResult).data;
+                var maturityLevels = ((BaseResponseDto<GetAllMaturityLevelsByCompanyIdDto>)maturityResult).data;
+                var statuses = ((BaseResponseDto<GetAllActionPlanStatussByCompanyIdDto>)statusesResult).data;
+                var priorities = ((BaseResponseDto<GetAllActionPlanPrioritiesByCompanyIdDto>)prioritiesResult).data;
+                var users = ((BaseResponseDto<GetAllUsersByCompanyIdDto>)usersResult).data;
 
                 var response = new GetPlanDeAccionBootstrapDto
                 {
