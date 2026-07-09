@@ -305,6 +305,7 @@ using Qualifier.Application.Database.UserControlGroup.Commands.SetUserControlGro
 using Qualifier.Application.Database.UserRequirementFamily.Queries.GetUserRequirementFamiliesByUserId;
 using Qualifier.Application.Database.UserRequirementFamily.Commands.SetUserRequirementFamilies;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUserId;
+using Qualifier.Application.Database.ActionPlan.Queries.GetMyActionsBootstrap;
 using Qualifier.Application.Database.RiskTreatment.Commands.CreateRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Commands.DeleteRiskTreatment;
 using Qualifier.Application.Database.RiskTreatment.Commands.UpdateRiskTreatment;
@@ -804,6 +805,7 @@ namespace Qualifier.Application
 
             //ActionPlan (por usuario)
             services.AddTransient<IGetActionPlansByUserIdQuery, GetActionPlansByUserIdQuery>();
+            services.AddTransient<IGetMyActionsBootstrapQuery, GetMyActionsBootstrapQuery>();
 
             //MenaceType
             services.AddTransient<ICreateMenaceTypeCommand, CreateMenaceTypeCommand>();

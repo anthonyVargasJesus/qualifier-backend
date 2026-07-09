@@ -7,6 +7,7 @@ using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUserId;
+using Qualifier.Application.Database.ActionPlan.Queries.GetMyActionsBootstrap;
 
 namespace Qualifier.Api.Controllers;
 
@@ -18,6 +19,7 @@ public class ActionPlanController(
     IGetActionPlanByIdQuery getByIdQuery,
     IGetActionPlanProgressQuery getProgressQuery,
     IGetActionPlansByUserIdQuery getByUserQuery,
+    IGetMyActionsBootstrapQuery getMyActionsBootstrapQuery,
     ICreateActionPlanCommand createCommand,
     IUpdateActionPlanCommand updateCommand,
     IDeleteActionPlanCommand deleteCommand
@@ -38,6 +40,16 @@ public class ActionPlanController(
     public async Task<IActionResult> GetByUser(int evaluationId)
     {
         var res = await getByUserQuery.Execute(UserId, evaluationId);
+        return ProcessResponse(res);
+    }
+
+    // Todo lo que "Mis acciones" necesita para cargar, en una sola respuesta
+    // (evaluación actual resuelta server-side + tareas + estados) — reemplaza
+    // 3 llamadas HTTP secuenciales del frontend por una sola.
+    [HttpGet("my-actions-bootstrap")]
+    public async Task<IActionResult> GetMyActionsBootstrap()
+    {
+        var res = await getMyActionsBootstrapQuery.Execute(CompanyId, UserId);
         return ProcessResponse(res);
     }
 
