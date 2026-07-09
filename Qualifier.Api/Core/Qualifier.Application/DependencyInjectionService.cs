@@ -15,7 +15,7 @@ using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPla
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPrioritiesByCompanyId;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
-using Qualifier.Application.Database.Gap.Queries.GetGapScope;
+using Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap;
 using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.Notifications.Queries.GetNotificationsByUserId;
 using Qualifier.Application.Database.Notifications.Commands.MarkNotificationAsRead;
@@ -53,6 +53,7 @@ using Qualifier.Application.Database.Breach.Commands.CreateBreach;
 using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
+using Qualifier.Application.Database.Breach.Queries.GetBreachesScope;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
 using Qualifier.Application.Database.Breach.Queries.GetBreachSeverityReport;
 using Qualifier.Application.Database.Breach.Queries.GetRisksIdentification;
@@ -778,7 +779,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetGapDashboardQuery, GetGapDashboardQuery>();
 
             //Gap
-            services.AddTransient<IGetGapScopeQuery, GetGapScopeQuery>();
+            services.AddTransient<IGetPlanDeAccionBootstrapQuery, GetPlanDeAccionBootstrapQuery>();
 
             //Notification
             services.AddTransient<IGetNotificationsByUserIdQuery, GetNotificationsByUserIdQuery>();
@@ -966,6 +967,7 @@ namespace Qualifier.Application
             services.AddTransient<IDeleteBreachCommand, DeleteBreachCommand>();
             services.AddTransient<IGetBreachByIdQuery, GetBreachByIdQuery>();
             services.AddTransient<IGetBreachsByEvaluationIdQuery, GetBreachsByEvaluationIdQuery>();
+            services.AddTransient<IGetBreachesScopeQuery, GetBreachesScopeQuery>();
 
             services.AddTransient<IGetAllBreachSeveritiesByCompanyIdQuery, GetAllBreachSeveritiesByCompanyIdQuery>();
 

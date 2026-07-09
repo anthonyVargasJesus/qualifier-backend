@@ -12,6 +12,7 @@ namespace Qualifier.Api.Controllers
         // Propiedades calculadas para obtener datos del usuario actual
         protected int UserId => GetClaimAsInt("userId");
         protected int CompanyId => GetClaimAsInt("companyId");
+        protected int StandardId => GetClaimAsInt("standardId");
 
         private int GetClaimAsInt(string claimType)
         {
