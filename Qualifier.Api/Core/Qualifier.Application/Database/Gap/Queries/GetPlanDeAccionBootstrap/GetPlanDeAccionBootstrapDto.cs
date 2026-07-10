@@ -31,5 +31,10 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
         public string tipo { get; set; } = "";
         public int itemId { get; set; }
         public int? maturityLevelId { get; set; }
+        // "Cláusulas" para requisitos, o el nombre del grupo de control —
+        // mismo criterio que ya usa Evaluación, para poder agrupar "Plan de
+        // acción" por tema sin tener que traer nombre/código/descripción
+        // completos de cada ítem (eso seguiría siendo pesado a propósito).
+        public string theme { get; set; } = "";
     }
 }

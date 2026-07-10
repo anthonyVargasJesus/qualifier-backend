@@ -122,6 +122,7 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
                                 tipo = "requisito",
                                 itemId = evaluation.requirement.requirementId,
                                 maturityLevelId = evaluation.maturityLevelId,
+                                theme = "Cláusulas",
                             });
                     }
                 }
@@ -144,6 +145,7 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
                             tipo = "control",
                             itemId = control.controlId,
                             maturityLevelId = evaluation.maturityLevelId,
+                            theme = group.name,
                         });
                 }
             }
