@@ -18,17 +18,19 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
         // fueran las mismas instancias compartidas entre requests, dos requests concurrentes
         // para el mismo standardId pisarían el mismo objeto al mismo tiempo. Por eso cada
         // llamada arma instancias de RequirementEntity nuevas a partir de estas filas.
-        private record RequirementCatalogRow(
-            int requirementId,
-            int numeration,
-            string name,
-            string? description,
-            int level,
-            int parentId,
-            string letter,
-            int? defaultResponsibleId,
-            int? parentNumeration,
-            string? parentName);
+        private record RequirementCatalogRow
+        {
+            public int requirementId { get; init; }
+            public int numeration { get; init; }
+            public string name { get; init; } = "";
+            public string? description { get; init; }
+            public int level { get; init; }
+            public int parentId { get; init; }
+            public string letter { get; init; } = "";
+            public int? defaultResponsibleId { get; init; }
+            public int? parentNumeration { get; init; }
+            public string? parentName { get; init; }
+        }
 
         public static string CacheKey(int standardId) => $"requirements:{standardId}";
 
@@ -66,18 +68,19 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                           where ((requirement.isDeleted == null || requirement.isDeleted == false)
                           && requirement.standardId == standardId
                           && requirement.isEvaluable)
-                          select new RequirementCatalogRow(
-                              requirement.requirementId,
-                              requirement.numeration,
-                              requirement.name,
-                              requirement.description,
-                              requirement.level,
-                              requirement.parentId,
-                              requirement.letter == null ? "" : requirement.letter,
-                              requirement.defaultResponsibleId,
-                              parent == null ? (int?)null : parent.numeration,
-                              parent == null ? null : parent.name
-                          )).ToListAsync());
+                          select new RequirementCatalogRow
+                          {
+                              requirementId = requirement.requirementId,
+                              numeration = requirement.numeration,
+                              name = requirement.name,
+                              description = requirement.description,
+                              level = requirement.level,
+                              parentId = requirement.parentId,
+                              letter = requirement.letter == null ? "" : requirement.letter,
+                              defaultResponsibleId = requirement.defaultResponsibleId,
+                              parentNumeration = parent == null ? (int?)null : parent.numeration,
+                              parentName = parent == null ? null : parent.name,
+                          }).ToListAsync());
 
                 var entities = rows.Select(r => new RequirementEntity
                 {

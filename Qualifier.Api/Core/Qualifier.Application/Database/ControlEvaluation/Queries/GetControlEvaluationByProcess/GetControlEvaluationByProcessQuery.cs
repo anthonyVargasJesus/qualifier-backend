@@ -15,8 +15,21 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
         // aplica en memoria después de leer del caché, para que el catálogo cacheado sirva a
         // cualquier usuario/empresa que use esa norma. Ver la misma nota en
         // GetRequirementEvaluationByProcessQuery.
-        private record ControlGroupCatalogRow(int controlGroupId, int number, string name);
-        private record ControlCatalogRow(int controlId, int controlGroupId, int number, string name, int? defaultResponsibleId);
+        private record ControlGroupCatalogRow
+        {
+            public int controlGroupId { get; init; }
+            public int number { get; init; }
+            public string name { get; init; } = "";
+        }
+
+        private record ControlCatalogRow
+        {
+            public int controlId { get; init; }
+            public int controlGroupId { get; init; }
+            public int number { get; init; }
+            public string name { get; init; } = "";
+            public int? defaultResponsibleId { get; init; }
+        }
 
         public static string GroupCacheKey(int standardId) => $"controlGroups:{standardId}";
         public static string ControlCacheKey(int standardId) => $"controls:{standardId}";
@@ -51,7 +64,12 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                     await (from item in _databaseService.ControlGroup
                           where ((item.isDeleted == null || item.isDeleted == false)
                           && item.standardId == standardId)
-                          select new ControlGroupCatalogRow(item.controlGroupId, item.number, item.name))
+                          select new ControlGroupCatalogRow
+                          {
+                              controlGroupId = item.controlGroupId,
+                              number = item.number,
+                              name = item.name,
+                          })
                           .OrderBy(x => x.number)
                           .ToListAsync());
 
@@ -68,7 +86,14 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                     await (from item in _databaseService.Control
                           where ((item.isDeleted == null || item.isDeleted == false)
                           && item.standardId == standardId)
-                          select new ControlCatalogRow(item.controlId, item.controlGroupId, item.number, item.name, item.defaultResponsibleId))
+                          select new ControlCatalogRow
+                          {
+                              controlId = item.controlId,
+                              controlGroupId = item.controlGroupId,
+                              number = item.number,
+                              name = item.name,
+                              defaultResponsibleId = item.defaultResponsibleId,
+                          })
                           .OrderBy(x => x.number)
                           .ToListAsync());
 
