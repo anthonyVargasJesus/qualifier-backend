@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -15,12 +17,14 @@ namespace Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IEvaluationRepository _evaluationRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public CreateEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IEvaluationRepository evaluationRepository)
+        public CreateEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IEvaluationRepository evaluationRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _evaluationRepository = evaluationRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(CreateEvaluationDto model)
@@ -34,7 +38,7 @@ namespace Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation
                 if (model.isGapAnalysis != null)
                     if (model.isGapAnalysis.Value)
                     {
-                        string title = "Evaluación no guardada";
+                        string title = "Evaluaciï¿½n no guardada";
                         Notification notification2 = await this.uniqueGapEvaluationValidation(model.startDate.Year);
                         if (notification2.hasErrors())
                             return BaseApplication.getApplicationErrorResponseWithTitle(notification2.errors, title);
@@ -76,6 +80,8 @@ namespace Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation
                     scope.Complete();
                 }
 
+                _cacheService.Remove(GetCurrentEvaluationQuery.CacheKey);
+
                 return model;
             }
             catch (Exception)
@@ -104,7 +110,7 @@ namespace Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation
 
             Notification notification = new Notification();
             if (total > 0)
-                notification.addError("Ya hay un análisis de brechas para el año " + currentYear);
+                notification.addError("Ya hay un anï¿½lisis de brechas para el aï¿½o " + currentYear);
             return notification;
         }
 

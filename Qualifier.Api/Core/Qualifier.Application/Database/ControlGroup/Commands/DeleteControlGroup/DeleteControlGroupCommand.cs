@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
 using Qualifier.Common.Application.Dto
 
 ;
@@ -11,11 +13,13 @@ namespace Qualifier.Application.Database.ControlGroup.Commands.DeleteControlGrou
     {
         private readonly IDatabaseService _databaseService;
         private readonly IControlGroupRepository _controlGroupRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public DeleteControlGroupCommand(IDatabaseService databaseService, IControlGroupRepository controlGroupRepository)
+        public DeleteControlGroupCommand(IDatabaseService databaseService, IControlGroupRepository controlGroupRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _controlGroupRepository = controlGroupRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(int id, int updateUserId)
@@ -26,7 +30,15 @@ namespace Qualifier.Application.Database.ControlGroup.Commands.DeleteControlGrou
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
+                var standardId = await _databaseService.ControlGroup
+                    .Where(item => item.controlGroupId == id)
+                    .Select(item => item.standardId)
+                    .FirstOrDefaultAsync();
+
                 await _controlGroupRepository.Delete(id, updateUserId);
+
+                if (standardId != null)
+                    _cacheService.Remove(GetControlEvaluationByProcessQuery.GroupCacheKey(standardId.Value));
 
                 BaseResponseCommandDto baseResponseCommandDto = new BaseResponseCommandDto();
                 baseResponseCommandDto.response = "¡Registro eliminado!";

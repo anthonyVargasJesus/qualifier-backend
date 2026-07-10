@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
@@ -13,11 +15,13 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.DeleteMaturityLe
     {
         private readonly IDatabaseService _databaseService;
         private readonly IMaturityLevelRepository _repository;
+        private readonly IAppCacheService _cacheService;
 
-        public DeleteMaturityLevelCommand(IDatabaseService databaseService, IMaturityLevelRepository repository)
+        public DeleteMaturityLevelCommand(IDatabaseService databaseService, IMaturityLevelRepository repository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _repository = repository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(int id, int updateUserId)
@@ -28,7 +32,14 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.DeleteMaturityLe
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
+                var companyId = await _databaseService.MaturityLevel
+                    .Where(item => item.maturityLevelId == id)
+                    .Select(item => item.companyId)
+                    .FirstOrDefaultAsync();
+
                 await _repository.Delete(id, updateUserId);
+
+                _cacheService.Remove(GetAllMaturityLevelsByCompanyIdQuery.CacheKey(companyId));
 
                 BaseResponseCommandDto baseResponseCommandDto = new BaseResponseCommandDto();
                 baseResponseCommandDto.response = "¡Registro eliminado!";

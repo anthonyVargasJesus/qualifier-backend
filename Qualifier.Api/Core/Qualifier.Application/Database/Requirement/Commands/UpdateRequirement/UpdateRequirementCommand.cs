@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -12,12 +14,14 @@ namespace Qualifier.Application.Database.Requirement.Commands.UpdateRequirement
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IRequirementRepository _requirementRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public UpdateRequirementCommand(IDatabaseService databaseService, IMapper mapper, IRequirementRepository requirementRepository)
+        public UpdateRequirementCommand(IDatabaseService databaseService, IMapper mapper, IRequirementRepository requirementRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _requirementRepository = requirementRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(UpdateRequirementDto model, int id)
@@ -33,6 +37,12 @@ namespace Qualifier.Application.Database.Requirement.Commands.UpdateRequirement
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
                 await _requirementRepository.Update(id, _mapper.Map<RequirementEntity>(model));
+
+                var standardId = await _databaseService.Requirement
+                    .Where(item => item.requirementId == id)
+                    .Select(item => item.standardId)
+                    .FirstOrDefaultAsync();
+                _cacheService.Remove(GetRequirementEvaluationByProcessQuery.CacheKey(standardId));
 
                 return model;
             }

@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -12,12 +14,14 @@ namespace Qualifier.Application.Database.Control.Commands.UpdateControl
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IControlRepository _controlRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public UpdateControlCommand(IDatabaseService databaseService, IMapper mapper, IControlRepository controlRepository)
+        public UpdateControlCommand(IDatabaseService databaseService, IMapper mapper, IControlRepository controlRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _controlRepository = controlRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(UpdateControlDto model, int id)
@@ -33,6 +37,12 @@ namespace Qualifier.Application.Database.Control.Commands.UpdateControl
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
                 await _controlRepository.Update(id, _mapper.Map<ControlEntity>(model));
+
+                var standardId = await _databaseService.Control
+                    .Where(item => item.controlId == id)
+                    .Select(item => item.standardId)
+                    .FirstOrDefaultAsync();
+                _cacheService.Remove(GetControlEvaluationByProcessQuery.ControlCacheKey(standardId));
 
                 return model;
             }

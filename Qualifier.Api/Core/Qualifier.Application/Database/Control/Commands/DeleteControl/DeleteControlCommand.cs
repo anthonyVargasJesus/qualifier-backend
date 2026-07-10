@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
 using Qualifier.Common.Application.Dto
 
 ;
@@ -11,11 +13,13 @@ namespace Qualifier.Application.Database.Control.Commands.DeleteControl
     {
         private readonly IDatabaseService _databaseService;
         private readonly IControlRepository _controlRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public DeleteControlCommand(IDatabaseService databaseService, IControlRepository controlRepository)
+        public DeleteControlCommand(IDatabaseService databaseService, IControlRepository controlRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _controlRepository = controlRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(int id, int updateUserId)
@@ -26,7 +30,14 @@ namespace Qualifier.Application.Database.Control.Commands.DeleteControl
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
+                var standardId = await _databaseService.Control
+                    .Where(item => item.controlId == id)
+                    .Select(item => item.standardId)
+                    .FirstOrDefaultAsync();
+
                 await _controlRepository.Delete(id, updateUserId);
+
+                _cacheService.Remove(GetControlEvaluationByProcessQuery.ControlCacheKey(standardId));
 
                 BaseResponseCommandDto baseResponseCommandDto = new BaseResponseCommandDto();
                 baseResponseCommandDto.response = "¡Registro eliminado!";

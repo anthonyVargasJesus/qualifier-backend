@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
@@ -10,11 +12,13 @@ namespace Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation
     {
         private readonly IDatabaseService _databaseService;
         private readonly IEvaluationRepository _evaluationRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public DeleteEvaluationCommand(IDatabaseService databaseService, IEvaluationRepository evaluationRepository)
+        public DeleteEvaluationCommand(IDatabaseService databaseService, IEvaluationRepository evaluationRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _evaluationRepository = evaluationRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(int id, int updateUserId)
@@ -26,6 +30,8 @@ namespace Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
                 await _evaluationRepository.Delete(id, updateUserId);
+
+                _cacheService.Remove(GetCurrentEvaluationQuery.CacheKey);
 
                 BaseResponseCommandDto baseResponseCommandDto = new BaseResponseCommandDto();
                 baseResponseCommandDto.response = "¡Registro eliminado!";

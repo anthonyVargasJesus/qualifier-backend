@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -13,19 +14,36 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
 {
     public class GetCurrentEvaluationQuery : IGetCurrentEvaluationQuery
     {
+        // Clave fija: esta query ignora su parámetro `evaluationId` y no filtra por companyId
+        // (siempre trae la única fila con isCurrent == true) — la caché refleja ese
+        // comportamiento tal cual, sin inventar un scope que la query no tiene hoy.
+        public const string CacheKey = "evaluation:current";
+
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
+        private readonly IAppCacheService _cacheService;
 
-        public GetCurrentEvaluationQuery(IDatabaseService databaseService, IMapper mapper)
+        public GetCurrentEvaluationQuery(IDatabaseService databaseService, IMapper mapper, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
         public async Task<Object> Execute(int evaluationId)
         {
             try
             {
-                var entity = await (from item in _databaseService.Evaluation
+                return await _cacheService.GetOrCreateAsync(CacheKey, async () => await FetchCurrentEvaluation());
+            }
+            catch (Exception)
+            {
+                return BaseApplication.getExceptionErrorResponse();
+            }
+        }
+
+        private async Task<Object> FetchCurrentEvaluation()
+        {
+            var entity = await (from item in _databaseService.Evaluation
                                     join standard in _databaseService.Standard on item.standard equals standard
                                     join evaluationState in _databaseService.EvaluationState on item.evaluationState equals evaluationState
                                     where ((item.isDeleted == null || item.isDeleted == false) && item.isCurrent)
@@ -79,12 +97,6 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation
                     entityDto.currentPolicy = _mapper.Map<GetCurrentPolicyDto>(currentPolicy);
 
                 return entityDto;
-
-            }
-            catch (Exception)
-            {
-                return BaseApplication.getExceptionErrorResponse();
-            }
         }
     }
 }

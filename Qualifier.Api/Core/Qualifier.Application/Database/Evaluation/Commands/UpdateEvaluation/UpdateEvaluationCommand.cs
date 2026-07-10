@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.Evaluation.Queries.GetCurrentEvaluation;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -12,12 +14,14 @@ namespace Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IEvaluationRepository _evaluationRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public UpdateEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IEvaluationRepository evaluationRepository)
+        public UpdateEvaluationCommand(IDatabaseService databaseService, IMapper mapper, IEvaluationRepository evaluationRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _evaluationRepository = evaluationRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(UpdateEvaluationDto model, int id)
@@ -53,7 +57,8 @@ namespace Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation
                             await this._evaluationRepository.UpdateCurrentState(evaluation.evaluationId, false);
 
                     }
-                
+
+                _cacheService.Remove(GetCurrentEvaluationQuery.CacheKey);
 
                 return model;
             }

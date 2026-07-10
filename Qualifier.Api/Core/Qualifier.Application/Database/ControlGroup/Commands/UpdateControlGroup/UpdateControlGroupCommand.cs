@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -12,12 +14,14 @@ namespace Qualifier.Application.Database.ControlGroup.Commands.UpdateControlGrou
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IControlGroupRepository _controlGroupRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public UpdateControlGroupCommand(IDatabaseService databaseService, IMapper mapper, IControlGroupRepository controlGroupRepository)
+        public UpdateControlGroupCommand(IDatabaseService databaseService, IMapper mapper, IControlGroupRepository controlGroupRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _controlGroupRepository = controlGroupRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(UpdateControlGroupDto model, int id)
@@ -33,6 +37,13 @@ namespace Qualifier.Application.Database.ControlGroup.Commands.UpdateControlGrou
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
                 await _controlGroupRepository.Update(id, _mapper.Map<ControlGroupEntity>(model));
+
+                var standardId = await _databaseService.ControlGroup
+                    .Where(item => item.controlGroupId == id)
+                    .Select(item => item.standardId)
+                    .FirstOrDefaultAsync();
+                if (standardId != null)
+                    _cacheService.Remove(GetControlEvaluationByProcessQuery.GroupCacheKey(standardId.Value));
 
                 return model;
             }

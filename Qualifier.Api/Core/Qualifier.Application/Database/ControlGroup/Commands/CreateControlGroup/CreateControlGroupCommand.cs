@@ -1,4 +1,6 @@
 using AutoMapper;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEvaluationByProcess;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -11,11 +13,13 @@ namespace Qualifier.Application.Database.ControlGroup.Commands.CreateControlGrou
 
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
+        private readonly IAppCacheService _cacheService;
 
-        public CreateControlGroupCommand(IDatabaseService databaseService, IMapper mapper)
+        public CreateControlGroupCommand(IDatabaseService databaseService, IMapper mapper, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(CreateControlGroupDto model)
@@ -31,6 +35,7 @@ namespace Qualifier.Application.Database.ControlGroup.Commands.CreateControlGrou
                 entity.creationUserId = model.creationUserId;
                 await _databaseService.ControlGroup.AddAsync(entity);
                 await _databaseService.SaveAsync();
+                _cacheService.Remove(GetControlEvaluationByProcessQuery.GroupCacheKey(model.standardId));
                 return model;
             }
             catch (Exception)

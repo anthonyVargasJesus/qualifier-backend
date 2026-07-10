@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Qualifier.Api.Core.Qualifier.Application.Database.User.Commands.UpdateImage;
+using Qualifier.Application.Cache;
 using Qualifier.Application.Configuration;
 using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.DeleteActionPlan;
@@ -434,6 +435,10 @@ namespace Qualifier.Application
             });
 
             services.AddSingleton(mapper.CreateMapper());
+
+            //Cache
+            services.AddMemoryCache();
+            services.AddSingleton<IAppCacheService, AppCacheService>();
 
             //MaturityLevel
             services.AddTransient<IGetMaturityLevelByIdQuery, GetMaturityLevelByIdQuery>();

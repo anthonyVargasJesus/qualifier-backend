@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Ocsp;
+using Qualifier.Application.Cache;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
 
@@ -8,12 +9,27 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
 {
     public class GetControlEvaluationByProcessQuery : IGetControlEvaluationByProcessQuery
     {
+        // Filas crudas del catálogo de controles/grupos, previas a cualquier mutación
+        // (setControlsWithGroup/setNumeration escriben .controls/.numerationToShow en el mismo
+        // objeto). Se cachean por standardId, SIN el filtro de scope por usuario — ese filtro se
+        // aplica en memoria después de leer del caché, para que el catálogo cacheado sirva a
+        // cualquier usuario/empresa que use esa norma. Ver la misma nota en
+        // GetRequirementEvaluationByProcessQuery.
+        private record ControlGroupCatalogRow(int controlGroupId, int number, string name);
+        private record ControlCatalogRow(int controlId, int controlGroupId, int number, string name, int? defaultResponsibleId);
+
+        public static string GroupCacheKey(int standardId) => $"controlGroups:{standardId}";
+        public static string ControlCacheKey(int standardId) => $"controls:{standardId}";
+
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
-        public GetControlEvaluationByProcessQuery(IDatabaseService databaseService, IMapper mapper)
+        private readonly IAppCacheService _cacheService;
+
+        public GetControlEvaluationByProcessQuery(IDatabaseService databaseService, IMapper mapper, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(int standardId, int evaluationId, int userId = 0, bool scopeToUser = false)
@@ -31,30 +47,39 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
                                               select x.controlGroupId).ToListAsync();
                 }
 
-                var groups = await (from item in _databaseService.ControlGroup
-                                    where ((item.isDeleted == null || item.isDeleted == false)
-                                    && item.standardId == standardId
-                                    && (assignedGroupIds == null || assignedGroupIds.Contains(item.controlGroupId)))
-                                    select new ControlGroupEntity
-                                    {
-                                        controlGroupId = item.controlGroupId,
-                                        number = item.number,
-                                        name = item.name,
-                                    }).OrderBy(x => x.number)
-                                    .ToListAsync();
+                var groupRows = await _cacheService.GetOrCreateAsync(GroupCacheKey(standardId), async () =>
+                    await (from item in _databaseService.ControlGroup
+                          where ((item.isDeleted == null || item.isDeleted == false)
+                          && item.standardId == standardId)
+                          select new ControlGroupCatalogRow(item.controlGroupId, item.number, item.name))
+                          .OrderBy(x => x.number)
+                          .ToListAsync());
 
-                var controls = await (from item in _databaseService.Control
-                                      where ((item.isDeleted == null || item.isDeleted == false) 
-                                      && item.standardId == standardId)
-                                      select new ControlEntity
-                                      {
-                                          controlId = item.controlId,
-                                          controlGroupId = item.controlGroupId,
-                                          number = item.number,
-                                          name = item.name,
-                                          defaultResponsibleId = item.defaultResponsibleId,
-                                      }).OrderBy(x => x.number)
-                                  .ToListAsync();
+                var groups = groupRows
+                    .Where(r => assignedGroupIds == null || assignedGroupIds.Contains(r.controlGroupId))
+                    .Select(r => new ControlGroupEntity
+                    {
+                        controlGroupId = r.controlGroupId,
+                        number = r.number,
+                        name = r.name,
+                    }).ToList();
+
+                var controlRows = await _cacheService.GetOrCreateAsync(ControlCacheKey(standardId), async () =>
+                    await (from item in _databaseService.Control
+                          where ((item.isDeleted == null || item.isDeleted == false)
+                          && item.standardId == standardId)
+                          select new ControlCatalogRow(item.controlId, item.controlGroupId, item.number, item.name, item.defaultResponsibleId))
+                          .OrderBy(x => x.number)
+                          .ToListAsync());
+
+                var controls = controlRows.Select(r => new ControlEntity
+                {
+                    controlId = r.controlId,
+                    controlGroupId = r.controlGroupId,
+                    number = r.number,
+                    name = r.name,
+                    defaultResponsibleId = r.defaultResponsibleId,
+                }).ToList();
 
                 var evaluations = await (from controlEvaluation in _databaseService.ControlEvaluation
                                          join control in _databaseService.Control on controlEvaluation.control equals control

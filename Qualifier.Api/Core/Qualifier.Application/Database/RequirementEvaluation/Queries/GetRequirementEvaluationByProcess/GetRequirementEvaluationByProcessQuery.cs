@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -9,12 +10,37 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
 {
     public class GetRequirementEvaluationByProcessQuery : IGetRequirementEvaluationByProcessQuery
     {
+        // Fila cruda del catálogo de requisitos (self-join Requirement-padre), previa a
+        // cualquier mutación de árbol/numeración. Se cachea por standardId — el catálogo se
+        // configura una vez al dar de alta la norma y casi no cambia. No se cachea
+        // RequirementEntity directamente porque StandardEntity.setRequirementsWithChildren/
+        // setNumeration mutan esas instancias en el lugar (.children, .numerationToShow); si
+        // fueran las mismas instancias compartidas entre requests, dos requests concurrentes
+        // para el mismo standardId pisarían el mismo objeto al mismo tiempo. Por eso cada
+        // llamada arma instancias de RequirementEntity nuevas a partir de estas filas.
+        private record RequirementCatalogRow(
+            int requirementId,
+            int numeration,
+            string name,
+            string? description,
+            int level,
+            int parentId,
+            string letter,
+            int? defaultResponsibleId,
+            int? parentNumeration,
+            string? parentName);
+
+        public static string CacheKey(int standardId) => $"requirements:{standardId}";
+
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
-        public GetRequirementEvaluationByProcessQuery(IDatabaseService databaseService, IMapper mapper)
+        private readonly IAppCacheService _cacheService;
+
+        public GetRequirementEvaluationByProcessQuery(IDatabaseService databaseService, IMapper mapper, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(int standardId, int evaluationId, string search, int userId = 0, bool scopeToUser = false)
@@ -32,31 +58,45 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequir
                                                select x.requirementId).ToListAsync();
                 }
 
-                var entities = await (from requirement in _databaseService.Requirement
-                                      join parent in _databaseService.Requirement
-                                      on requirement.parentId equals parent.requirementId into parentJoin
-                                      from parent in parentJoin.DefaultIfEmpty() 
-                                      where ((requirement.isDeleted == null || requirement.isDeleted == false)
-                                      && requirement.standardId == standardId
-                                      && requirement.isEvaluable)
-                                      select new RequirementEntity
-                                      {
-                                          requirementId = requirement.requirementId,
-                                          numeration = requirement.numeration,
-                                          name = requirement.name,
-                                          description = requirement.description,
-                                          level = requirement.level,
-                                          parentId = requirement.parentId,
-                                          letter = (requirement.letter == null) ? "" : requirement.letter,
-                                          defaultResponsibleId = requirement.defaultResponsibleId,
-                                          requirement = parent == null ? null : new RequirementEntity
-                                          {
-                                              numeration = parent.numeration,
-                                              name = parent.name,
-                                              level = requirement.level,
-                                              letter = (requirement.letter == null) ? "" : requirement.letter,
-                                          }
-                                      }).ToListAsync();
+                var rows = await _cacheService.GetOrCreateAsync(CacheKey(standardId), async () =>
+                    await (from requirement in _databaseService.Requirement
+                          join parent in _databaseService.Requirement
+                          on requirement.parentId equals parent.requirementId into parentJoin
+                          from parent in parentJoin.DefaultIfEmpty()
+                          where ((requirement.isDeleted == null || requirement.isDeleted == false)
+                          && requirement.standardId == standardId
+                          && requirement.isEvaluable)
+                          select new RequirementCatalogRow(
+                              requirement.requirementId,
+                              requirement.numeration,
+                              requirement.name,
+                              requirement.description,
+                              requirement.level,
+                              requirement.parentId,
+                              requirement.letter == null ? "" : requirement.letter,
+                              requirement.defaultResponsibleId,
+                              parent == null ? (int?)null : parent.numeration,
+                              parent == null ? null : parent.name
+                          )).ToListAsync());
+
+                var entities = rows.Select(r => new RequirementEntity
+                {
+                    requirementId = r.requirementId,
+                    numeration = r.numeration,
+                    name = r.name,
+                    description = r.description,
+                    level = r.level,
+                    parentId = r.parentId,
+                    letter = r.letter,
+                    defaultResponsibleId = r.defaultResponsibleId,
+                    requirement = r.parentNumeration == null ? null : new RequirementEntity
+                    {
+                        numeration = r.parentNumeration.Value,
+                        name = r.parentName,
+                        level = r.level,
+                        letter = r.letter,
+                    },
+                }).ToList();
 
                 // Filtra familias completas (nivel 1, ej. "4. Contexto de la organización") que no
                 // estén asignadas al usuario — se quita solo la raíz; setRequirementsWithChildren

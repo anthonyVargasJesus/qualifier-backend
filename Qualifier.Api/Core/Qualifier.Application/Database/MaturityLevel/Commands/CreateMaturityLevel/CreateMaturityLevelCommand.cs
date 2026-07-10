@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -10,11 +12,13 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.CreateMaturityLe
     {
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
+        private readonly IAppCacheService _cacheService;
 
-        public CreateMaturityLevelCommand(IDatabaseService databaseService, IMapper mapper)
+        public CreateMaturityLevelCommand(IDatabaseService databaseService, IMapper mapper, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
         public async Task<Object> Execute(CreateMaturityLevelDto model)
         {
@@ -27,6 +31,7 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.CreateMaturityLe
                 var entity = _mapper.Map<MaturityLevelEntity>(model);
                 await _databaseService.MaturityLevel.AddAsync(entity);
                 await _databaseService.SaveAsync();
+                _cacheService.Remove(GetAllMaturityLevelsByCompanyIdQuery.CacheKey(model.companyId));
                 return model;
             }
             catch (Exception)

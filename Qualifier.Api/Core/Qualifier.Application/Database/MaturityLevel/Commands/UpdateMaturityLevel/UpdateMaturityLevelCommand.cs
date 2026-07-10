@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLevelsByCompanyId;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -13,12 +15,14 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLe
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IMaturityLevelRepository _repository;
+        private readonly IAppCacheService _cacheService;
 
-        public UpdateMaturityLevelCommand(IDatabaseService databaseService, IMapper mapper, IMaturityLevelRepository repository)
+        public UpdateMaturityLevelCommand(IDatabaseService databaseService, IMapper mapper, IMaturityLevelRepository repository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _repository = repository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(UpdateMaturityLevelDto model, int id)
@@ -34,6 +38,12 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLe
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
                 await _repository.Update(id, _mapper.Map<MaturityLevelEntity>(model));
+
+                var companyId = await _databaseService.MaturityLevel
+                    .Where(item => item.maturityLevelId == id)
+                    .Select(item => item.companyId)
+                    .FirstOrDefaultAsync();
+                _cacheService.Remove(GetAllMaturityLevelsByCompanyIdQuery.CacheKey(companyId));
 
                 return model;
             }

@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Cache;
+using Qualifier.Application.Database.RequirementEvaluation.Queries.GetRequirementEvaluationByProcess;
 using Qualifier.Common.Application.Dto;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
@@ -9,11 +11,13 @@ namespace Qualifier.Application.Database.Requirement.Commands.DeleteRequirement
     {
         private readonly IDatabaseService _databaseService;
         private readonly IRequirementRepository _requirementRepository;
+        private readonly IAppCacheService _cacheService;
 
-        public DeleteRequirementCommand(IDatabaseService databaseService, IRequirementRepository requirementRepository)
+        public DeleteRequirementCommand(IDatabaseService databaseService, IRequirementRepository requirementRepository, IAppCacheService cacheService)
         {
             _databaseService = databaseService;
             _requirementRepository = requirementRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<Object> Execute(int id, int updateUserId)
@@ -24,7 +28,14 @@ namespace Qualifier.Application.Database.Requirement.Commands.DeleteRequirement
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
+                var standardId = await _databaseService.Requirement
+                    .Where(item => item.requirementId == id)
+                    .Select(item => item.standardId)
+                    .FirstOrDefaultAsync();
+
                 await _requirementRepository.Delete(id, updateUserId);
+
+                _cacheService.Remove(GetRequirementEvaluationByProcessQuery.CacheKey(standardId));
 
                 BaseResponseCommandDto baseResponseCommandDto = new BaseResponseCommandDto();
                 baseResponseCommandDto.response = "¡Registro eliminado!";
