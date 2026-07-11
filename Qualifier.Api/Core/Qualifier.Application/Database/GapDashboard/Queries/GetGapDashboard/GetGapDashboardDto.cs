@@ -7,9 +7,19 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
         public int compliantItems { get; set; }
         public int compliancePercentage { get; set; }
         public int openBreachesCount { get; set; }
+        public int overdueActionPlansCount { get; set; }
+        public int evaluatedItemsWithEvidenceCount { get; set; }
         public List<GetGapDashboardMaturityCountDto> maturityCounts { get; set; } = new();
         public List<GetGapDashboardThemeDto> themes { get; set; } = new();
         public List<GetGapDashboardPendingItemDto> pendingItems { get; set; } = new();
+        public List<GetGapDashboardBreachSeverityDto> breachSeverityBreakdown { get; set; } = new();
+    }
+
+    public class GetGapDashboardBreachSeverityDto
+    {
+        public string name { get; set; } = string.Empty;
+        public string color { get; set; } = string.Empty;
+        public int count { get; set; }
     }
 
     public class GetGapDashboardMaturityCountDto

@@ -76,11 +76,40 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
                     })
                     .ToList();
 
-                var openBreachesCount = await _databaseService.Breach
-                    .Where(b => (b.isDeleted == null || b.isDeleted == false) && b.evaluationId == evaluationId
+                var openBreaches = await (
+                    from b in _databaseService.Breach
+                    join severity in _databaseService.BreachSeverity on b.breachSeverityId equals severity.breachSeverityId
+                    where (b.isDeleted == null || b.isDeleted == false) && b.evaluationId == evaluationId
                         && ((b.type == "2" && scopedControlIds.Contains(b.controlId))
-                            || (b.type == "1" && scopedRequirementIds.Contains(b.requirementId))))
-                    .CountAsync();
+                            || (b.type == "1" && scopedRequirementIds.Contains(b.requirementId)))
+                    select new { severity.name, severity.color }
+                ).ToListAsync();
+
+                var breachSeverityBreakdown = openBreaches
+                    .GroupBy(b => new { b.name, b.color })
+                    .Select(g => new GetGapDashboardBreachSeverityDto
+                    {
+                        name = g.Key.name,
+                        color = g.Key.color,
+                        count = g.Count(),
+                    })
+                    .OrderByDescending(s => s.count)
+                    .ToList();
+
+                // Mismo criterio de "vencida" que ya usa GetActionPlanProgressQuery / la app
+                // móvil (task_list_options.dart): fecha (sin hora) pasada y sin estar en un
+                // estado de cierre (abreviatura COMP/CERR).
+                var today = DateTime.UtcNow.Date;
+                var overdueActionPlansCount = await (
+                    from ap in _databaseService.ActionPlan
+                    join status in _databaseService.ActionPlanStatus on ap.actionPlanStatusId equals status.actionPlanStatusId
+                    where (ap.isDeleted == null || ap.isDeleted == false) && ap.evaluationId == evaluationId
+                        && ap.dueDate.Date < today
+                        && status.abbreviation != "COMP" && status.abbreviation != "CERR"
+                    select ap.actionPlanId
+                ).CountAsync();
+
+                var evaluatedItemsWithEvidenceCount = evaluatedItems.Count(i => i.hasEvidence);
 
                 return new GetGapDashboardDto
                 {
@@ -88,10 +117,13 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
                     evaluatedItems = evaluatedItems.Count,
                     compliantItems = compliantItems.Count,
                     compliancePercentage = pct,
-                    openBreachesCount = openBreachesCount,
+                    openBreachesCount = openBreaches.Count,
+                    overdueActionPlansCount = overdueActionPlansCount,
+                    evaluatedItemsWithEvidenceCount = evaluatedItemsWithEvidenceCount,
                     maturityCounts = maturityCounts,
                     themes = themes,
                     pendingItems = pendingItems,
+                    breachSeverityBreakdown = breachSeverityBreakdown,
                 };
             }
             catch (Exception)
@@ -100,7 +132,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
             }
         }
 
-        private record ItemState(string tipo, int itemId, string code, string name, string theme, string estado);
+        private record ItemState(string tipo, int itemId, string code, string name, string theme, string estado, bool hasEvidence);
 
         private async Task<(List<ItemState> items, List<int> controlIds)> BuildControlItems(
             int standardId, int evaluationId, int userId, bool scopeToUser)
@@ -134,22 +166,38 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
                 from ce in _databaseService.ControlEvaluation
                 join ml in _databaseService.MaturityLevel on ce.maturityLevel equals ml
                 where (ce.isDeleted == null || ce.isDeleted == false) && ce.evaluationId == evaluationId
-                select new { ce.controlId, maturityName = ml.name }
+                select new { ce.controlId, ce.controlEvaluationId, maturityName = ml.name }
             ).ToListAsync();
             var maturityByControlId = controlEvaluations
                 .GroupBy(ce => ce.controlId)
                 .ToDictionary(g => g.Key, g => g.First().maturityName);
+            var controlEvaluationIdByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => g.First().controlEvaluationId);
+
+            // Ítems (evaluados) que tienen al menos una evidencia adjunta — indicador de
+            // "% con evidencia" del dashboard de Inicio. Una sola consulta agrupada (no N+1)
+            // sobre los controlEvaluationId ya resueltos arriba.
+            var controlEvaluationIds = controlEvaluations.Select(ce => ce.controlEvaluationId).ToList();
+            var controlEvaluationIdsWithEvidence = (await _databaseService.ReferenceDocumentation
+                .Where(rd => (rd.isDeleted == null || rd.isDeleted == false)
+                    && rd.controlEvaluationId != null && controlEvaluationIds.Contains(rd.controlEvaluationId.Value))
+                .Select(rd => rd.controlEvaluationId!.Value)
+                .Distinct()
+                .ToListAsync()).ToHashSet();
 
             var items = controls.Select(c =>
             {
                 var group = groupById[c.controlGroupId];
+                var hasEvaluation = controlEvaluationIdByControlId.TryGetValue(c.controlId, out var controlEvaluationId);
                 return new ItemState(
                     tipo: "control",
                     itemId: c.controlId,
                     code: $"{group.number}.{c.number}",
                     name: c.name,
                     theme: group.name,
-                    estado: maturityByControlId.GetValueOrDefault(c.controlId) ?? PENDIENTE);
+                    estado: maturityByControlId.GetValueOrDefault(c.controlId) ?? PENDIENTE,
+                    hasEvidence: hasEvaluation && controlEvaluationIdsWithEvidence.Contains(controlEvaluationId));
             }).ToList();
 
             return (items, controls.Select(c => c.controlId).ToList());
@@ -199,20 +247,37 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
                 join ml in _databaseService.MaturityLevel on re.maturityLevel equals ml
                 where (re.isDeleted == null || re.isDeleted == false) && re.evaluationId == evaluationId
                     && scopedIds.Contains(re.requirementId)
-                select new { re.requirementId, maturityName = ml.name }
+                select new { re.requirementId, re.requirementEvaluationId, maturityName = ml.name }
             ).ToListAsync();
             var maturityByRequirementId = requirementEvaluations
                 .GroupBy(re => re.requirementId)
                 .ToDictionary(g => g.Key, g => g.First().maturityName);
+            var requirementEvaluationIdByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => g.First().requirementEvaluationId);
 
-            var items = evaluableRequirements.Select(r => new ItemState(
-                tipo: "requisito",
-                itemId: r.requirementId,
-                code: r.numeration.ToString(),
-                name: r.name,
-                theme: "Cláusulas",
-                estado: maturityByRequirementId.GetValueOrDefault(r.requirementId) ?? PENDIENTE
-            )).ToList();
+            // Mismo criterio que en BuildControlItems: una sola consulta agrupada para saber
+            // qué evaluaciones ya tienen evidencia adjunta.
+            var requirementEvaluationIds = requirementEvaluations.Select(re => re.requirementEvaluationId).ToList();
+            var requirementEvaluationIdsWithEvidence = (await _databaseService.ReferenceDocumentation
+                .Where(rd => (rd.isDeleted == null || rd.isDeleted == false)
+                    && rd.requirementEvaluationId != null && requirementEvaluationIds.Contains(rd.requirementEvaluationId.Value))
+                .Select(rd => rd.requirementEvaluationId!.Value)
+                .Distinct()
+                .ToListAsync()).ToHashSet();
+
+            var items = evaluableRequirements.Select(r =>
+            {
+                var hasEvaluation = requirementEvaluationIdByRequirementId.TryGetValue(r.requirementId, out var requirementEvaluationId);
+                return new ItemState(
+                    tipo: "requisito",
+                    itemId: r.requirementId,
+                    code: r.numeration.ToString(),
+                    name: r.name,
+                    theme: "Cláusulas",
+                    estado: maturityByRequirementId.GetValueOrDefault(r.requirementId) ?? PENDIENTE,
+                    hasEvidence: hasEvaluation && requirementEvaluationIdsWithEvidence.Contains(requirementEvaluationId));
+            }).ToList();
 
             return (items, scopedIds);
         }
