@@ -233,6 +233,22 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
                 return current.level == 1 ? current.requirementId : null;
             }
 
+            // Mismo cálculo que OverrideNumerationToShowWithHierarchy en
+            // GetRequirementEvaluationByProcessQuery (el "código" real, tipo "4.1", "6.1.2"),
+            // pero sin armar el árbol completo de StandardEntity — acá alcanza con subir por
+            // parentId y concatenar. Memoizado porque varios requisitos comparten ancestros.
+            var numerationToShowCache = new Dictionary<int, string>();
+            string ResolveNumerationToShow(int requirementId)
+            {
+                if (numerationToShowCache.TryGetValue(requirementId, out var cached)) return cached;
+                if (!byId.TryGetValue(requirementId, out var current)) return "";
+                var result = current.level <= 1 || !byId.ContainsKey(current.parentId)
+                    ? current.numeration.ToString()
+                    : $"{ResolveNumerationToShow(current.parentId)}.{current.numeration}";
+                numerationToShowCache[requirementId] = result;
+                return result;
+            }
+
             var evaluableRequirements = allRequirements.Where(r => r.isEvaluable).ToList();
             if (assignedFamilyIds != null)
             {
@@ -272,7 +288,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
                 return new ItemState(
                     tipo: "requisito",
                     itemId: r.requirementId,
-                    code: r.numeration.ToString(),
+                    code: ResolveNumerationToShow(r.requirementId),
                     name: r.name,
                     theme: "Cláusulas",
                     estado: maturityByRequirementId.GetValueOrDefault(r.requirementId) ?? PENDIENTE,
