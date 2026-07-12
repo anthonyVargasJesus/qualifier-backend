@@ -31,6 +31,8 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevels
                                           abbreviation = maturityLevel.abbreviation,
                                           value = maturityLevel.value,
                                           color = maturityLevel.color,
+                                          generatesBreach = maturityLevel.generatesBreach,
+                                          breachSeverityId = maturityLevel.breachSeverityId,
                                       })
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();

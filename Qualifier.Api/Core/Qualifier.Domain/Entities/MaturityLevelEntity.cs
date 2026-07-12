@@ -12,6 +12,8 @@ namespace Qualifier.Domain.Entities
         public decimal value { get; set; }
         public string? color { get; set; }
         public decimal? factor { get; set; }
+        public bool generatesBreach { get; set; }
+        public int? breachSeverityId { get; set; }
         public int companyId { get; set; }
         public ICollection<RequirementEvaluationEntity> requirementEvaluations { get; set; }
         public ICollection<ControlEvaluationEntity> controlEvaluations { get; set; }

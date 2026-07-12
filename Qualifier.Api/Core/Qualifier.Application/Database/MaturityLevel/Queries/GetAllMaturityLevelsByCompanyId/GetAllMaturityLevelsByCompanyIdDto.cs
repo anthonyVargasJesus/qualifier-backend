@@ -7,6 +7,8 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLev
         public string abbreviation { get; set; }
         public decimal? value { get; set; }
         public string color { get; set; }
+        public bool generatesBreach { get; set; }
+        public int? breachSeverityId { get; set; }
     }
 }
 

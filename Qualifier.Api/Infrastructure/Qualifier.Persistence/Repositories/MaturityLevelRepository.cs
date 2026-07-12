@@ -23,6 +23,8 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Repositories
             entry.Property(x => x.value).IsModified = true;
             entry.Property(x => x.color).IsModified = true;
             entry.Property(x => x.factor).IsModified = true;
+            entry.Property(x => x.generatesBreach).IsModified = true;
+            entry.Property(x => x.breachSeverityId).IsModified = true;
             entry.Property(x => x.updateDate).IsModified = true;
             entry.Property(x => x.updateUserId).IsModified = true;
             await _context.SaveChangesAsync();

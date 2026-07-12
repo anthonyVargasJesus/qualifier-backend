@@ -12,6 +12,8 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLe
         public string? abbreviation { get; set; }
         public decimal? value { get; set; }
         public string? color { get; set; }
+        public bool generatesBreach { get; set; }
+        public int? breachSeverityId { get; set; }
         public int? updateUserId { get; set; }
         public void requiredFieldsValidation(Notification notification)
         {
@@ -29,6 +31,9 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.UpdateMaturityLe
 
             if (color == null || color == "")
                 notification.addError("El color es obligatorio");
+
+            if (generatesBreach && (breachSeverityId == null || breachSeverityId <= 0))
+                notification.addError("El breachSeverityId es obligatorio cuando el nivel genera brecha");
         }
 
     }

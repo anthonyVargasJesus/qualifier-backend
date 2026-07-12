@@ -1,6 +1,7 @@
 ﻿using System.Transactions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Database.Breach;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -13,11 +14,13 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
 
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
+        private readonly MaturityLevelBreachGenerator _maturityLevelBreachGenerator;
 
-        public CreateControlEvaluationCommand(IDatabaseService databaseService, IMapper mapper)
+        public CreateControlEvaluationCommand(IDatabaseService databaseService, IMapper mapper, MaturityLevelBreachGenerator maturityLevelBreachGenerator)
         {
             _databaseService = databaseService;
             _mapper = mapper;
+            _maturityLevelBreachGenerator = maturityLevelBreachGenerator;
         }
 
         public async Task<Object> Execute(CreateControlEvaluationDto model)
@@ -102,35 +105,22 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
             return notification;
         }
 
-        // Breach severities
-        private const int SEVERITY_LOW = 1;
-        private const int SEVERITY_MEDIUM = 2;
-        private const int SEVERITY_HIGH = 3;
-        private const int SEVERITY_CRITICAL = 4;
-
-        // Breach statuses
-        private const int BREACH_STATUS_OPEN = 1;
-
         private async Task createBreachFromControlEvaluation(
     ControlEvaluationEntity entity,
     CreateControlEvaluationDto model)
         {
-            // Por nombre, no por id: el catálogo de maturity levels es editable por el usuario y
-            // sus ids pueden cambiar (ej. al reordenar/recrear niveles); el nombre es lo estable.
-            var maturityLevel = await _databaseService.MaturityLevel
-                .Where(m => m.maturityLevelId == entity.maturityLevelId)
-                .FirstOrDefaultAsync();
-
-
-            int? severity = maturityLevel?.name switch
-            {
-                "Parcial" => SEVERITY_MEDIUM,
-                "No cumple" => SEVERITY_HIGH,
-                _ => null,
-            };
-
+            int? severity = await _maturityLevelBreachGenerator.ResolveBreachSeverityIdAsync(entity.maturityLevelId);
             if (severity == null)
                 return;
+
+            var existingBreach = await _maturityLevelBreachGenerator.GetOpenBreachAsync(
+                entity.evaluationId, MaturityLevelBreachGenerator.BREACH_TYPE_CONTROL, entity.controlId, requirementId: 0);
+
+            if (existingBreach != null)
+            {
+                await _maturityLevelBreachGenerator.SyncOpenBreachSeverityAsync(existingBreach, severity.Value);
+                return;
+            }
 
             var groups = await (from item in _databaseService.ControlGroup
                                 where ((item.isDeleted == null || item.isDeleted == false) && item.standardId == model.standardId)
@@ -178,7 +168,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
                     title = title,
                     description = model.justification ?? "El control no cumple con el nivel de madurez esperado.",
                     breachSeverityId = severity.Value,
-                    breachStatusId = BREACH_STATUS_OPEN,
+                    breachStatusId = MaturityLevelBreachGenerator.BREACH_STATUS_OPEN,
                     responsibleId = model.responsibleId.Value,
                     numerationToShow = numerationToShow,
                     evidenceDescription = model.improvementActions,

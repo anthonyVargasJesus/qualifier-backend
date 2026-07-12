@@ -56,6 +56,13 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
 
             entityBuilder.Property(e => e.factor)
                 .HasColumnName("N_FACTOR");
+
+            entityBuilder.Property(e => e.generatesBreach)
+                .HasColumnName("L_GENERATES_BREACH")
+                .IsRequired();
+
+            entityBuilder.Property(e => e.breachSeverityId)
+                .HasColumnName("N_BREACH_SEVERITY_ID_FK");
         }
     }
 }

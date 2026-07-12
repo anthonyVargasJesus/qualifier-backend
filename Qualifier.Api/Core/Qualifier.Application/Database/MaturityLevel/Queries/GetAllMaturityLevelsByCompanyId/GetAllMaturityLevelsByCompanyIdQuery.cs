@@ -40,6 +40,8 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLev
                                               abbreviation = maturityLevel.abbreviation,
                                               value = maturityLevel.value,
                                               color = maturityLevel.color,
+                                              generatesBreach = maturityLevel.generatesBreach,
+                                              breachSeverityId = maturityLevel.breachSeverityId,
                                           })
                                            .OrderBy(e=>e.value)
                                           .ToListAsync();

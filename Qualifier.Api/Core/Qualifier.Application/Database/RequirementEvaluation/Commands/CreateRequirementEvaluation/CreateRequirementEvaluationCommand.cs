@@ -1,6 +1,7 @@
 ﻿using System.Transactions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Qualifier.Application.Database.Breach;
 using Qualifier.Common.Application.NotificationPattern;
 using Qualifier.Common.Application.Service;
 using Qualifier.Domain.Entities;
@@ -15,13 +16,15 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
         private readonly IDatabaseService _databaseService;
         private readonly IMapper _mapper;
         private readonly IEvaluationRepository _evaluationRepository;
+        private readonly MaturityLevelBreachGenerator _maturityLevelBreachGenerator;
 
-        public CreateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper, 
-            IEvaluationRepository evaluationRepository)
+        public CreateRequirementEvaluationCommand(IDatabaseService databaseService, IMapper mapper,
+            IEvaluationRepository evaluationRepository, MaturityLevelBreachGenerator maturityLevelBreachGenerator)
         {
             _databaseService = databaseService;
             _mapper = mapper;
             _evaluationRepository = evaluationRepository;
+            _maturityLevelBreachGenerator = maturityLevelBreachGenerator;
         }
         public async Task<Object> Execute(CreateRequirementEvaluationDto model)
         {
@@ -109,19 +112,23 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
             return notification;
         }
 
-        // Breach severities
-        private const int SEVERITY_LOW = 1;
-        private const int SEVERITY_MEDIUM = 2;
-        private const int SEVERITY_HIGH = 3;
-        private const int SEVERITY_CRITICAL = 4;
-
-        // Breach statuses
-        private const int BREACH_STATUS_OPEN = 1;
-
         private async Task createBreachFromEvaluation(
             RequirementEvaluationEntity entity,
             CreateRequirementEvaluationDto model)
         {
+            int? severity = await _maturityLevelBreachGenerator.ResolveBreachSeverityIdAsync(entity.maturityLevelId);
+            if (severity == null)
+                return;
+
+            var existingBreach = await _maturityLevelBreachGenerator.GetOpenBreachAsync(
+                entity.evaluationId, MaturityLevelBreachGenerator.BREACH_TYPE_REQUIREMENT, controlId: 0, entity.requirementId);
+
+            if (existingBreach != null)
+            {
+                await _maturityLevelBreachGenerator.SyncOpenBreachSeverityAsync(existingBreach, severity.Value);
+                return;
+            }
+
             var requirements = await (from requirement in _databaseService.Requirement
                                       where ((requirement.isDeleted == null || requirement.isDeleted == false)
                                       && requirement.standardId == model.standardId
@@ -139,20 +146,6 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
             var standardEntity = new StandardEntity();
             standardEntity.setRequirementsWithChildren(requirements);
 
-            // Por nombre, no por id: el catálogo de maturity levels es editable por el usuario y
-            // sus ids pueden cambiar (ej. al reordenar/recrear niveles); el nombre es lo estable.
-            var maturityLevel = await _databaseService.MaturityLevel
-                .Where(m => m.maturityLevelId == entity.maturityLevelId)
-                .FirstOrDefaultAsync();
-
-            int? severity = maturityLevel?.name switch
-            {
-                "Parcial" => SEVERITY_MEDIUM,
-                "No cumple" => SEVERITY_HIGH,
-                _ => null,
-            };
-
-            if (severity != null)
             {
                 var requirement = requirements.Where(r => r.requirementId == entity.requirementId).FirstOrDefault();
 
@@ -174,7 +167,7 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
                     title = title,
                     description = model.justification ?? "El requisito no cumple con el nivel de madurez esperado.",
                     breachSeverityId = severity.Value,
-                    breachStatusId = BREACH_STATUS_OPEN, // 👈 Always starts as Open
+                    breachStatusId = MaturityLevelBreachGenerator.BREACH_STATUS_OPEN, // 👈 Always starts as Open
                     responsibleId = model.responsibleId ?? 0,
                     numerationToShow = numerationToShow,
                     evidenceDescription = model.improvementActions,

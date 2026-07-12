@@ -57,6 +57,7 @@ using Qualifier.Application.Database.Approver.Commands.DeleteApprover;
 using Qualifier.Application.Database.Approver.Commands.UpdateApprover;
 using Qualifier.Application.Database.Approver.Queries.GetAllApproversByVersionId;
 using Qualifier.Application.Database.Approver.Queries.GetApproverById;
+using Qualifier.Application.Database.Breach;
 using Qualifier.Application.Database.Breach.Commands.CreateBreach;
 using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
@@ -792,6 +793,7 @@ namespace Qualifier.Application
 
             //GapDashboard
             services.AddTransient<GapItemsBuilder>();
+            services.AddTransient<MaturityLevelBreachGenerator>();
             services.AddTransient<IGetGapDashboardQuery, GetGapDashboardQuery>();
             services.AddTransient<IGetHomeDashboardBootstrapQuery, GetHomeDashboardBootstrapQuery>();
             services.AddTransient<IGetMissingEvidenceReportQuery, GetMissingEvidenceReportQuery>();
