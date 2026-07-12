@@ -4,6 +4,7 @@ using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.DeleteActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCountsByUser;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUserId;
@@ -18,6 +19,7 @@ public class ActionPlanController(
     IGetActionPlansByBreachIdQuery getPagedQuery,
     IGetActionPlanByIdQuery getByIdQuery,
     IGetActionPlanProgressQuery getProgressQuery,
+    IGetActionPlanCountsByUserQuery getCountsByUserQuery,
     IGetActionPlansByUserIdQuery getByUserQuery,
     IGetMyActionsBootstrapQuery getMyActionsBootstrapQuery,
     ICreateActionPlanCommand createCommand,
@@ -31,6 +33,18 @@ public class ActionPlanController(
         if (CompanyId == 0) return CompanyRequiredError();
 
         var res = await getProgressQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Reporte "carga por responsable" para el dueño del requisito: personas asignadas a
+    // planes de acción con sus conteos (pendientes/en curso/completadas/vencidas) — endpoint
+    // propio, no comparte payload con /progress (que ya alimenta otro dashboard con gráficos).
+    [HttpGet("countsByUser")]
+    public async Task<IActionResult> GetCountsByUser()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+
+        var res = await getCountsByUserQuery.Execute(CompanyId);
         return ProcessResponse(res);
     }
 
