@@ -11,6 +11,7 @@ using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCountsByUser;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
+using Qualifier.Application.Database.ActionPlan.Queries.GetOverdueActionPlansReport;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.DeleteActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPlanPriority;
@@ -1017,6 +1018,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetActionPlansByBreachIdQuery, GetActionPlansByBreachIdQuery>();
             services.AddTransient<IGetActionPlanProgressQuery, GetActionPlanProgressQuery>();
             services.AddTransient<IGetActionPlanCountsByUserQuery, GetActionPlanCountsByUserQuery>();
+            services.AddTransient<IGetOverdueActionPlansReportQuery, GetOverdueActionPlansReportQuery>();
 
             services.AddTransient<IGetRisksIdentificationQuery, GetRisksIdentificationQuery>();
             services.AddTransient<IGetBreachSeverityReportQuery, GetBreachSeverityReportQuery>();

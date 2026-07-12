@@ -9,6 +9,7 @@ using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUserId;
 using Qualifier.Application.Database.ActionPlan.Queries.GetMyActionsBootstrap;
+using Qualifier.Application.Database.ActionPlan.Queries.GetOverdueActionPlansReport;
 
 namespace Qualifier.Api.Controllers;
 
@@ -20,6 +21,7 @@ public class ActionPlanController(
     IGetActionPlanByIdQuery getByIdQuery,
     IGetActionPlanProgressQuery getProgressQuery,
     IGetActionPlanCountsByUserQuery getCountsByUserQuery,
+    IGetOverdueActionPlansReportQuery getOverdueReportQuery,
     IGetActionPlansByUserIdQuery getByUserQuery,
     IGetMyActionsBootstrapQuery getMyActionsBootstrapQuery,
     ICreateActionPlanCommand createCommand,
@@ -45,6 +47,17 @@ public class ActionPlanController(
         if (CompanyId == 0) return CompanyRequiredError();
 
         var res = await getCountsByUserQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Reporte "Acciones vencidas (detalle)": complementa el conteo agregado de /countsByUser
+    // mostrando cuáles acciones son, de quién y hace cuántos días vencieron.
+    [HttpGet("overdue-report")]
+    public async Task<IActionResult> GetOverdueReport()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+
+        var res = await getOverdueReportQuery.Execute(CompanyId);
         return ProcessResponse(res);
     }
 
