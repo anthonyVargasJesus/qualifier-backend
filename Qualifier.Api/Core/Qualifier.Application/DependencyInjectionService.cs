@@ -19,8 +19,10 @@ using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPri
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
 using Qualifier.Application.Database.Gap.Queries.GetEvaluacionBootstrap;
 using Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap;
+using Qualifier.Application.Database.GapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetHomeDashboardBootstrap;
+using Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidenceReport;
 using Qualifier.Application.Database.Notifications.Queries.GetNotificationsByUserId;
 using Qualifier.Application.Database.Notifications.Commands.MarkNotificationAsRead;
 using Qualifier.Application.Database.Notifications.Commands.MarkAllNotificationsAsRead;
@@ -786,8 +788,10 @@ namespace Qualifier.Application
             services.AddTransient<IGetUserActivityQuery, GetUserActivityQuery>();
 
             //GapDashboard
+            services.AddTransient<GapItemsBuilder>();
             services.AddTransient<IGetGapDashboardQuery, GetGapDashboardQuery>();
             services.AddTransient<IGetHomeDashboardBootstrapQuery, GetHomeDashboardBootstrapQuery>();
+            services.AddTransient<IGetMissingEvidenceReportQuery, GetMissingEvidenceReportQuery>();
 
             //Gap
             services.AddTransient<IGetPlanDeAccionBootstrapQuery, GetPlanDeAccionBootstrapQuery>();

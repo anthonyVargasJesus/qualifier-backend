@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetHomeDashboardBootstrap;
+using Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidenceReport;
 
 namespace Qualifier.Api.Controllers;
 
@@ -10,7 +11,8 @@ namespace Qualifier.Api.Controllers;
 [Authorize]
 public class GapDashboardController(
     IGetGapDashboardQuery getGapDashboardQuery,
-    IGetHomeDashboardBootstrapQuery getHomeDashboardBootstrapQuery
+    IGetHomeDashboardBootstrapQuery getHomeDashboardBootstrapQuery,
+    IGetMissingEvidenceReportQuery getMissingEvidenceReportQuery
 ) : ApiBaseController
 {
     // Resumen para el dashboard de Inicio. scopeToUser=true (igual que /gap/panel) para que
@@ -20,6 +22,16 @@ public class GapDashboardController(
     {
         var res = await getGapDashboardQuery.Execute(standardId, evaluationId, UserId, scopeToUser);
         return ProcessResponse(res, wrapWithData: true);
+    }
+
+    // Reporte "Ítems evaluados sin evidencia" para el dueño del requisito — complementa el
+    // "% con evidencia" del dashboard de Inicio con el detalle de qué ítems faltan.
+    [HttpGet("missing-evidence-report")]
+    public async Task<IActionResult> GetMissingEvidenceReport()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+        var res = await getMissingEvidenceReportQuery.Execute(CompanyId);
+        return ProcessResponse(res);
     }
 
     // Todo lo que HomeDashboardPage necesita para cargar, en una sola
