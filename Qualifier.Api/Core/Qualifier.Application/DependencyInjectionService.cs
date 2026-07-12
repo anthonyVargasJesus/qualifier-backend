@@ -56,6 +56,7 @@ using Qualifier.Application.Database.Approver.Queries.GetApproverById;
 using Qualifier.Application.Database.Breach.Commands.CreateBreach;
 using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
+using Qualifier.Application.Database.Breach.Queries.GetBreachAgingReport;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachesScope;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
@@ -1012,6 +1013,7 @@ namespace Qualifier.Application
 
             services.AddTransient<IGetRisksIdentificationQuery, GetRisksIdentificationQuery>();
             services.AddTransient<IGetBreachSeverityReportQuery, GetBreachSeverityReportQuery>();
+            services.AddTransient<IGetBreachAgingReportQuery, GetBreachAgingReportQuery>();
 
             //RiskStatus
             services.AddTransient<ICreateRiskStatusCommand, CreateRiskStatusCommand>();

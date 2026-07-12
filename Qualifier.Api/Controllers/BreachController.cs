@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.Breach.Commands.CreateBreach;
 using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
+using Qualifier.Application.Database.Breach.Queries.GetBreachAgingReport;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
 using Qualifier.Application.Database.Breach.Queries.GetBreachSeverityReport;
@@ -17,6 +18,7 @@ public class BreachController(
     IGetBreachsByEvaluationIdQuery getByEvaluationQuery,
     IGetBreachByIdQuery getByIdQuery,
     IGetBreachSeverityReportQuery severityReportQuery,
+    IGetBreachAgingReportQuery agingReportQuery,
     ICreateBreachCommand createCommand,
     IUpdateBreachCommand updateCommand,
     IDeleteBreachCommand deleteCommand
@@ -27,6 +29,16 @@ public class BreachController(
     {
         if (CompanyId == 0) return CompanyRequiredError();
         var res = await severityReportQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Reporte "Antigüedad de brechas abiertas": buckets de días desde la creación
+    // de cada brecha, para que el dueño del requisito priorice las más viejas.
+    [HttpGet("aging-report")]
+    public async Task<IActionResult> GetAgingReport()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+        var res = await agingReportQuery.Execute(CompanyId);
         return ProcessResponse(res);
     }
 
