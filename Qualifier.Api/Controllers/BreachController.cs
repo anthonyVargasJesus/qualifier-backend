@@ -5,6 +5,7 @@ using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachAgingReport;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
+using Qualifier.Application.Database.Breach.Queries.GetBreachesWithoutActionPlan;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
 using Qualifier.Application.Database.Breach.Queries.GetBreachSeverityReport;
 using Qualifier.Application.Database.Breach.Queries.GetRisksIdentification;
@@ -19,6 +20,7 @@ public class BreachController(
     IGetBreachByIdQuery getByIdQuery,
     IGetBreachSeverityReportQuery severityReportQuery,
     IGetBreachAgingReportQuery agingReportQuery,
+    IGetBreachesWithoutActionPlanQuery breachesWithoutActionPlanQuery,
     ICreateBreachCommand createCommand,
     IUpdateBreachCommand updateCommand,
     IDeleteBreachCommand deleteCommand
@@ -39,6 +41,16 @@ public class BreachController(
     {
         if (CompanyId == 0) return CompanyRequiredError();
         var res = await agingReportQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Reporte "Brechas sin plan de acción": brechas abiertas reconocidas pero sin ninguna
+    // acción correctiva definida todavía.
+    [HttpGet("without-action-plan-report")]
+    public async Task<IActionResult> GetBreachesWithoutActionPlan()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+        var res = await breachesWithoutActionPlanQuery.Execute(CompanyId);
         return ProcessResponse(res);
     }
 

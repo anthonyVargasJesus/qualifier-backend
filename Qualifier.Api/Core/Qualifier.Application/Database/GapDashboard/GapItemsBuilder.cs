@@ -22,7 +22,7 @@ namespace Qualifier.Application.Database.GapDashboard
             _databaseService = databaseService;
         }
 
-        public record ItemState(string tipo, int itemId, string code, string name, string theme, string estado, bool hasEvidence);
+        public record ItemState(string tipo, int itemId, string code, string name, string theme, string estado, bool hasEvidence, string? justification);
 
         public async Task<(List<ItemState> items, List<int> controlIds)> BuildControlItems(
             int standardId, int evaluationId, int userId, bool scopeToUser)
@@ -56,7 +56,7 @@ namespace Qualifier.Application.Database.GapDashboard
                 from ce in _databaseService.ControlEvaluation
                 join ml in _databaseService.MaturityLevel on ce.maturityLevel equals ml
                 where (ce.isDeleted == null || ce.isDeleted == false) && ce.evaluationId == evaluationId
-                select new { ce.controlId, ce.controlEvaluationId, maturityName = ml.name }
+                select new { ce.controlId, ce.controlEvaluationId, maturityName = ml.name, ce.justification }
             ).ToListAsync();
             var maturityByControlId = controlEvaluations
                 .GroupBy(ce => ce.controlId)
@@ -64,6 +64,9 @@ namespace Qualifier.Application.Database.GapDashboard
             var controlEvaluationIdByControlId = controlEvaluations
                 .GroupBy(ce => ce.controlId)
                 .ToDictionary(g => g.Key, g => g.First().controlEvaluationId);
+            var justificationByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => g.First().justification);
 
             // Ítems (evaluados) que tienen al menos una evidencia adjunta — indicador de
             // "% con evidencia" del dashboard de Inicio. Una sola consulta agrupada (no N+1)
@@ -87,7 +90,8 @@ namespace Qualifier.Application.Database.GapDashboard
                     name: c.name,
                     theme: group.name,
                     estado: maturityByControlId.GetValueOrDefault(c.controlId) ?? PENDIENTE,
-                    hasEvidence: hasEvaluation && controlEvaluationIdsWithEvidence.Contains(controlEvaluationId));
+                    hasEvidence: hasEvaluation && controlEvaluationIdsWithEvidence.Contains(controlEvaluationId),
+                    justification: justificationByControlId.GetValueOrDefault(c.controlId));
             }).ToList();
 
             return (items, controls.Select(c => c.controlId).ToList());
@@ -153,7 +157,7 @@ namespace Qualifier.Application.Database.GapDashboard
                 join ml in _databaseService.MaturityLevel on re.maturityLevel equals ml
                 where (re.isDeleted == null || re.isDeleted == false) && re.evaluationId == evaluationId
                     && scopedIds.Contains(re.requirementId)
-                select new { re.requirementId, re.requirementEvaluationId, maturityName = ml.name }
+                select new { re.requirementId, re.requirementEvaluationId, maturityName = ml.name, re.justification }
             ).ToListAsync();
             var maturityByRequirementId = requirementEvaluations
                 .GroupBy(re => re.requirementId)
@@ -161,6 +165,9 @@ namespace Qualifier.Application.Database.GapDashboard
             var requirementEvaluationIdByRequirementId = requirementEvaluations
                 .GroupBy(re => re.requirementId)
                 .ToDictionary(g => g.Key, g => g.First().requirementEvaluationId);
+            var justificationByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => g.First().justification);
 
             // Mismo criterio que en BuildControlItems: una sola consulta agrupada para saber
             // qué evaluaciones ya tienen evidencia adjunta.
@@ -182,7 +189,8 @@ namespace Qualifier.Application.Database.GapDashboard
                     name: r.name,
                     theme: "Cláusulas",
                     estado: maturityByRequirementId.GetValueOrDefault(r.requirementId) ?? PENDIENTE,
-                    hasEvidence: hasEvaluation && requirementEvaluationIdsWithEvidence.Contains(requirementEvaluationId));
+                    hasEvidence: hasEvaluation && requirementEvaluationIdsWithEvidence.Contains(requirementEvaluationId),
+                    justification: justificationByRequirementId.GetValueOrDefault(r.requirementId));
             }).ToList();
 
             return (items, scopedIds);

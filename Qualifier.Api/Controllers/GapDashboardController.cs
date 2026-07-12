@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetHomeDashboardBootstrap;
 using Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidenceReport;
+using Qualifier.Application.Database.GapDashboard.Queries.GetSoaReport;
 
 namespace Qualifier.Api.Controllers;
 
@@ -12,7 +13,8 @@ namespace Qualifier.Api.Controllers;
 public class GapDashboardController(
     IGetGapDashboardQuery getGapDashboardQuery,
     IGetHomeDashboardBootstrapQuery getHomeDashboardBootstrapQuery,
-    IGetMissingEvidenceReportQuery getMissingEvidenceReportQuery
+    IGetMissingEvidenceReportQuery getMissingEvidenceReportQuery,
+    IGetSoaReportQuery getSoaReportQuery
 ) : ApiBaseController
 {
     // Resumen para el dashboard de Inicio. scopeToUser=true (igual que /gap/panel) para que
@@ -31,6 +33,16 @@ public class GapDashboardController(
     {
         if (CompanyId == 0) return CompanyRequiredError();
         var res = await getMissingEvidenceReportQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Declaración de Aplicabilidad (SOA) — endpoint propio para el reporte, no reutiliza
+    // /api/gap/evaluacion (esa trae también requisitos/cláusulas y datos que el SOA no usa).
+    [HttpGet("soa-report")]
+    public async Task<IActionResult> GetSoaReport()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+        var res = await getSoaReportQuery.Execute(CompanyId);
         return ProcessResponse(res);
     }
 

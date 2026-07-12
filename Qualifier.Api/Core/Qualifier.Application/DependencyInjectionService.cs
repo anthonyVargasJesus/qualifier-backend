@@ -23,6 +23,7 @@ using Qualifier.Application.Database.GapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetHomeDashboardBootstrap;
 using Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidenceReport;
+using Qualifier.Application.Database.GapDashboard.Queries.GetSoaReport;
 using Qualifier.Application.Database.Notifications.Queries.GetNotificationsByUserId;
 using Qualifier.Application.Database.Notifications.Commands.MarkNotificationAsRead;
 using Qualifier.Application.Database.Notifications.Commands.MarkAllNotificationsAsRead;
@@ -59,6 +60,7 @@ using Qualifier.Application.Database.Breach.Commands.CreateBreach;
 using Qualifier.Application.Database.Breach.Commands.DeleteBreach;
 using Qualifier.Application.Database.Breach.Commands.UpdateBreach;
 using Qualifier.Application.Database.Breach.Queries.GetBreachAgingReport;
+using Qualifier.Application.Database.Breach.Queries.GetBreachesWithoutActionPlan;
 using Qualifier.Application.Database.Breach.Queries.GetBreachById;
 using Qualifier.Application.Database.Breach.Queries.GetBreachesScope;
 using Qualifier.Application.Database.Breach.Queries.GetBreachsByEvaluationId;
@@ -792,6 +794,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetGapDashboardQuery, GetGapDashboardQuery>();
             services.AddTransient<IGetHomeDashboardBootstrapQuery, GetHomeDashboardBootstrapQuery>();
             services.AddTransient<IGetMissingEvidenceReportQuery, GetMissingEvidenceReportQuery>();
+            services.AddTransient<IGetSoaReportQuery, GetSoaReportQuery>();
 
             //Gap
             services.AddTransient<IGetPlanDeAccionBootstrapQuery, GetPlanDeAccionBootstrapQuery>();
@@ -1018,6 +1021,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetRisksIdentificationQuery, GetRisksIdentificationQuery>();
             services.AddTransient<IGetBreachSeverityReportQuery, GetBreachSeverityReportQuery>();
             services.AddTransient<IGetBreachAgingReportQuery, GetBreachAgingReportQuery>();
+            services.AddTransient<IGetBreachesWithoutActionPlanQuery, GetBreachesWithoutActionPlanQuery>();
 
             //RiskStatus
             services.AddTransient<ICreateRiskStatusCommand, CreateRiskStatusCommand>();

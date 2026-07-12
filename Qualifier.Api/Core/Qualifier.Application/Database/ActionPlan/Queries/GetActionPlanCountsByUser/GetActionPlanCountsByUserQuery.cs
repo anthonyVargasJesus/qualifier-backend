@@ -59,15 +59,16 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCountsB
                 bool IsCompleted(string abbreviation) => abbreviation == COMPLETADO || abbreviation == CERRADO;
 
                 var users = plans
-                    .GroupBy(p => new { p.userId, p.userName, p.userImage })
+                    .GroupBy(p => p.userId)
                     .Select(g =>
                     {
                         var items = g.ToList();
+                        var first = items[0];
                         return new GetActionPlanCountsByUserItemDto
                         {
-                            userId = g.Key.userId,
-                            displayName = g.Key.userName,
-                            image = g.Key.userImage,
+                            userId = g.Key,
+                            displayName = first.userName,
+                            image = first.userImage,
                             pendientes = items.Count(p => p.statusAbbreviation == PENDIENTE),
                             enCurso = items.Count(p => p.statusAbbreviation == EN_CURSO),
                             completadas = items.Count(p => IsCompleted(p.statusAbbreviation)),
