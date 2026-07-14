@@ -41,9 +41,15 @@ namespace Qualifier.Application.Database.RequirementEvaluation.Commands.CreateRe
                     // simultáneos, etc.) y ya existe una fila real para este requirement+evaluationId,
                     // se actualiza esa fila en vez de insertar un duplicado (antes esto creaba
                     // MAE_REQUIREMENT_EVALUATION duplicados para el mismo requisito).
+                    // OrderByDescending: no debería haber más de una fila por (requirementId,
+                    // evaluationId), pero no hay constraint único que lo garantice — si llegan a
+                    // existir duplicados, se actualiza la más reciente (mismo criterio que
+                    // StandardEntity.setEvaluationsToRequirements/GetActionPlansByUserIdQuery)
+                    // en vez de una fila arbitraria.
                     var entity = await _databaseService.RequirementEvaluation
                         .Where(x => x.requirementId == model.requirementId && x.evaluationId == model.evaluationId
                             && (x.isDeleted == null || x.isDeleted == false))
+                        .OrderByDescending(x => x.requirementEvaluationId)
                         .FirstOrDefaultAsync();
 
                     bool isNew = entity == null;

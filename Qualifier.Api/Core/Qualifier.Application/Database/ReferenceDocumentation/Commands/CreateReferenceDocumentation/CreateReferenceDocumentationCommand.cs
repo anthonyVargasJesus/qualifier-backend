@@ -39,7 +39,7 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateR
                 await _databaseService.ReferenceDocumentation.AddAsync(entity);
                 await _databaseService.SaveAsync();
 
-                await notifyActionPlanCreatorsOfEvidence(model);
+                await notifyActionPlanAssigneesOfEvidence(model);
 
                 return model;
             }
@@ -49,9 +49,11 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateR
             }
         }
 
-        // Le avisa a quien CREÓ el/los plan(es) de acción del control o requisito evaluado que
-        // se agregó una evidencia nueva — best-effort, no debe romper el guardado de la evidencia.
-        private async Task notifyActionPlanCreatorsOfEvidence(CreateReferenceDocumentationDto model)
+        // Le avisa a quien está ASIGNADO (userId, no creationUserId) al/los plan(es) de acción
+        // del control o requisito evaluado que se agregó una evidencia nueva — es quien tiene
+        // que ejecutar la acción correctiva y a quien le interesa saber que hay evidencia nueva,
+        // no necesariamente quien creó la tarea. Best-effort, no debe romper el guardado.
+        private async Task notifyActionPlanAssigneesOfEvidence(CreateReferenceDocumentationDto model)
         {
             int? controlId = null;
             int? requirementId = null;
@@ -79,28 +81,28 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateR
                 .Join(_databaseService.ActionPlan, b => b.breachId, a => a.breachId, (b, a) => new
                 {
                     a.actionPlanId,
-                    a.creationUserId,
+                    a.userId,
                     a.title,
                     a.breachId,
                 })
                 .ToListAsync();
 
-            foreach (var creatorGroup in actionPlans
-                .Where(a => a.creationUserId != null && a.creationUserId != model.creationUserId)
-                .GroupBy(a => a.creationUserId))
+            foreach (var assigneeGroup in actionPlans
+                .Where(a => a.userId != null && a.userId != model.creationUserId)
+                .GroupBy(a => a.userId))
             {
                 var fcmToken = await _databaseService.User
-                    .Where(u => u.userId == creatorGroup.Key)
+                    .Where(u => u.userId == assigneeGroup.Key)
                     .Select(u => u.fcmToken)
                     .FirstOrDefaultAsync();
                 if (string.IsNullOrWhiteSpace(fcmToken)) continue;
 
-                var first = creatorGroup.First();
+                var first = assigneeGroup.First();
                 const string title = "Nueva evidencia en un plan de acción";
                 var body = $"Se agregó una evidencia (\"{model.name}\") en \"{first.title}\".";
 
                 await _pushNotificationService.SendAsync(
-                    creatorGroup.Key!.Value,
+                    assigneeGroup.Key!.Value,
                     fcmToken!,
                     title,
                     body,

@@ -179,7 +179,16 @@ namespace Qualifier.Domain.Entities
             {
                 if (item.children == null)
                 {
-                    item.requirementEvaluations = evaluations.Where(x => x.requirementId == item.requirementId).ToList();
+                    // No debería haber más de una fila de RequirementEvaluation por
+                    // (requirementId, evaluationId), pero no hay constraint único que lo
+                    // garantice — si llegan a existir duplicados, nos quedamos con la más
+                    // reciente (mismo criterio que ControlEntity.setEvaluations) para que todas
+                    // las pantallas coincidan en cuál fila es "la" evaluación del requisito.
+                    item.requirementEvaluations = evaluations
+                        .Where(x => x.requirementId == item.requirementId)
+                        .OrderByDescending(x => x.requirementEvaluationId)
+                        .Take(1)
+                        .ToList();
                     if (item.requirementEvaluations != null)
                         if (item.requirementEvaluations.Count == 0)
                             item.requirementEvaluations.Add(getDefaultRequierementeEvaluation(item));
@@ -192,7 +201,11 @@ namespace Qualifier.Domain.Entities
                     {
                         if (child1.children == null)
                         {
-                            child1.requirementEvaluations = evaluations.Where(x => x.requirementId == child1.requirementId).ToList();
+                            child1.requirementEvaluations = evaluations
+                                .Where(x => x.requirementId == child1.requirementId)
+                                .OrderByDescending(x => x.requirementEvaluationId)
+                                .Take(1)
+                                .ToList();
 
                             if (child1.requirementEvaluations != null)
                                 if (child1.requirementEvaluations.Count == 0)
@@ -207,7 +220,11 @@ namespace Qualifier.Domain.Entities
                             {
                                 if (child2.children == null)
                                 {
-                                    child2.requirementEvaluations = evaluations.Where(x => x.requirementId == child2.requirementId).ToList();
+                                    child2.requirementEvaluations = evaluations
+                                        .Where(x => x.requirementId == child2.requirementId)
+                                        .OrderByDescending(x => x.requirementEvaluationId)
+                                        .Take(1)
+                                        .ToList();
                                     if (child2.requirementEvaluations != null)
                                         if (child2.requirementEvaluations.Count == 0)
                                             child2.requirementEvaluations.Add(getDefaultRequierementeEvaluation(child2));
@@ -222,7 +239,11 @@ namespace Qualifier.Domain.Entities
                                     {
                                         if (child3.children == null)
                                         {
-                                            child3.requirementEvaluations = evaluations.Where(x => x.requirementId == child3.requirementId).ToList();
+                                            child3.requirementEvaluations = evaluations
+                                                .Where(x => x.requirementId == child3.requirementId)
+                                                .OrderByDescending(x => x.requirementEvaluationId)
+                                                .Take(1)
+                                                .ToList();
                                             if (child3.requirementEvaluations != null)
                                                 if (child3.requirementEvaluations.Count == 0)
                                                     child3.requirementEvaluations.Add(getDefaultRequierementeEvaluation(child3));

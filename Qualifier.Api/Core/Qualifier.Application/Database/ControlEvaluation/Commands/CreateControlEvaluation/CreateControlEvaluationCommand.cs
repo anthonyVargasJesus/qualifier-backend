@@ -38,9 +38,15 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
                     // simultáneos, etc.) y ya existe una fila real para este control+evaluationId,
                     // se actualiza esa fila en vez de insertar un duplicado (antes esto creaba
                     // MAE_CONTROL_EVALUATION duplicados para el mismo control).
+                    // OrderByDescending: no debería haber más de una fila por (controlId,
+                    // evaluationId), pero no hay constraint único que lo garantice — si llegan a
+                    // existir duplicados, se actualiza la más reciente (mismo criterio que
+                    // ControlEntity.setEvaluations/GetActionPlansByUserIdQuery) en vez de una
+                    // fila arbitraria.
                     var entity = await _databaseService.ControlEvaluation
                         .Where(x => x.controlId == model.controlId && x.evaluationId == model.evaluationId
                             && (x.isDeleted == null || x.isDeleted == false))
+                        .OrderByDescending(x => x.controlEvaluationId)
                         .FirstOrDefaultAsync();
 
                     bool isNew = entity == null;

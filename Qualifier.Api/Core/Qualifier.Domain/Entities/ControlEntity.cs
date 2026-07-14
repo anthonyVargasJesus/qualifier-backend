@@ -24,11 +24,19 @@ namespace Qualifier.Domain.Entities
         public string numerationToShow { get; set; } = string.Empty;
         public void setEvaluations(List<ControlEvaluationEntity> evaluations)
         {
-            controlEvaluations= evaluations.Where(x => x.controlId == controlId).ToList();
+            // No debería haber más de una fila de ControlEvaluation por (controlId,
+            // evaluationId), pero no hay constraint único que lo garantice — si llegan a
+            // existir duplicados, nos quedamos con la más reciente (mismo criterio que usan
+            // GetActionPlansByUserIdQuery/CreateControlEvaluationCommand/GapItemsBuilder) para
+            // que todas las pantallas coincidan en cuál fila es "la" evaluación del control.
+            controlEvaluations = evaluations
+                .Where(x => x.controlId == controlId)
+                .OrderByDescending(x => x.controlEvaluationId)
+                .Take(1)
+                .ToList();
 
-            if (controlEvaluations != null)
-                if (controlEvaluations.Count == 0)
-                    controlEvaluations.Add(getDefaultRequierementeEvaluation());
+            if (controlEvaluations.Count == 0)
+                controlEvaluations.Add(getDefaultRequierementeEvaluation());
 
         }
 

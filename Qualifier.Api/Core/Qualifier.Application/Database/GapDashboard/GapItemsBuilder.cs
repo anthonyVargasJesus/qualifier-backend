@@ -52,10 +52,16 @@ namespace Qualifier.Application.Database.GapDashboard
             // Join explícito (no ce.maturityLevel.name): esa navigation property no está
             // configurada en ControlEvaluationConfiguration (está comentada) y acceder a ella
             // por punto genera el mismo error de shadow FK que ya se vio en User/Breach/ActionPlan.
+            // orderby controlEvaluationId descending: no debería haber más de una fila por
+            // (controlId, evaluationId), pero no hay constraint único que lo garantice — si
+            // llegan a existir duplicados, los 3 GroupBy+First() de abajo se quedan
+            // consistentemente con la más reciente (mismo criterio que
+            // ControlEntity.setEvaluations/GetActionPlansByUserIdQuery).
             var controlEvaluations = await (
                 from ce in _databaseService.ControlEvaluation
                 join ml in _databaseService.MaturityLevel on ce.maturityLevel equals ml
                 where (ce.isDeleted == null || ce.isDeleted == false) && ce.evaluationId == evaluationId
+                orderby ce.controlEvaluationId descending
                 select new { ce.controlId, ce.controlEvaluationId, maturityName = ml.name, ce.justification }
             ).ToListAsync();
             var maturityByControlId = controlEvaluations
@@ -152,11 +158,15 @@ namespace Qualifier.Application.Database.GapDashboard
             }
             var scopedIds = evaluableRequirements.Select(r => r.requirementId).ToList();
 
+            // orderby requirementEvaluationId descending: mismo motivo que en
+            // BuildControlItems — deja los 3 GroupBy+First() de abajo consistentemente con la
+            // fila más reciente si llegan a existir duplicados.
             var requirementEvaluations = await (
                 from re in _databaseService.RequirementEvaluation
                 join ml in _databaseService.MaturityLevel on re.maturityLevel equals ml
                 where (re.isDeleted == null || re.isDeleted == false) && re.evaluationId == evaluationId
                     && scopedIds.Contains(re.requirementId)
+                orderby re.requirementEvaluationId descending
                 select new { re.requirementId, re.requirementEvaluationId, maturityName = ml.name, re.justification }
             ).ToListAsync();
             var maturityByRequirementId = requirementEvaluations

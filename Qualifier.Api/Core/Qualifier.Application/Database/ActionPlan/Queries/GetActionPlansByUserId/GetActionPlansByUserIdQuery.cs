@@ -60,13 +60,21 @@ namespace Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUser
                 var reqIds = raw.Where(r => r.breachType == "1").Select(r => r.breachRequirementId).Distinct().ToList();
                 var ctrlIds = raw.Where(r => r.breachType == "2").Select(r => r.breachControlId).Distinct().ToList();
 
+                // OrderByDescending + FirstOrDefault más abajo: no debería haber más de una fila
+                // por (requirementId/controlId, evaluationId), pero no hay constraint único que
+                // lo garantice — si llegan a existir duplicados, nos quedamos con la más
+                // reciente (mismo criterio que ControlEntity.setEvaluations/
+                // StandardEntity.setEvaluationsToRequirements) para que "Mis acciones" coincida
+                // con lo que ve el dueño del control/requisito en Cumplimiento.
                 var reqEvaluations = await _databaseService.RequirementEvaluation
                     .Where(re => re.evaluationId == evaluationId && reqIds.Contains(re.requirementId))
+                    .OrderByDescending(re => re.requirementEvaluationId)
                     .Select(re => new { re.requirementId, re.requirementEvaluationId })
                     .ToListAsync();
 
                 var ctrlEvaluations = await _databaseService.ControlEvaluation
                     .Where(ce => ce.evaluationId == evaluationId && ctrlIds.Contains(ce.controlId))
+                    .OrderByDescending(ce => ce.controlEvaluationId)
                     .Select(ce => new { ce.controlId, ce.controlEvaluationId })
                     .ToListAsync();
 
