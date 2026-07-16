@@ -4,6 +4,7 @@ using Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.DeleteActionPlan;
 using Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanById;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCountsByBreach;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCountsByUser;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
@@ -21,6 +22,7 @@ public class ActionPlanController(
     IGetActionPlanByIdQuery getByIdQuery,
     IGetActionPlanProgressQuery getProgressQuery,
     IGetActionPlanCountsByUserQuery getCountsByUserQuery,
+    IGetActionPlanCountsByBreachQuery getCountsByBreachQuery,
     IGetOverdueActionPlansReportQuery getOverdueReportQuery,
     IGetActionPlansByUserIdQuery getByUserQuery,
     IGetMyActionsBootstrapQuery getMyActionsBootstrapQuery,
@@ -47,6 +49,18 @@ public class ActionPlanController(
         if (CompanyId == 0) return CompanyRequiredError();
 
         var res = await getCountsByUserQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Resumen "Plan de acción" (dueño del control): conteo total/completadas por brecha de
+    // una evaluación, agregado server-side en una sola consulta — reemplaza las N llamadas
+    // que hacía el cliente (una por brecha) solo para armar el contador de la pantalla.
+    [HttpGet("countsByBreach")]
+    public async Task<IActionResult> GetCountsByBreach(int evaluationId)
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+
+        var res = await getCountsByBreachQuery.Execute(CompanyId, evaluationId);
         return ProcessResponse(res);
     }
 
