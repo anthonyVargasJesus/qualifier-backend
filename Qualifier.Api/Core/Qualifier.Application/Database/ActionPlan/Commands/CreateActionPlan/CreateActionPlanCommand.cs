@@ -63,6 +63,9 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.CreateActionPlan
         private async Task notifyAssignedUser(ActionPlanEntity entity)
         {
             if (entity.userId == null || entity.userId <= 0) return;
+            // No te notifiques a vos mismo por asignarte tu propia acción — mismo criterio
+            // que ya usa UpdateActionPlanCommand.notifyStatusChange.
+            if (entity.creationUserId != null && entity.creationUserId == entity.userId) return;
 
             // Proyección, no la entidad completa: UserEntity trae navigation properties
             // (standard/userState) sin configurar explícitamente en UserConfiguration, lo que

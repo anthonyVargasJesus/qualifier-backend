@@ -34,9 +34,10 @@ namespace Qualifier.Application.Database.User.Commands.CreateUser
                 await _databaseService.SaveAsync();
                 return entity.userId;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

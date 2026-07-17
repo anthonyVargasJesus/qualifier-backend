@@ -106,13 +106,17 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
                   .HasColumnName("C_FCM_TOKEN");
 
             // Relaciones FK
+            // WithMany(s => s.users) explícito: sin esto, EF no empareja esta FK con
+            // la colección `users` del otro lado y arma una segunda relación aparte,
+            // con una columna sombra ("UserStateEntityuserStateId"/"StandardEntitystandardId")
+            // que ninguna migración creó — reventaba el INSERT en MAE_USER.
             entity.HasOne(e => e.userState)
-                  .WithMany()
+                  .WithMany(s => s.users)
                   .HasForeignKey(e => e.userStateId)
                   .HasConstraintName("CST_MAE_USER_FK_USERSTATE");
 
             entity.HasOne(e => e.standard)
-                  .WithMany()
+                  .WithMany(s => s.users)
                   .HasForeignKey(e => e.standardId)
                   .HasConstraintName("CST_MAE_USER_FK_STANDARD");
 

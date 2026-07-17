@@ -13,6 +13,11 @@ namespace Qualifier.Domain.Entities
         public string? email { get; set; }
         public string? phone { get; set; }
         public string? uid { get; set; }
+        // La tabla MAE_USER no tiene columna de password (la autenticación por
+        // password está dada de baja a favor de Firebase/uid — ver LoginService,
+        // que ya la tiene comentada); sin [NotMapped] EF intenta escribirla en
+        // cada INSERT/UPDATE y revienta con "column password does not exist".
+        [NotMapped]
         public string? password { get; set; }
         public int userStateId { get; set; }
         public string? image { get; set; }

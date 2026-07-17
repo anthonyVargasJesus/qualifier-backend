@@ -13,7 +13,7 @@ namespace Qualifier.Api
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Servicios del módulo multiproceso versión final",
+                    Title = "Servicios del módulo Registro de Catálogo del Sistema para la Supervisión de Fondos Partidarios (CLARIDAD) (Fase I).",
                     Description = "Administración de APIs"
                 });
 

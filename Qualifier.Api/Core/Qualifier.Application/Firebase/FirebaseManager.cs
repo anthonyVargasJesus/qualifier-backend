@@ -15,8 +15,7 @@ namespace Qualifier.Application.Firebase
             if (FirebaseApp.DefaultInstance != null) return;
 
             if (string.IsNullOrWhiteSpace(json))
-                throw new InvalidOperationException(
-                    "Falta configurar FIREBASE_SERVICE_ACCOUNT_JSON (user-secret en local, variable de entorno en Railway) con la credencial de la cuenta de servicio de Firebase.");
+                throw new InvalidOperationException("FIREBASE_SERVICE_ACCOUNT_JSON");
 
             FirebaseApp.Create(new AppOptions
             {

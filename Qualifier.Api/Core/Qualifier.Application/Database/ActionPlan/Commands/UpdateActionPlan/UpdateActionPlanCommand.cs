@@ -40,11 +40,11 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
                 if (existsNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponse(existsNotification.errors);
 
-                // Estado y creador ANTES de actualizar, para saber si el estado realmente cambió
-                // y a quién avisarle.
+                // Estado, responsable y creador ANTES de actualizar, para saber si el estado o
+                // el responsable realmente cambiaron y a quién avisarle.
                 var before = await _databaseService.ActionPlan
                     .Where(a => a.actionPlanId == id)
-                    .Select(a => new { a.actionPlanStatusId, a.creationUserId, a.title })
+                    .Select(a => new { a.actionPlanStatusId, a.creationUserId, a.title, a.userId })
                     .FirstOrDefaultAsync();
 
                 await _actionPlanRepository.Update(id, _mapper.Map<ActionPlanEntity>(model));
@@ -82,6 +82,11 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
                         id,
                         model.breachId,
                         updatedEntity?.companyId);
+                }
+
+                if (before != null && model.userId != null && model.userId > 0 && before.userId != model.userId)
+                {
+                    await notifyReassignedUser(updatedEntity, model.updateUserId);
                 }
 
                 return _mapper.Map<UpdateActionPlanDto>(updatedEntity);
@@ -135,6 +140,54 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
                 {
                     { "type", "action_plan_status_changed" },
                     { "actionPlanId", actionPlanId.ToString() },
+                });
+        }
+
+        // Le avisa al nuevo responsable que se le asignó esta acción — best-effort, no debe
+        // romper el guardado. Mismo criterio/texto que CreateActionPlanCommand.notifyAssignedUser
+        // (esa solo cubre la creación; reasignar el responsable de una acción ya existente no
+        // pasaba por ningún lado que notificara a nadie).
+        private async Task notifyReassignedUser(ActionPlanEntity? entity, int? updatedByUserId)
+        {
+            if (entity == null || entity.userId == null || entity.userId <= 0) return;
+            // No te notifiques a vos mismo por reasignarte una acción — mismo criterio que
+            // notifyAssignedUser en la creación.
+            if (updatedByUserId != null && updatedByUserId == entity.userId) return;
+
+            var fcmToken = await _databaseService.User
+                .Where(u => u.userId == entity.userId)
+                .Select(u => u.fcmToken)
+                .FirstOrDefaultAsync();
+            if (string.IsNullOrWhiteSpace(fcmToken)) return;
+
+            var breachNumerationToShow = await _databaseService.Breach
+                .Where(b => b.breachId == entity.breachId)
+                .Select(b => b.numerationToShow)
+                .FirstOrDefaultAsync();
+            var priority = await _databaseService.ActionPlanPriority
+                .FirstOrDefaultAsync(p => p.actionPlanPriorityId == entity.actionPlanPriorityId);
+
+            var breachCode = breachNumerationToShow ?? entity.breachId.ToString();
+            var priorityName = priority?.name ?? "";
+
+            const string title = "Nueva acción de cumplimiento asignada";
+            var body = $"Control {breachCode}: \"{entity.title}\" — Vence el {entity.dueDate:dd/MM/yyyy}."
+                + (string.IsNullOrEmpty(priorityName) ? "" : $" Prioridad {priorityName}.");
+
+            await _pushNotificationService.SendAsync(
+                entity.userId.Value,
+                fcmToken!,
+                title,
+                body,
+                "action_plan_assigned",
+                actionPlanId: entity.actionPlanId,
+                breachId: entity.breachId,
+                companyId: entity.companyId,
+                data: new Dictionary<string, string>
+                {
+                    { "type", "action_plan_assigned" },
+                    { "actionPlanId", entity.actionPlanId.ToString() },
+                    { "breachId", entity.breachId.ToString() },
                 });
         }
 
