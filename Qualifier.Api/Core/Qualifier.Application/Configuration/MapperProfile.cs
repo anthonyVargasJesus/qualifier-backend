@@ -422,6 +422,7 @@ namespace Qualifier.Application.Configuration
             CreateMap<EvaluationStateEntity, GetEvaluationsByCompanyIdEvaluationStateDto>().ReverseMap();
             CreateMap<EvaluationEntity, GetEvaluationByIdDto>().ReverseMap();
             CreateMap<EvaluationEntity, GetAllEvaluationsByCompanyIdDto>().ReverseMap();
+            CreateMap<StandardEntity, GetAllEvaluationsByCompanyIdStandardDto>().ReverseMap();
             CreateMap<EvaluationEntity, GetCurrentEvaluationDto>().ReverseMap();
 
             //RequirementEvaluation

@@ -21,12 +21,15 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByC
             try
             {
                 var entities = await (from evaluation in _databaseService.Evaluation
-                                      where ((evaluation.isDeleted == null || evaluation.isDeleted == false) 
+                                      join standard in _databaseService.Standard on evaluation.standard equals standard
+                                      where ((evaluation.isDeleted == null || evaluation.isDeleted == false)
                                       && evaluation.companyId == companyId && evaluation.isGapAnalysis)
                                       select new EvaluationEntity
                                       {
                                           evaluationId = evaluation.evaluationId,
                                           description = evaluation.description,
+                                          standardId = standard.standardId,
+                                          standard = new StandardEntity { name = standard.name },
                                       }).ToListAsync();
 
                 BaseResponseDto<GetAllEvaluationsByCompanyIdDto> baseResponseDto = new BaseResponseDto<GetAllEvaluationsByCompanyIdDto>();
