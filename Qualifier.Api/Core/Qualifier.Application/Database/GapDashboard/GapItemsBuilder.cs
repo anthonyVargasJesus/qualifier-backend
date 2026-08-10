@@ -15,6 +15,17 @@ namespace Qualifier.Application.Database.GapDashboard
         public const string NO_APLICA = "No aplica";
         public const string CUMPLE = "Cumple";
 
+        // Para ordenar ItemState.code ("4", "4.1", "10", "10.1.1"...) numéricamente en vez
+        // de alfabéticamente. Un ".OrderBy(i => i.code)" plano pone "10" antes que "4"
+        // (compara char a char: '1' < '4'), así que la cláusula 10 completa aparecía antes
+        // que la 4 — mismo problema en las 4 queries que listan/ordenan ItemState
+        // (GetGapItemsQuery, GetGapDashboardQuery, GetMissingEvidenceReportQuery,
+        // GetSoaReportQuery). Rellena cada segmento numérico a 4 dígitos ("0004", "0010") para
+        // que la comparación de strings resultante coincida con el orden numérico real, y deja
+        // pasar tal cual cualquier segmento no numérico (no debería haber, pero por seguridad).
+        public static string NaturalSortKey(string code) =>
+            string.Join('.', code.Split('.').Select(s => int.TryParse(s, out var n) ? n.ToString("D4") : s));
+
         private readonly IDatabaseService _databaseService;
 
         public GapItemsBuilder(IDatabaseService databaseService)
@@ -22,7 +33,17 @@ namespace Qualifier.Application.Database.GapDashboard
             _databaseService = databaseService;
         }
 
-        public record ItemState(string tipo, int itemId, string code, string name, string theme, string estado, bool hasEvidence, string? justification);
+        // evaluationItemId/maturityLevelId/value/improvementActions/responsibleId: agregados
+        // para GetGapItemsQuery (lista paginada de gap-home), que necesita lo suficiente para
+        // renderizar y guardar la tarjeta editable sin volver a construir el árbol completo de
+        // GetRequirementEvaluationByProcessQuery. GetGapDashboardQuery y
+        // GetMissingEvidenceReportQuery no los usan; un record con más campos no les afecta.
+        // groupNumber: solo para items tipo "control" (null en requisitos) — el número real de
+        // ControlGroup (puede ser "6.1" en normas con sub-grupos anidados, ej. NTP 42001), para
+        // que GetGapSummaryQuery pueda ordenar los temas sin tener que reparsear "code".
+        public record ItemState(string tipo, int itemId, string code, string name, string theme, string estado, bool hasEvidence, string? justification,
+            long? evaluationItemId = null, int? maturityLevelId = null, decimal? value = null, string? improvementActions = null, int? responsibleId = null,
+            decimal? groupNumber = null);
 
         public async Task<(List<ItemState> items, List<int> controlIds)> BuildControlItems(
             int standardId, int evaluationId, int userId, bool scopeToUser)
@@ -62,7 +83,8 @@ namespace Qualifier.Application.Database.GapDashboard
                 join ml in _databaseService.MaturityLevel on ce.maturityLevel equals ml
                 where (ce.isDeleted == null || ce.isDeleted == false) && ce.evaluationId == evaluationId
                 orderby ce.controlEvaluationId descending
-                select new { ce.controlId, ce.controlEvaluationId, maturityName = ml.name, ce.justification }
+                select new { ce.controlId, ce.controlEvaluationId, maturityName = ml.name, ce.justification,
+                    ce.maturityLevelId, ce.value, ce.improvementActions, ce.responsibleId }
             ).ToListAsync();
             var maturityByControlId = controlEvaluations
                 .GroupBy(ce => ce.controlId)
@@ -73,6 +95,18 @@ namespace Qualifier.Application.Database.GapDashboard
             var justificationByControlId = controlEvaluations
                 .GroupBy(ce => ce.controlId)
                 .ToDictionary(g => g.Key, g => g.First().justification);
+            var maturityLevelIdByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => (int?)g.First().maturityLevelId);
+            var valueByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => (decimal?)g.First().value);
+            var improvementActionsByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => g.First().improvementActions);
+            var responsibleIdByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => (int?)g.First().responsibleId);
 
             // Ítems (evaluados) que tienen al menos una evidencia adjunta — indicador de
             // "% con evidencia" del dashboard de Inicio. Una sola consulta agrupada (no N+1)
@@ -92,12 +126,18 @@ namespace Qualifier.Application.Database.GapDashboard
                 return new ItemState(
                     tipo: "control",
                     itemId: c.controlId,
-                    code: $"{group.number}.{c.number}",
+                    code: $"{group.number.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)}.{c.number}",
                     name: c.name,
                     theme: group.name,
                     estado: maturityByControlId.GetValueOrDefault(c.controlId) ?? PENDIENTE,
                     hasEvidence: hasEvaluation && controlEvaluationIdsWithEvidence.Contains(controlEvaluationId),
-                    justification: justificationByControlId.GetValueOrDefault(c.controlId));
+                    justification: justificationByControlId.GetValueOrDefault(c.controlId),
+                    evaluationItemId: hasEvaluation ? controlEvaluationId : null,
+                    maturityLevelId: maturityLevelIdByControlId.GetValueOrDefault(c.controlId),
+                    value: valueByControlId.GetValueOrDefault(c.controlId),
+                    improvementActions: improvementActionsByControlId.GetValueOrDefault(c.controlId),
+                    responsibleId: responsibleIdByControlId.GetValueOrDefault(c.controlId),
+                    groupNumber: group.number);
             }).ToList();
 
             return (items, controls.Select(c => c.controlId).ToList());
@@ -167,7 +207,8 @@ namespace Qualifier.Application.Database.GapDashboard
                 where (re.isDeleted == null || re.isDeleted == false) && re.evaluationId == evaluationId
                     && scopedIds.Contains(re.requirementId)
                 orderby re.requirementEvaluationId descending
-                select new { re.requirementId, re.requirementEvaluationId, maturityName = ml.name, re.justification }
+                select new { re.requirementId, re.requirementEvaluationId, maturityName = ml.name, re.justification,
+                    re.maturityLevelId, re.value, re.improvementActions, re.responsibleId }
             ).ToListAsync();
             var maturityByRequirementId = requirementEvaluations
                 .GroupBy(re => re.requirementId)
@@ -178,6 +219,18 @@ namespace Qualifier.Application.Database.GapDashboard
             var justificationByRequirementId = requirementEvaluations
                 .GroupBy(re => re.requirementId)
                 .ToDictionary(g => g.Key, g => g.First().justification);
+            var maturityLevelIdByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => (int?)g.First().maturityLevelId);
+            var valueByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => (decimal?)g.First().value);
+            var improvementActionsByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => g.First().improvementActions);
+            var responsibleIdByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => (int?)g.First().responsibleId);
 
             // Mismo criterio que en BuildControlItems: una sola consulta agrupada para saber
             // qué evaluaciones ya tienen evidencia adjunta.
@@ -200,7 +253,12 @@ namespace Qualifier.Application.Database.GapDashboard
                     theme: "Cláusulas",
                     estado: maturityByRequirementId.GetValueOrDefault(r.requirementId) ?? PENDIENTE,
                     hasEvidence: hasEvaluation && requirementEvaluationIdsWithEvidence.Contains(requirementEvaluationId),
-                    justification: justificationByRequirementId.GetValueOrDefault(r.requirementId));
+                    justification: justificationByRequirementId.GetValueOrDefault(r.requirementId),
+                    evaluationItemId: hasEvaluation ? requirementEvaluationId : null,
+                    maturityLevelId: maturityLevelIdByRequirementId.GetValueOrDefault(r.requirementId),
+                    value: valueByRequirementId.GetValueOrDefault(r.requirementId),
+                    improvementActions: improvementActionsByRequirementId.GetValueOrDefault(r.requirementId),
+                    responsibleId: responsibleIdByRequirementId.GetValueOrDefault(r.requirementId));
             }).ToList();
 
             return (items, scopedIds);

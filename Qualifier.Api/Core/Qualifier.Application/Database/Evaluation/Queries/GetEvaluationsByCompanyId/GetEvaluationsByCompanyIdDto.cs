@@ -12,10 +12,16 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByComp
         public bool isGapAnalysis { get; set; }
         public bool isCurrent { get; set; }
         public GetEvaluationsByCompanyIdEvaluationStateDto? evaluationState { get; set; }
+        public GetEvaluationsByCompanyIdStandardDto? standard { get; set; }
     }
     public class GetEvaluationsByCompanyIdEvaluationStateDto
     {
         public string name { get; set; }
         public string color { get; set; }
+    }
+    public class GetEvaluationsByCompanyIdStandardDto
+    {
+        public int standardId { get; set; }
+        public string name { get; set; }
     }
 }

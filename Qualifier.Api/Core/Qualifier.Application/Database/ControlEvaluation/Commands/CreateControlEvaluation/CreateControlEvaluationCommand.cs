@@ -198,10 +198,11 @@ namespace Qualifier.Application.Database.ControlEvaluation.Commands.CreateContro
 
         }
 
-        private void setNumeration(List<ControlEntity> controls, int parentNumber)
+        private void setNumeration(List<ControlEntity> controls, decimal parentNumber)
         {
+            var parentNumberToShow = parentNumber.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
             foreach (ControlEntity item in controls)
-                item.numerationToShow = parentNumber.ToString() + "." + item.number.ToString();
+                item.numerationToShow = parentNumberToShow + "." + item.number.ToString();
         }
 
     }

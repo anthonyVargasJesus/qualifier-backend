@@ -127,7 +127,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard
                 foreach (var group in groups)
                 {
                     var serie = new GetControlDashboardMaturityLevelInControlIndicatorDto();
-                    serie.name = "Anexo " + group.number;
+                    serie.name = "Anexo " + group.number.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
                     // 📌 Caso 1: Estado real (usamos requirement.value)
                     if (indicator.name == "Estado")

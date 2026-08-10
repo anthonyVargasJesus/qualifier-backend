@@ -20,6 +20,8 @@ using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPri
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetActionPlanPriorityById;
 using Qualifier.Application.Database.ActionPlanPriority.Queries.GetAllActionPlanPrioritiesByCompanyId;
 using Qualifier.Application.Database.Gap.Queries.GetEvaluacionBootstrap;
+using Qualifier.Application.Database.Gap.Queries.GetGapItems;
+using Qualifier.Application.Database.Gap.Queries.GetGapSummary;
 using Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap;
 using Qualifier.Application.Database.GapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
@@ -803,6 +805,8 @@ namespace Qualifier.Application
             //Gap
             services.AddTransient<IGetPlanDeAccionBootstrapQuery, GetPlanDeAccionBootstrapQuery>();
             services.AddTransient<IGetEvaluacionBootstrapQuery, GetEvaluacionBootstrapQuery>();
+            services.AddTransient<IGetGapSummaryQuery, GetGapSummaryQuery>();
+            services.AddTransient<IGetGapItemsQuery, GetGapItemsQuery>();
 
             //Notification
             services.AddTransient<IGetNotificationsByUserIdQuery, GetNotificationsByUserIdQuery>();

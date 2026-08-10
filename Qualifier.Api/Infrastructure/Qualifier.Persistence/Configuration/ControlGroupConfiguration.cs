@@ -26,6 +26,11 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
 
             entityBuilder.Property(e => e.number)
                          .HasColumnName("N_NUMBER")
+                         // "numeric" sin precisión/escala fija (no "numeric(18,2)"): con escala
+                         // fija Postgres rellenaría con ceros (6 -> 6.00) y ControlGroupEntity.
+                         // numberToShow tendría que confiar en el formateo para ocultarlos —
+                         // preferible que ni siquiera se almacenen.
+                         .HasColumnType("numeric")
                          .IsRequired();
 
             entityBuilder.Property(e => e.name)

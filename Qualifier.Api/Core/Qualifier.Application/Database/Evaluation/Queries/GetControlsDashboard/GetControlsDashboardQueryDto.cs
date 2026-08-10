@@ -22,7 +22,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetControlsDashboard
     public class GetControlDashboardControlGroupDto
     {
         public int controlGroupId { get; set; }
-        public int number { get; set; }
+        public decimal number { get; set; }
         public string name { get; set; }
         public decimal? value { get; set; }
         public GetControlDashboardMaturityLevelInControlIndicatorDto indicator { get; set; }

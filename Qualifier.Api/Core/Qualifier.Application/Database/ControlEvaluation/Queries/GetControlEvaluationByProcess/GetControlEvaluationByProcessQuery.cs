@@ -18,7 +18,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
         private record ControlGroupCatalogRow
         {
             public int controlGroupId { get; init; }
-            public int number { get; init; }
+            public decimal number { get; init; }
             public string name { get; init; } = "";
         }
 
@@ -206,10 +206,11 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
 
         }
 
-        private void setNumeration(List<ControlEntity> controls, int parentNumber)
+        private void setNumeration(List<ControlEntity> controls, decimal parentNumber)
         {
+            var parentNumberToShow = parentNumber.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
             foreach (ControlEntity item in controls)
-                item.numerationToShow = parentNumber.ToString() + "." + item.number.ToString();
+                item.numerationToShow = parentNumberToShow + "." + item.number.ToString();
         }
 
         private void setEvaluationState(ControlEvaluationEntity item)

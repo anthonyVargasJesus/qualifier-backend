@@ -126,7 +126,7 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> Get(int skip, int pageSize, string? search, [FromServices] IGetEvaluationsByCompanyIdQuery query)
+        public async Task<IActionResult> Get(int skip, int pageSize, string? search, int? standardId, [FromServices] IGetEvaluationsByCompanyIdQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
 
@@ -142,7 +142,7 @@ namespace Qualifier.Api.Controllers
             if (search == null)
                 search = string.Empty;
 
-            var res = await query.Execute(skip, pageSize, search, companyId);
+            var res = await query.Execute(skip, pageSize, search, companyId, standardId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else
@@ -240,7 +240,7 @@ namespace Qualifier.Api.Controllers
         }
 
         [HttpGet("compliance-evolution")]
-        public async Task<IActionResult> GetComplianceEvolution([FromServices] IGetComplianceEvolutionQuery query)
+        public async Task<IActionResult> GetComplianceEvolution(int? standardId, [FromServices] IGetComplianceEvolutionQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int companyId = HttpContext.GetCompanyIdAsync(accessToken);
@@ -252,7 +252,7 @@ namespace Qualifier.Api.Controllers
             if (notification.hasErrors())
                 return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
 
-            var res = await query.Execute(companyId);
+            var res = await query.Execute(companyId, standardId);
             if (res.GetType() == typeof(BaseErrorResponseDto))
                 return BadRequest(res);
             else

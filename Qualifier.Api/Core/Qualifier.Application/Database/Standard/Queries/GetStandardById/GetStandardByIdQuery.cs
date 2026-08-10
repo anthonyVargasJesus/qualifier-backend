@@ -32,9 +32,10 @@ namespace Qualifier.Application.Database.Standard.Queries.GetStandardById
 
                 return _mapper.Map<GetStandardByIdDto>(entity);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BaseApplication.getExceptionErrorResponse();
+                throw ex;
+                //return BaseApplication.getExceptionErrorResponse();
             }
         }
 

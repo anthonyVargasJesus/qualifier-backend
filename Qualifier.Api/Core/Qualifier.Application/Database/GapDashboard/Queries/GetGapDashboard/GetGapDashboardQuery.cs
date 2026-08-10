@@ -67,7 +67,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
 
                 var pendingItems = allItems
                     .Where(i => i.estado == PENDIENTE)
-                    .OrderBy(i => i.theme).ThenBy(i => i.code)
+                    .OrderBy(i => i.groupNumber ?? -1m).ThenBy(i => GapItemsBuilder.NaturalSortKey(i.code))
                     .Take(MAX_PENDING_ITEMS)
                     .Select(i => new GetGapDashboardPendingItemDto
                     {

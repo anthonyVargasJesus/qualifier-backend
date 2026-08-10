@@ -4,7 +4,7 @@ namespace Qualifier.Application.Database.ControlGroup.Commands.UpdateControlGrou
 {
     public class UpdateControlGroupDto
     {
-        public int? number { get; set; }
+        public decimal? number { get; set; }
         public string? name { get; set; }
         public string? description { get; set; }
         public int? updateUserId { get; set; }

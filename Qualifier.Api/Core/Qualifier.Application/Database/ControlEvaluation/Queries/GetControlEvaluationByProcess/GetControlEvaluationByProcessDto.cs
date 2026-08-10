@@ -11,7 +11,7 @@ namespace Qualifier.Application.Database.ControlEvaluation.Queries.GetControlEva
     public class GetControlEvaluationsByProcessControlGroupDto
     {
         public int controlGroupId { get; set; }
-        public int number { get; set; }
+        public decimal number { get; set; }
         public string name { get; set; }
         public List<GetControlEvaluationsByProcessControlDto> controls { get; set; }
     }

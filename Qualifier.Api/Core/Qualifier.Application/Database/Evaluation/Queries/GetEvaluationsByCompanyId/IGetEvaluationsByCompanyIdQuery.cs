@@ -2,7 +2,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByComp
 {
     public interface IGetEvaluationsByCompanyIdQuery
     {
-        Task<Object> Execute(int skip, int pageSize, string search, int companyId);
+        Task<Object> Execute(int skip, int pageSize, string search, int companyId, int? standardId = null);
     }
 }
 

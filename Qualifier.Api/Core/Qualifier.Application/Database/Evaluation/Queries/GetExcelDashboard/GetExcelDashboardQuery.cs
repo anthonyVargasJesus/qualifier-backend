@@ -431,7 +431,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                 IRow childrenRow = excelSheet.CreateRow(rowIndex);
                 childrenRow.Height = 650;
                 string headerChildColor = "#eeece1";
-                setFormatRequirementItemCell(workbook, childrenRow, 0, group.number.ToString(), 14, true, headerChildColor, false, true, grayBorder, true);
+                setFormatRequirementItemCell(workbook, childrenRow, 0, group.number.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture), 14, true, headerChildColor, false, true, grayBorder, true);
                 setFormatRequirementItemCell(workbook, childrenRow, 1, group.name, 12, false, headerChildColor, false, true, grayBorder, true);
                 setFormatRequirementItemCell(workbook, childrenRow, 2, "", 12, false, headerChildColor, false, true, grayBorder, true);
                 setFormatRequirementItemCell(workbook, childrenRow, 3, "", 12, false, headerChildColor, false, true, grayBorder, true);
@@ -835,7 +835,7 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                 //row.Height = 650;
                 string headerRequirementColor = "#FFFFFF";
 
-                setFormatRequirementItemCell(workbook, row, initColumnIndex, "Anexo " + group.number.ToString() + " - " + group.name, 11, false, headerRequirementColor, false, false, grayBorder, true);
+                setFormatRequirementItemCell(workbook, row, initColumnIndex, "Anexo " + group.number.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + " - " + group.name, 11, false, headerRequirementColor, false, false, grayBorder, true);
 
                 int j = 3;
                 foreach (MaturityLevelEntity maturityLevel in group.maturityLevels)
@@ -902,10 +902,11 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard
                 item.referenceDocumentations = referenceDocumentations.Where(x => x.controlEvaluationId == item.controlEvaluationId).ToList();
         }
 
-        private void setNumeration(List<ControlEntity> controls, int parentNumber)
+        private void setNumeration(List<ControlEntity> controls, decimal parentNumber)
         {
+            var parentNumberToShow = parentNumber.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
             foreach (ControlEntity item in controls)
-                item.numerationToShow = parentNumber.ToString() + "." + item.number.ToString();
+                item.numerationToShow = parentNumberToShow + "." + item.number.ToString();
         }
 
 

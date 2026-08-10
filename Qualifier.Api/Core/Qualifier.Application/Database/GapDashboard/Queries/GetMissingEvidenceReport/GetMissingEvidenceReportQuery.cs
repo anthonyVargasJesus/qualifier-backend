@@ -46,7 +46,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidence
 
                 var missingItems = evaluatedItems
                     .Where(i => !i.hasEvidence)
-                    .OrderBy(i => i.theme).ThenBy(i => i.code)
+                    .OrderBy(i => i.groupNumber ?? -1m).ThenBy(i => GapItemsBuilder.NaturalSortKey(i.code))
                     .Select(i => new GetMissingEvidenceItemDto
                     {
                         tipo = i.tipo,

@@ -159,7 +159,7 @@ namespace Qualifier.Domain.Entities
             {
                 group.controls = allControls.Where(e => e.controlGroupId == group.controlGroupId).ToList();
                 foreach (var control in group.controls)
-                    control.numerationToShow = group.number + "." + control.number;
+                    control.numerationToShow = group.numberToShow + "." + control.number;
             }
         }
         public string getControlNumerationToShow(int controlId)

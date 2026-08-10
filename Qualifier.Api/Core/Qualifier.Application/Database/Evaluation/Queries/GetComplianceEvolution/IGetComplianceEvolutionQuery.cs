@@ -2,6 +2,6 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetComplianceEvoluti
 {
     public interface IGetComplianceEvolutionQuery
     {
-        Task<Object> Execute(int companyId);
+        Task<Object> Execute(int companyId, int? standardId = null);
     }
 }

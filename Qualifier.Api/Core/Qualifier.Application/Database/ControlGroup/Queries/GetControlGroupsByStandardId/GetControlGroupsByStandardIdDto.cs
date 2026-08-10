@@ -3,7 +3,7 @@ namespace Qualifier.Application.Database.ControlGroup.Queries.GetControlGroupsBy
     public class GetControlGroupsByStandardIdDto
     {
         public int controlGroupId { get; set; }
-        public int number { get; set; }
+        public decimal number { get; set; }
         public string name { get; set; }
         public string description { get; set; }
     }

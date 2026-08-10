@@ -2,6 +2,8 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetComplianceEvoluti
 {
     public class GetComplianceEvolutionDto
     {
+        public int? standardId { get; set; }
+        public string? standardName { get; set; }
         public int totalEvaluations { get; set; }
         public decimal? currentRequirementsRate { get; set; }
         public decimal? currentControlsRate { get; set; }
@@ -12,6 +14,38 @@ namespace Qualifier.Application.Database.Evaluation.Queries.GetComplianceEvoluti
         public string? previousEvaluationDescription { get; set; }
         public List<GetComplianceEvolutionItemDto> evaluations { get; set; } = new();
         public List<GetComplianceEvolutionLineDto> chart { get; set; } = new();
+
+        // "¿En qué mejoramos/empeoramos?" — ítems cuyo nivel de madurez cambió entre la
+        // evaluación anterior y la actual (ver GetComplianceEvolutionQuery). Sin esto, el
+        // reporte solo decía "subió 4.2%" sin decir en qué — la pregunta obvia que sigue.
+        public int improvedCount { get; set; }
+        public int worsenedCount { get; set; }
+        public List<GetComplianceEvolutionChangeDto> changes { get; set; } = new();
+
+        // Composición por nivel de madurez de la evaluación actual (Cumple/Parcial/No
+        // cumple/No aplica) — el % agregado de arriba no dice cómo se ve la mezcla real
+        // detrás de ese número. Mismos colores que ya usa el catálogo de niveles de
+        // madurez en el resto de la app (gap-home, etc.), no una paleta nueva.
+        public List<GetComplianceEvolutionCompositionDto> requirementsComposition { get; set; } = new();
+        public List<GetComplianceEvolutionCompositionDto> controlsComposition { get; set; } = new();
+    }
+
+    public class GetComplianceEvolutionCompositionDto
+    {
+        public string name { get; set; } = string.Empty;
+        public string? color { get; set; }
+        public int count { get; set; }
+        public decimal percentage { get; set; }
+    }
+
+    public class GetComplianceEvolutionChangeDto
+    {
+        public string tipo { get; set; } = string.Empty; // "requisito" | "control"
+        public string code { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public string? previousLevel { get; set; }
+        public string? currentLevel { get; set; }
+        public bool improved { get; set; }
     }
 
     public class GetComplianceEvolutionItemDto

@@ -42,7 +42,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetSoaReport
                     currentEvaluation.standardId, currentEvaluation.evaluationId, userId: 0, scopeToUser: false);
 
                 var controls = controlItems
-                    .OrderBy(i => i.theme).ThenBy(i => i.code)
+                    .OrderBy(i => i.groupNumber ?? -1m).ThenBy(i => GapItemsBuilder.NaturalSortKey(i.code))
                     .Select(i => new GetSoaReportItemDto
                     {
                         code = i.code,
