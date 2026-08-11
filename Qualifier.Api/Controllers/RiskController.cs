@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Qualifier.Api.Helpers;
 using Qualifier.Application.Database.Personal.Queries.GetPersonalsByCompanyId;
 using Qualifier.Application.Database.Risk.Commands.CreateRisk;
 using Qualifier.Application.Database.Risk.Commands.DeleteRisk;
 using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
 using Qualifier.Application.Database.Risk.Commands.UpdateRiskState;
 using Qualifier.Application.Database.Risk.Queries.GetRiskById;
+using Qualifier.Application.Database.Risk.Queries.GetRiskHeatmap;
 using Qualifier.Application.Database.Risk.Queries.GetRiskMonitoring;
 using Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId;
 using Qualifier.Common.Api;
@@ -142,6 +144,26 @@ namespace Qualifier.Api.Controllers
                 return BadRequest(res);
             else
                 return Ok(res);
+        }
+
+        [HttpGet("Heatmap")]
+        public async Task<IActionResult> GetHeatmap(int? evaluationId, [FromServices] IGetRiskHeatmapQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
+
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            var res = await query.Execute(companyId, evaluationId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new { data = res });
         }
 
         [HttpPut("status")]

@@ -154,6 +154,7 @@ using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypeById;
 using Qualifier.Application.Database.DocumentType.Queries.GetDocumentTypesByCompanyId;
 using Qualifier.Application.Database.Evaluation.Commands.CreateEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetComplianceEvolution;
+using Qualifier.Application.Database.Evaluation.Queries.GetMaturityRadar;
 using Qualifier.Application.Database.Evaluation.Commands.DeleteEvaluation;
 using Qualifier.Application.Database.Evaluation.Commands.UpdateEvaluation;
 using Qualifier.Application.Database.Evaluation.Queries.GetAllEvaluationsByCompanyId;
@@ -296,6 +297,7 @@ using Qualifier.Application.Database.Risk.Commands.UpdateRisk;
 using Qualifier.Application.Database.Risk.Commands.UpdateRiskState;
 using Qualifier.Application.Database.Risk.Queries.GetAllRisksByEvaluationId;
 using Qualifier.Application.Database.Risk.Queries.GetRiskById;
+using Qualifier.Application.Database.Risk.Queries.GetRiskHeatmap;
 using Qualifier.Application.Database.Risk.Queries.GetRiskMonitoring;
 using Qualifier.Application.Database.Risk.Queries.GetRisksByEvaluationId;
 using Qualifier.Application.Database.RiskAssessment.Commands.CreateRiskAssessment;
@@ -531,6 +533,8 @@ namespace Qualifier.Application
             services.AddTransient<IGetAllEvaluationsByCompanyIdQuery, GetAllEvaluationsByCompanyIdQuery>();
             services.AddTransient<IGetCurrentEvaluationQuery, GetCurrentEvaluationQuery>();
             services.AddTransient<IGetComplianceEvolutionQuery, GetComplianceEvolutionQuery>();
+
+            services.AddTransient<IGetMaturityRadarQuery, GetMaturityRadarQuery>();
 
             //RequirementEvaluation
             services.AddTransient<ICreateRequirementEvaluationCommand, CreateRequirementEvaluationCommand>();
@@ -1050,6 +1054,8 @@ namespace Qualifier.Application
             services.AddTransient<IGetControlImplementationsByRiskIdQuery, GetControlImplementationsByRiskIdQuery>();
 
             services.AddTransient<IGetRiskMonitoringQuery, GetRiskMonitoringQuery>();
+
+            services.AddTransient<IGetRiskHeatmapQuery, GetRiskHeatmapQuery>();
 
             services.AddTransient<IUpdateRiskStateCommand, UpdateRiskStateCommand>();
 

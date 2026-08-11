@@ -13,6 +13,7 @@ using Qualifier.Application.Database.Evaluation.Queries.GetDashboard;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationById;
 using Qualifier.Application.Database.Evaluation.Queries.GetEvaluationsByCompanyId;
 using Qualifier.Application.Database.Evaluation.Queries.GetExcelDashboard;
+using Qualifier.Application.Database.Evaluation.Queries.GetMaturityRadar;
 using Qualifier.Application.Database.Evaluation.Queries.GetPendingDocumentation;
 using Qualifier.Common.Api;
 using Qualifier.Common.Application.Dto;
@@ -241,6 +242,26 @@ namespace Qualifier.Api.Controllers
 
         [HttpGet("compliance-evolution")]
         public async Task<IActionResult> GetComplianceEvolution(int? standardId, [FromServices] IGetComplianceEvolutionQuery query)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            int companyId = HttpContext.GetCompanyIdAsync(accessToken);
+
+            Notification notification = new Notification();
+            if (companyId == CompanyConstants.NO_COMPANY_ASSOCIATED)
+                notification.addError("El usuario no está asociado a institución");
+
+            if (notification.hasErrors())
+                return BadRequest(BaseApplication.getApplicationErrorResponse(notification.errors));
+
+            var res = await query.Execute(companyId, standardId);
+            if (res.GetType() == typeof(BaseErrorResponseDto))
+                return BadRequest(res);
+            else
+                return Ok(new { data = res });
+        }
+
+        [HttpGet("maturity-radar")]
+        public async Task<IActionResult> GetMaturityRadar(int? standardId, [FromServices] IGetMaturityRadarQuery query)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             int companyId = HttpContext.GetCompanyIdAsync(accessToken);
