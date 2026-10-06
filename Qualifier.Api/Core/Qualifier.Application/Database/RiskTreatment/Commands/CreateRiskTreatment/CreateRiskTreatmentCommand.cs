@@ -38,7 +38,7 @@ namespace Qualifier.Application.Database.RiskTreatment.Commands.CreateRiskTreatm
                     await _databaseService.RiskTreatment.AddAsync(entity);
                     await _databaseService.SaveAsync();
 
-                    const int STATUS_IN_TREATMENT_ID = 4;
+                    const int STATUS_IN_TREATMENT_ID = 3;
                     await _riskRepository.UpdateRiskStatusId(entity.riskId, STATUS_IN_TREATMENT_ID, model.creationUserId);
                     scope.Complete();
                 }
