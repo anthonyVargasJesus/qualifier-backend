@@ -122,10 +122,22 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
                 .Select(s => s.name)
                 .FirstOrDefaultAsync() ?? "";
 
+            // Quién ejecutó el cambio (el asignado, normalmente) -- sin esto el mensaje era
+            // genérico ("... cambió de estado") y el dueño del control no sabía a quién
+            // atribuírselo sin abrir la app. Mismo criterio de armado de nombre que
+            // GetActionPlanCountsByUserQuery (name + firstName).
+            var changerName = changedByUserId == null
+                ? null
+                : await _databaseService.User
+                    .Where(u => u.userId == changedByUserId)
+                    .Select(u => (u.name ?? "") + " " + (u.firstName ?? ""))
+                    .FirstOrDefaultAsync();
+            changerName = string.IsNullOrWhiteSpace(changerName) ? "Alguien" : changerName.Trim();
+
             const string title = "Actualización en tu plan de acción";
             var body = string.IsNullOrEmpty(statusName)
-                ? $"\"{actionPlanTitle}\" cambió de estado."
-                : $"\"{actionPlanTitle}\" cambió de estado a \"{statusName}\".";
+                ? $"{changerName} cambió el estado de su tarea: \"{actionPlanTitle}\"."
+                : $"{changerName} cambió el estado de su tarea: \"{actionPlanTitle}\" a \"{statusName}\".";
 
             await _pushNotificationService.SendAsync(
                 creatorUserId.Value,
@@ -136,10 +148,18 @@ namespace Qualifier.Application.Database.ActionPlan.Commands.UpdateActionPlan
                 actionPlanId: actionPlanId,
                 breachId: breachId,
                 companyId: companyId,
+                // breachId también tiene que viajar acá (no solo como parámetro de SendAsync,
+                // que solo lo persiste en MAE_NOTIFICATION para la bandeja in-app): el payload
+                // `data` es lo único que le llega al dispositivo en un push en vivo (foreground/
+                // background/cold start), y sin esto MainShellPage._handleNotificationData no
+                // podía resolver a qué brecha abrir "Plan de acción" cuando la notificación
+                // llegaba como push real (sí funcionaba tocándola desde la bandeja in-app,
+                // porque esa lee breachId directo de la fila ya guardada).
                 data: new Dictionary<string, string>
                 {
                     { "type", "action_plan_status_changed" },
                     { "actionPlanId", actionPlanId.ToString() },
+                    { "breachId", breachId?.ToString() ?? "" },
                 });
         }
 

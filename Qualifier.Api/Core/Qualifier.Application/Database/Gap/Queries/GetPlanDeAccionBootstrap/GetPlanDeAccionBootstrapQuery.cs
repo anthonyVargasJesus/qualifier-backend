@@ -42,7 +42,7 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
             _getAllUsersByCompanyIdQuery = getAllUsersByCompanyIdQuery;
         }
 
-        public async Task<Object> Execute(int companyId, int userId, int standardId, bool scopeToUser = true)
+        public async Task<Object> Execute(int companyId, int userId, bool scopeToUser = true)
         {
             try
             {
@@ -52,6 +52,14 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
                 // adentro se resuelve todo con await secuencial (no Task.WhenAll) —
                 // la ganancia real de este endpoint es juntar las 7 llamadas HTTP
                 // del cliente en una sola, no paralelizar contra la base de datos.
+                //
+                // standardId ya NO viene del claim del JWT (StandardId del controller) -- ese es
+                // fijo desde el login y quedaba desincronizado apenas la "evaluación actual" era
+                // de otra norma (ej. token con ISO 27001 pero evaluación actual de NTP-42001):
+                // las queries de abajo buscaban controles/requisitos de la norma del token dentro
+                // de una evaluación de otra norma y nunca encontraban nada, así que "Plan de
+                // acción" quedaba en 0 ítems pase lo que pase con las brechas reales. Se usa
+                // evaluation.standardId, que es la norma real de la evaluación que se está viendo.
                 var evalResult = await _getCurrentEvaluationQuery.Execute(0);
                 if (evalResult is BaseErrorResponseDto) return evalResult;
                 if (evalResult is not GetCurrentEvaluationDto evaluation) return BaseApplication.getExceptionErrorResponse();
@@ -68,10 +76,10 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
                 var usersResult = await _getAllUsersByCompanyIdQuery.Execute(companyId);
                 if (usersResult is BaseErrorResponseDto) return usersResult;
 
-                var reqResult = await _getRequirementEvaluationByProcessQuery.Execute(standardId, evaluation.evaluationId, string.Empty, userId, scopeToUser);
+                var reqResult = await _getRequirementEvaluationByProcessQuery.Execute(evaluation.standardId, evaluation.evaluationId, string.Empty, userId, scopeToUser);
                 if (reqResult is BaseErrorResponseDto) return reqResult;
 
-                var ctrlResult = await _getControlEvaluationByProcessQuery.Execute(standardId, evaluation.evaluationId, userId, scopeToUser);
+                var ctrlResult = await _getControlEvaluationByProcessQuery.Execute(evaluation.standardId, evaluation.evaluationId, userId, scopeToUser);
                 if (ctrlResult is BaseErrorResponseDto) return ctrlResult;
 
                 var breachesResult = await _getBreachesScopeQuery.Execute(evaluation.evaluationId);
@@ -123,6 +131,7 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
                                 itemId = evaluation.requirement.requirementId,
                                 maturityLevelId = evaluation.maturityLevelId,
                                 theme = "Cláusulas",
+                                evaluationItemId = evaluation.requirementEvaluationId,
                             });
                     }
                 }
@@ -146,6 +155,7 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
                             itemId = control.controlId,
                             maturityLevelId = evaluation.maturityLevelId,
                             theme = group.name,
+                            evaluationItemId = evaluation.controlEvaluationId,
                         });
                 }
             }

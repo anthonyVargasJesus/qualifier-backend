@@ -41,7 +41,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidence
 
                 var allItems = controlItems.Concat(requirementItems).ToList();
                 var evaluatedItems = allItems
-                    .Where(i => i.estado != GapItemsBuilder.PENDIENTE && i.estado != GapItemsBuilder.NO_APLICA)
+                    .Where(i => i.estado != GapItemsBuilder.PENDIENTE && !i.isNotApplicable)
                     .ToList();
 
                 var missingItems = evaluatedItems

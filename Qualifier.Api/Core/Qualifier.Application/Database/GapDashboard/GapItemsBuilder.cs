@@ -12,8 +12,6 @@ namespace Qualifier.Application.Database.GapDashboard
     public class GapItemsBuilder
     {
         public const string PENDIENTE = "Pendiente";
-        public const string NO_APLICA = "No aplica";
-        public const string CUMPLE = "Cumple";
 
         // Para ordenar ItemState.code ("4", "4.1", "10", "10.1.1"...) numéricamente en vez
         // de alfabéticamente. Un ".OrderBy(i => i.code)" plano pone "10" antes que "4"
@@ -41,9 +39,21 @@ namespace Qualifier.Application.Database.GapDashboard
         // groupNumber: solo para items tipo "control" (null en requisitos) — el número real de
         // ControlGroup (puede ser "6.1" en normas con sub-grupos anidados, ej. NTP 42001), para
         // que GetGapSummaryQuery pueda ordenar los temas sin tener que reparsear "code".
+        // isNotApplicable/generatesBreach: propiedades del nivel de madurez asignado (no del
+        // ítem en sí), pero se cargan planas acá para que los consumidores (GetGapSummaryQuery,
+        // GetGapDashboardQuery, GetSoaReportQuery, GetMissingEvidenceReportQuery) no tengan que
+        // volver a resolver el nivel por nombre — que es justo el bug que reemplaza esto (ver
+        // 002_maturity_level_is_not_applicable.sql). Default false en ambas: correcto para
+        // ítems sin evaluación (estado == PENDIENTE), que los consumidores ya excluyen aparte.
+        // color: el del nivel de madurez asignado -- para que GetGapDashboardQuery arme
+        // maturityCounts sin tener que resolverlo de nuevo (evita otra tabla de colores por
+        // nombre hardcodeada en el frontend, como la que tenía home-dashboard.component.ts).
+        // description: descripción del control/requisito (MAE_CONTROL.C_DESCRIPTION /
+        // MAE_REQUIREMENT.C_DESCRIPTION) -- para GetGapItemsQuery (vista tabla, columna
+        // "Descripción" del Excel de referencia). Los demás consumidores no la piden.
         public record ItemState(string tipo, int itemId, string code, string name, string theme, string estado, bool hasEvidence, string? justification,
             long? evaluationItemId = null, int? maturityLevelId = null, decimal? value = null, string? improvementActions = null, int? responsibleId = null,
-            decimal? groupNumber = null);
+            decimal? groupNumber = null, bool isNotApplicable = false, bool generatesBreach = false, string? color = null, string? description = null);
 
         public async Task<(List<ItemState> items, List<int> controlIds)> BuildControlItems(
             int standardId, int evaluationId, int userId, bool scopeToUser)
@@ -67,7 +77,7 @@ namespace Qualifier.Application.Database.GapDashboard
             var controls = await _databaseService.Control
                 .Where(c => (c.isDeleted == null || c.isDeleted == false) && c.standardId == standardId
                     && groupById.Keys.Contains(c.controlGroupId))
-                .Select(c => new { c.controlId, c.controlGroupId, c.number, c.name })
+                .Select(c => new { c.controlId, c.controlGroupId, c.number, c.name, c.description })
                 .ToListAsync();
 
             // Join explícito (no ce.maturityLevel.name): esa navigation property no está
@@ -84,11 +94,21 @@ namespace Qualifier.Application.Database.GapDashboard
                 where (ce.isDeleted == null || ce.isDeleted == false) && ce.evaluationId == evaluationId
                 orderby ce.controlEvaluationId descending
                 select new { ce.controlId, ce.controlEvaluationId, maturityName = ml.name, ce.justification,
-                    ce.maturityLevelId, ce.value, ce.improvementActions, ce.responsibleId }
+                    ce.maturityLevelId, ce.value, ce.improvementActions, ce.responsibleId,
+                    ml.isNotApplicable, ml.generatesBreach, ml.color }
             ).ToListAsync();
             var maturityByControlId = controlEvaluations
                 .GroupBy(ce => ce.controlId)
                 .ToDictionary(g => g.Key, g => g.First().maturityName);
+            var isNotApplicableByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => g.First().isNotApplicable);
+            var generatesBreachByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => g.First().generatesBreach);
+            var colorByControlId = controlEvaluations
+                .GroupBy(ce => ce.controlId)
+                .ToDictionary(g => g.Key, g => g.First().color);
             var controlEvaluationIdByControlId = controlEvaluations
                 .GroupBy(ce => ce.controlId)
                 .ToDictionary(g => g.Key, g => g.First().controlEvaluationId);
@@ -129,6 +149,7 @@ namespace Qualifier.Application.Database.GapDashboard
                     code: $"{group.number.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)}.{c.number}",
                     name: c.name,
                     theme: group.name,
+                    description: c.description,
                     estado: maturityByControlId.GetValueOrDefault(c.controlId) ?? PENDIENTE,
                     hasEvidence: hasEvaluation && controlEvaluationIdsWithEvidence.Contains(controlEvaluationId),
                     justification: justificationByControlId.GetValueOrDefault(c.controlId),
@@ -137,7 +158,10 @@ namespace Qualifier.Application.Database.GapDashboard
                     value: valueByControlId.GetValueOrDefault(c.controlId),
                     improvementActions: improvementActionsByControlId.GetValueOrDefault(c.controlId),
                     responsibleId: responsibleIdByControlId.GetValueOrDefault(c.controlId),
-                    groupNumber: group.number);
+                    groupNumber: group.number,
+                    isNotApplicable: isNotApplicableByControlId.GetValueOrDefault(c.controlId),
+                    generatesBreach: generatesBreachByControlId.GetValueOrDefault(c.controlId),
+                    color: colorByControlId.GetValueOrDefault(c.controlId));
             }).ToList();
 
             return (items, controls.Select(c => c.controlId).ToList());
@@ -148,7 +172,7 @@ namespace Qualifier.Application.Database.GapDashboard
         {
             var allRequirements = await _databaseService.Requirement
                 .Where(r => (r.isDeleted == null || r.isDeleted == false) && r.standardId == standardId)
-                .Select(r => new { r.requirementId, r.parentId, r.level, r.isEvaluable, r.numeration, r.name })
+                .Select(r => new { r.requirementId, r.parentId, r.level, r.isEvaluable, r.numeration, r.name, r.description })
                 .ToListAsync();
             var byId = allRequirements.ToDictionary(r => r.requirementId);
 
@@ -208,11 +232,21 @@ namespace Qualifier.Application.Database.GapDashboard
                     && scopedIds.Contains(re.requirementId)
                 orderby re.requirementEvaluationId descending
                 select new { re.requirementId, re.requirementEvaluationId, maturityName = ml.name, re.justification,
-                    re.maturityLevelId, re.value, re.improvementActions, re.responsibleId }
+                    re.maturityLevelId, re.value, re.improvementActions, re.responsibleId,
+                    ml.isNotApplicable, ml.generatesBreach, ml.color }
             ).ToListAsync();
             var maturityByRequirementId = requirementEvaluations
                 .GroupBy(re => re.requirementId)
                 .ToDictionary(g => g.Key, g => g.First().maturityName);
+            var isNotApplicableByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => g.First().isNotApplicable);
+            var generatesBreachByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => g.First().generatesBreach);
+            var colorByRequirementId = requirementEvaluations
+                .GroupBy(re => re.requirementId)
+                .ToDictionary(g => g.Key, g => g.First().color);
             var requirementEvaluationIdByRequirementId = requirementEvaluations
                 .GroupBy(re => re.requirementId)
                 .ToDictionary(g => g.Key, g => g.First().requirementEvaluationId);
@@ -251,6 +285,7 @@ namespace Qualifier.Application.Database.GapDashboard
                     code: ResolveNumerationToShow(r.requirementId),
                     name: r.name,
                     theme: "Cláusulas",
+                    description: r.description,
                     estado: maturityByRequirementId.GetValueOrDefault(r.requirementId) ?? PENDIENTE,
                     hasEvidence: hasEvaluation && requirementEvaluationIdsWithEvidence.Contains(requirementEvaluationId),
                     justification: justificationByRequirementId.GetValueOrDefault(r.requirementId),
@@ -258,7 +293,10 @@ namespace Qualifier.Application.Database.GapDashboard
                     maturityLevelId: maturityLevelIdByRequirementId.GetValueOrDefault(r.requirementId),
                     value: valueByRequirementId.GetValueOrDefault(r.requirementId),
                     improvementActions: improvementActionsByRequirementId.GetValueOrDefault(r.requirementId),
-                    responsibleId: responsibleIdByRequirementId.GetValueOrDefault(r.requirementId));
+                    responsibleId: responsibleIdByRequirementId.GetValueOrDefault(r.requirementId),
+                    isNotApplicable: isNotApplicableByRequirementId.GetValueOrDefault(r.requirementId),
+                    generatesBreach: generatesBreachByRequirementId.GetValueOrDefault(r.requirementId),
+                    color: colorByRequirementId.GetValueOrDefault(r.requirementId));
             }).ToList();
 
             return (items, scopedIds);

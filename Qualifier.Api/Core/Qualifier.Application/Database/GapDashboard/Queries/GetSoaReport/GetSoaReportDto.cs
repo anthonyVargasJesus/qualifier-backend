@@ -12,6 +12,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetSoaReport
     {
         public string code { get; set; } = string.Empty;
         public string name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
         public string theme { get; set; } = string.Empty;
 
         // null = todavía sin evaluar ("Pendiente"); true/false = aplica o no.

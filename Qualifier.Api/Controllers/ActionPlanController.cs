@@ -11,6 +11,7 @@ using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByUserId;
 using Qualifier.Application.Database.ActionPlan.Queries.GetMyActionsBootstrap;
 using Qualifier.Application.Database.ActionPlan.Queries.GetOverdueActionPlansReport;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCalendar;
 
 namespace Qualifier.Api.Controllers;
 
@@ -26,6 +27,7 @@ public class ActionPlanController(
     IGetOverdueActionPlansReportQuery getOverdueReportQuery,
     IGetActionPlansByUserIdQuery getByUserQuery,
     IGetMyActionsBootstrapQuery getMyActionsBootstrapQuery,
+    IGetActionPlanCalendarQuery getCalendarQuery,
     ICreateActionPlanCommand createCommand,
     IUpdateActionPlanCommand updateCommand,
     IDeleteActionPlanCommand deleteCommand
@@ -91,6 +93,18 @@ public class ActionPlanController(
     public async Task<IActionResult> GetMyActionsBootstrap()
     {
         var res = await getMyActionsBootstrapQuery.Execute(CompanyId, UserId);
+        return ProcessResponse(res);
+    }
+
+    // "Plan de Acción / Implementación" en vista calendario: todos los planes de acción de la
+    // evaluación con su rango de fechas -- para pintar la grilla mensual sin el ida-y-vuelta de
+    // pedir uno por brecha (que sí tiene sentido en la pantalla de acordeón, no acá).
+    [HttpGet("calendar")]
+    public async Task<IActionResult> GetCalendar(int evaluationId, int year, int skip = 0, int pageSize = 15)
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+
+        var res = await getCalendarQuery.Execute(CompanyId, evaluationId, year, skip, pageSize);
         return ProcessResponse(res);
     }
 

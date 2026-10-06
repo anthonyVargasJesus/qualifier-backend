@@ -36,5 +36,11 @@ namespace Qualifier.Application.Database.Gap.Queries.GetPlanDeAccionBootstrap
         // acción" por tema sin tener que traer nombre/código/descripción
         // completos de cada ítem (eso seguiría siendo pesado a propósito).
         public string theme { get; set; } = "";
+        // requirementEvaluationId o controlEvaluationId real -- la evidencia
+        // (MAE_REFERENCE_DOCUMENTATION) cuelga de este id, no de itemId
+        // (requirementId/controlId). Sin esto, "Plan de acción" no podía
+        // resolver qué evidencia mostrar por brecha (app-gap-evidence-list
+        // la necesita para pedir GET /api/referenceDocumentation).
+        public long evaluationItemId { get; set; }
     }
 }

@@ -83,12 +83,8 @@ namespace Qualifier.Application.Database.User.Commands.Login
                 if (domainNotification.hasErrors())
                     return BaseApplication.getApplicationErrorResponseWithTitle(domainNotification.errors, noAccessTitle);
 
-                string standardName = "";
-                if (entity.standard != null)
-                    standardName = entity.standard.name;
-
-                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, (login.name == null) ? "" : login.name 
-                    , getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, entity.standardId, standardName);
+                login.token = JwtTokenProvider.GenerateToken(_configuration, login.userId, (login.name == null) ? "" : login.name
+                    , getCurrentRole(login.roles), getRolesArray(login.roles), entity.companyId, login.email ?? "");
 
                 await _userRepository.UpdateLastAccess(entity.userId);
 

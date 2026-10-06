@@ -14,6 +14,7 @@ namespace Qualifier.Domain.Entities
         public decimal? factor { get; set; }
         public bool generatesBreach { get; set; }
         public int? breachSeverityId { get; set; }
+        public bool isNotApplicable { get; set; }
         public int companyId { get; set; }
         public ICollection<RequirementEvaluationEntity> requirementEvaluations { get; set; }
         public ICollection<ControlEvaluationEntity> controlEvaluations { get; set; }

@@ -15,8 +15,6 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
     public class GetGapDashboardQuery : IGetGapDashboardQuery
     {
         private const string PENDIENTE = GapItemsBuilder.PENDIENTE;
-        private const string NO_APLICA = GapItemsBuilder.NO_APLICA;
-        private const string CUMPLE = GapItemsBuilder.CUMPLE;
         private const int MAX_PENDING_ITEMS = 8;
 
         private readonly IDatabaseService _databaseService;
@@ -37,21 +35,29 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
 
                 var allItems = controlItems.Concat(requirementItems).ToList();
 
-                var evaluatedItems = allItems.Where(i => i.estado != PENDIENTE && i.estado != NO_APLICA).ToList();
-                var compliantItems = evaluatedItems.Where(i => i.estado == CUMPLE).ToList();
+                // "Cumple" ya no es un nombre fijo (escala CMM de 6 niveles + no aplicable): un
+                // ítem cuenta como "cumplido" cuando su nivel no genera brecha y no es el nivel
+                // "sin implementar" (value 0) -- ver 002_maturity_level_is_not_applicable.sql.
+                var evaluatedItems = allItems.Where(i => i.estado != PENDIENTE && !i.isNotApplicable).ToList();
+                var compliantItems = evaluatedItems.Where(i => !i.generatesBreach && i.value > 0).ToList();
                 var pct = evaluatedItems.Count > 0 ? (int)Math.Round(compliantItems.Count * 100.0 / evaluatedItems.Count) : 0;
 
+                // Orden por valor de madurez descendente (mejor primero), "Pendiente" siempre al
+                // final -- ya no una lista de nombres fija en el frontend (home-dashboard.component.ts
+                // consume maturityCounts tal cual llega, con su color ya resuelto acá).
                 var maturityCounts = allItems
                     .GroupBy(i => i.estado)
-                    .Select(g => new GetGapDashboardMaturityCountDto { name = g.Key, count = g.Count() })
+                    .Select(g => new { name = g.Key, count = g.Count(), value = g.First().value, color = g.First().color })
+                    .OrderByDescending(g => g.name == PENDIENTE ? -1 : (g.value ?? -1))
+                    .Select(g => new GetGapDashboardMaturityCountDto { name = g.name, color = g.color ?? "#8A939B", count = g.count })
                     .ToList();
 
                 var themes = allItems
                     .GroupBy(i => i.theme)
                     .Select(g =>
                     {
-                        var themeEvaluated = g.Where(i => i.estado != PENDIENTE && i.estado != NO_APLICA).ToList();
-                        var themeCompliant = themeEvaluated.Where(i => i.estado == CUMPLE).ToList();
+                        var themeEvaluated = g.Where(i => i.estado != PENDIENTE && !i.isNotApplicable).ToList();
+                        var themeCompliant = themeEvaluated.Where(i => !i.generatesBreach && i.value > 0).ToList();
                         return new GetGapDashboardThemeDto
                         {
                             theme = g.Key,

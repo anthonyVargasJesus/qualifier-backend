@@ -12,7 +12,14 @@ namespace Qualifier.Api.Controllers
         // Propiedades calculadas para obtener datos del usuario actual
         protected int UserId => GetClaimAsInt("userId");
         protected int CompanyId => GetClaimAsInt("companyId");
-        protected int StandardId => GetClaimAsInt("standardId");
+        // StandardId (claim "standardId" del JWT) se eliminó a propósito: era la norma "fija"
+        // del usuario al momento de loguearse, y quedaba desincronizada apenas la evaluación
+        // actual pasaba a ser de otra norma (ver el bug que corrigió esto en
+        // GetPlanDeAccionBootstrapQuery -- "Plan de acción" mostraba 0 brechas para NTP-42001
+        // porque filtraba con la norma del token, ISO 27001). Cualquier endpoint que necesite la
+        // norma correcta debe resolverla de la evaluación actual (evaluation.standardId) o de la
+        // entidad puntual que esté consultando, nunca de acá. Si hace falta de nuevo, primero
+        // hay que confirmar que no se vuelva a pisar con la norma real de lo que se está viendo.
 
         private int GetClaimAsInt(string claimType)
         {

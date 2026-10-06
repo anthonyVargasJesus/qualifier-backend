@@ -4,6 +4,7 @@ using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetHomeDashboardBootstrap;
 using Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidenceReport;
 using Qualifier.Application.Database.GapDashboard.Queries.GetSoaReport;
+using Qualifier.Application.Database.GapDashboard.Queries.GetDashboardONPE;
 
 namespace Qualifier.Api.Controllers;
 
@@ -14,7 +15,8 @@ public class GapDashboardController(
     IGetGapDashboardQuery getGapDashboardQuery,
     IGetHomeDashboardBootstrapQuery getHomeDashboardBootstrapQuery,
     IGetMissingEvidenceReportQuery getMissingEvidenceReportQuery,
-    IGetSoaReportQuery getSoaReportQuery
+    IGetSoaReportQuery getSoaReportQuery,
+    IGetDashboardONPEQuery getDashboardONPEQuery
 ) : ApiBaseController
 {
     // Resumen para el dashboard de Inicio. scopeToUser=true (igual que /gap/panel) para que
@@ -43,6 +45,17 @@ public class GapDashboardController(
     {
         if (CompanyId == 0) return CompanyRequiredError();
         var res = await getSoaReportQuery.Execute(CompanyId);
+        return ProcessResponse(res);
+    }
+
+    // Dashboard de madurez estilo ONPE (hoja "Dashboard" del Excel FM03-GPP_GC — Declaración de
+    // aplicabilidad del SGSI (SoA)). Por ahora solo el cuadro de Madurez General + los 4 grupos
+    // del Anexo A; la dona y los radares de la hoja original se agregan en una siguiente iteración.
+    [HttpGet("dashboard-onpe")]
+    public async Task<IActionResult> GetDashboardONPE()
+    {
+        if (CompanyId == 0) return CompanyRequiredError();
+        var res = await getDashboardONPEQuery.Execute(CompanyId);
         return ProcessResponse(res);
     }
 

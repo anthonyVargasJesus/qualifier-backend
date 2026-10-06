@@ -9,6 +9,7 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetAllMaturityLev
         public string color { get; set; }
         public bool generatesBreach { get; set; }
         public int? breachSeverityId { get; set; }
+        public bool isNotApplicable { get; set; }
     }
 }
 

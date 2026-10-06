@@ -26,7 +26,7 @@ public class GapController(
     [HttpGet("plan-de-accion")]
     public async Task<IActionResult> GetPlanDeAccionBootstrap(bool scopeToUser = true)
     {
-        var res = await getPlanDeAccionBootstrapQuery.Execute(CompanyId, UserId, StandardId, scopeToUser);
+        var res = await getPlanDeAccionBootstrapQuery.Execute(CompanyId, UserId, scopeToUser);
         return ProcessResponse(res);
     }
 

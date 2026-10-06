@@ -47,8 +47,9 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetSoaReport
                     {
                         code = i.code,
                         name = i.name,
+                        description = i.description,
                         theme = i.theme,
-                        aplica = i.estado == GapItemsBuilder.PENDIENTE ? (bool?)null : i.estado != GapItemsBuilder.NO_APLICA,
+                        aplica = i.estado == GapItemsBuilder.PENDIENTE ? (bool?)null : !i.isNotApplicable,
                         implementacion = i.estado == GapItemsBuilder.PENDIENTE ? "Sin evaluar" : i.estado,
                         justificacion = string.IsNullOrWhiteSpace(i.justification) ? "—" : i.justification!.Trim(),
                     })

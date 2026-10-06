@@ -13,6 +13,7 @@ using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCountsByUse
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanProgress;
 using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlansByBreachId;
 using Qualifier.Application.Database.ActionPlan.Queries.GetOverdueActionPlansReport;
+using Qualifier.Application.Database.ActionPlan.Queries.GetActionPlanCalendar;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.CreateActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.DeleteActionPlanPriority;
 using Qualifier.Application.Database.ActionPlanPriority.Commands.UpdateActionPlanPriority;
@@ -28,6 +29,7 @@ using Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard;
 using Qualifier.Application.Database.GapDashboard.Queries.GetHomeDashboardBootstrap;
 using Qualifier.Application.Database.GapDashboard.Queries.GetMissingEvidenceReport;
 using Qualifier.Application.Database.GapDashboard.Queries.GetSoaReport;
+using Qualifier.Application.Database.GapDashboard.Queries.GetDashboardONPE;
 using Qualifier.Application.Database.Notifications.Queries.GetNotificationsByUserId;
 using Qualifier.Application.Database.Notifications.Commands.MarkNotificationAsRead;
 using Qualifier.Application.Database.Notifications.Commands.MarkAllNotificationsAsRead;
@@ -805,6 +807,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetHomeDashboardBootstrapQuery, GetHomeDashboardBootstrapQuery>();
             services.AddTransient<IGetMissingEvidenceReportQuery, GetMissingEvidenceReportQuery>();
             services.AddTransient<IGetSoaReportQuery, GetSoaReportQuery>();
+            services.AddTransient<IGetDashboardONPEQuery, GetDashboardONPEQuery>();
 
             //Gap
             services.AddTransient<IGetPlanDeAccionBootstrapQuery, GetPlanDeAccionBootstrapQuery>();
@@ -1031,6 +1034,7 @@ namespace Qualifier.Application
             services.AddTransient<IGetActionPlanCountsByUserQuery, GetActionPlanCountsByUserQuery>();
             services.AddTransient<IGetActionPlanCountsByBreachQuery, GetActionPlanCountsByBreachQuery>();
             services.AddTransient<IGetOverdueActionPlansReportQuery, GetOverdueActionPlansReportQuery>();
+            services.AddTransient<IGetActionPlanCalendarQuery, GetActionPlanCalendarQuery>();
 
             services.AddTransient<IGetRisksIdentificationQuery, GetRisksIdentificationQuery>();
             services.AddTransient<IGetBreachSeverityReportQuery, GetBreachSeverityReportQuery>();

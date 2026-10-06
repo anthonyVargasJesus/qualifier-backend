@@ -129,12 +129,25 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateR
                 .Where(u => recipientIds.Contains(u.userId))
                 .ToDictionaryAsync(u => u.userId, u => u.fcmToken);
 
+            // Quién subió la evidencia -- sin esto el mensaje era genérico ("Se agregó una
+            // evidencia...") y ninguno de los dos lados sabía quién fue sin abrir la app. Mismo
+            // criterio de armado de nombre que UpdateActionPlanCommand.notifyStatusChange (name +
+            // firstName), una sola consulta acá afuera del loop (mismo remitente para todos los
+            // destinatarios de este guardado).
+            var uploaderName = model.creationUserId == null
+                ? null
+                : await _databaseService.User
+                    .Where(u => u.userId == model.creationUserId)
+                    .Select(u => (u.name ?? "") + " " + (u.firstName ?? ""))
+                    .FirstOrDefaultAsync();
+            uploaderName = string.IsNullOrWhiteSpace(uploaderName) ? "Alguien" : uploaderName.Trim();
+
             foreach (var recipient in recipients)
             {
                 if (!tokensByUserId.TryGetValue(recipient.userId, out var fcmToken) || string.IsNullOrWhiteSpace(fcmToken))
                     continue;
 
-                var body = $"Se agregó una evidencia (\"{model.name}\") en \"{recipient.title}\".";
+                var body = $"{uploaderName} agregó una evidencia (\"{model.name}\") en \"{recipient.title}\".";
 
                 await _pushNotificationService.SendAsync(
                     recipient.userId,
@@ -145,10 +158,14 @@ namespace Qualifier.Application.Database.ReferenceDocumentation.Commands.CreateR
                     actionPlanId: recipient.actionPlanId,
                     breachId: recipient.breachId,
                     companyId: model.companyId,
+                    // breachId también en el payload `data` (no solo como parámetro de
+                    // SendAsync) -- mismo motivo que en UpdateActionPlanCommand.notifyStatusChange:
+                    // es lo único que le llega al dispositivo en un push en vivo.
                     data: new Dictionary<string, string>
                     {
                         { "type", EvidenceAddedNotificationType },
                         { "actionPlanId", recipient.actionPlanId.ToString() },
+                        { "breachId", recipient.breachId.ToString() },
                     });
             }
         }

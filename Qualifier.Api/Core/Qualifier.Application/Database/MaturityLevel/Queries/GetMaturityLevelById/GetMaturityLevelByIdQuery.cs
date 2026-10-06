@@ -31,6 +31,7 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevelB
                                         color = item.color,
                                         generatesBreach = item.generatesBreach,
                                         breachSeverityId = item.breachSeverityId,
+                                        isNotApplicable = item.isNotApplicable,
 
                                     }).FirstOrDefaultAsync();
 

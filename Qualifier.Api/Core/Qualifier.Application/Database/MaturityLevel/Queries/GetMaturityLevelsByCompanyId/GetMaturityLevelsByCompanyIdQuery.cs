@@ -33,6 +33,7 @@ namespace Qualifier.Application.Database.MaturityLevel.Queries.GetMaturityLevels
                                           color = maturityLevel.color,
                                           generatesBreach = maturityLevel.generatesBreach,
                                           breachSeverityId = maturityLevel.breachSeverityId,
+                                          isNotApplicable = maturityLevel.isNotApplicable,
                                       })
                 .Skip(skip).Take(pageSize)
                 .ToListAsync();

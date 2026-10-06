@@ -180,11 +180,11 @@ namespace Qualifier.Api.Controllers
 
             model.creationUserId = HttpContext.GetUserIdAsync(accessToken);
 
-            int standardId;
-            bool success3 = int.TryParse(JwtTokenProvider.GetStandardIdFromToken(accessToken), out standardId);
-
-            if (success3)
-                model.standardId = standardId;
+            // model.standardId ya viene del formulario "Nueva evaluación" (campo "Norma",
+            // requerido) -- antes se pisaba acá con la norma fija del token, así que crear una
+            // evaluación de una norma distinta a la del login era imposible: el usuario elegía
+            // NTP-42001 en el formulario pero la evaluación se guardaba igual con la norma
+            // vieja del JWT (ISO 27001). Se saca el pisado y se confía en lo que mandó el form.
 
             var res = await createEvaluationCommand.Execute(model);
             if (res.GetType() == typeof(BaseErrorResponseDto))

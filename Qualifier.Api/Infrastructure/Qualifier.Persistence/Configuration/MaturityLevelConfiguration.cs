@@ -63,6 +63,10 @@ namespace Qualifier.Api.Infrastructure.Qualifier.Persistence.Configuration
 
             entityBuilder.Property(e => e.breachSeverityId)
                 .HasColumnName("N_BREACH_SEVERITY_ID_FK");
+
+            entityBuilder.Property(e => e.isNotApplicable)
+                .HasColumnName("L_IS_NOT_APPLICABLE")
+                .IsRequired();
         }
     }
 }

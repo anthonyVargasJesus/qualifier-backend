@@ -10,6 +10,7 @@ namespace Qualifier.Application.Database.Gap.Queries.GetGapItems
         public long? evaluationItemId { get; set; }
         public string code { get; set; } = string.Empty;
         public string name { get; set; } = string.Empty;
+        public string? description { get; set; }
         public string theme { get; set; } = string.Empty;
         public int? maturityLevelId { get; set; }
         public decimal? value { get; set; }

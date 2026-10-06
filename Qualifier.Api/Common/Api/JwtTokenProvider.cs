@@ -13,7 +13,15 @@ namespace Qualifier.Common.Api
 {
     public class JwtTokenProvider
     {
-        public static string GenerateToken(IConfiguration _configuration, int userId, string fullName, string currentRole, List<string> roles, int companyId, int standardId, string standardName)
+        // standardId/cs (nombre de la norma) se sacaron del token a propósito: eran la norma
+        // "fija" del usuario al momento de loguearse, y quedaban desincronizados apenas la
+        // evaluación actual pasaba a ser de otra norma (ver el bug que corrigió esto en
+        // GetPlanDeAccionBootstrapQuery, y el mismo patrón que hacía que "Nueva evaluación"
+        // ignorara la norma elegida en el formulario y usara la del token -- ver
+        // EvaluationController.Create). Cualquier lugar que necesite la norma correcta debe
+        // resolverla de la evaluación actual o de la entidad puntual que esté consultando,
+        // nunca del token.
+        public static string GenerateToken(IConfiguration _configuration, int userId, string fullName, string currentRole, List<string> roles, int companyId, string email = "")
         {
             string? secretKey = _configuration["Authentication:SecretKey"];
 
@@ -27,9 +35,11 @@ namespace Qualifier.Common.Api
                  new Claim("cr", currentRole),
                  new Claim("userId", userId.ToString()),
                  new Claim("companyId", companyId.ToString()),
-                 new Claim("standardId", standardId.ToString()),
-                 new Claim("cs", standardName.ToString()),
                  new Claim("rls",  JsonConvert.SerializeObject(roles)),
+                 // LoginModel.em (Angular) ya esperaba este claim -- nunca se mandó, por eso
+                 // pantallas como "Mis asignaciones" mostraban el email vacío ("Acciones
+                 // asignadas a .").
+                 new Claim("em", email ?? ""),
             };
 
             var payload = new JwtPayload
@@ -60,24 +70,6 @@ namespace Qualifier.Common.Api
             }
 
             var companyId = TokenInfo["companyId"];
-
-            return companyId;
-        }
-
-        public static string GetStandardIdFromToken(string token)
-        {
-            var TokenInfo = new Dictionary<string, string>();
-
-            var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(token);
-            var claims = jwtSecurityToken.Claims.ToList();
-
-            foreach (var claim in claims)
-            {
-                TokenInfo.Add(claim.Type, claim.Value);
-            }
-
-            var companyId = TokenInfo["standardId"];
 
             return companyId;
         }

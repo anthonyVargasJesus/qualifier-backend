@@ -12,6 +12,7 @@ namespace Qualifier.Application.Database.MaturityLevel.Commands.CreateMaturityLe
         public string? color { get; set; }
         public bool generatesBreach { get; set; }
         public int? breachSeverityId { get; set; }
+        public bool isNotApplicable { get; set; }
         public int companyId { get; set; }
         public int? creationUserId { get; set; }
         public void requiredFieldsValidation(Notification notification)

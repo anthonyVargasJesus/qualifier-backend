@@ -25,6 +25,7 @@ namespace Qualifier.Application.Database.GapDashboard.Queries.GetGapDashboard
     public class GetGapDashboardMaturityCountDto
     {
         public string name { get; set; } = string.Empty;
+        public string color { get; set; } = string.Empty;
         public int count { get; set; }
     }
 

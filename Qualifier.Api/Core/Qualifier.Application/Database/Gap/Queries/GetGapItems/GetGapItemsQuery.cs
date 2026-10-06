@@ -68,6 +68,7 @@ namespace Qualifier.Application.Database.Gap.Queries.GetGapItems
                     evaluationItemId = i.evaluationItemId,
                     code = i.code,
                     name = i.name,
+                    description = i.description,
                     theme = i.theme,
                     maturityLevelId = i.maturityLevelId,
                     value = i.value,

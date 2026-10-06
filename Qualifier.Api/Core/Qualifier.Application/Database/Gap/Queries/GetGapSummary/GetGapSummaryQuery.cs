@@ -19,8 +19,6 @@ namespace Qualifier.Application.Database.Gap.Queries.GetGapSummary
     public class GetGapSummaryQuery : IGetGapSummaryQuery
     {
         private const string PENDIENTE = GapItemsBuilder.PENDIENTE;
-        private const string NO_APLICA = GapItemsBuilder.NO_APLICA;
-        private const string CUMPLE = GapItemsBuilder.CUMPLE;
         private const string THEME_REQUISITOS = "Cláusulas";
         private const string PENDIENTE_COLOR = "#EAEDEF";
 
@@ -64,8 +62,11 @@ namespace Qualifier.Application.Database.Gap.Queries.GetGapSummary
                 var (requirementItems, _) = await _itemsBuilder.BuildRequirementItems(evaluation.standardId, evaluation.evaluationId, userId, scopeToUser);
                 var allItems = requirementItems.Concat(controlItems).ToList();
 
-                var evaluatedItems = allItems.Where(i => i.estado != PENDIENTE && i.estado != NO_APLICA).ToList();
-                var compliantItems = evaluatedItems.Where(i => i.estado == CUMPLE).ToList();
+                // "Cumple" ya no es un nombre fijo (escala CMM de 6 niveles + no aplicable): un
+                // ítem cuenta como "cumplido" cuando su nivel no genera brecha y no es el nivel
+                // "sin implementar" (value 0) -- ver 002_maturity_level_is_not_applicable.sql.
+                var evaluatedItems = allItems.Where(i => i.estado != PENDIENTE && !i.isNotApplicable).ToList();
+                var compliantItems = evaluatedItems.Where(i => !i.generatesBreach && i.value > 0).ToList();
                 var pct = evaluatedItems.Count > 0 ? (int)Math.Round(compliantItems.Count * 100.0 / evaluatedItems.Count) : 0;
 
                 // Orden de los grupos de control por su número real (2, 3, 4... 6.1, 6.2, 7...),
